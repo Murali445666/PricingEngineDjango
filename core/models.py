@@ -243,10 +243,14 @@ class PricingRuleCondition(TimeStampedModel):
         on_delete=models.CASCADE,
         related_name='conditions'
     )
-    attribute_name = models.CharField(max_length=100)
-    operator = models.CharField(
-        max_length=20,
-        choices=[('EQ', 'Equals'), ('IN', 'In'), ('GT', 'Greater Than'), ('LT', 'Less Than')]
+    attribute_name = models.CharField(
+        max_length=50,
+        choices=[
+            ('code', 'Procedure Code (CPT/HCPCS/DRG)'),
+            ('rev_code', 'Revenue Code'),
+            ('modifier', 'Modifier'),
+            ('network_status', 'Network Status (INN/OON)'),
+            ('EQ', 'Equals'), ('IN', 'In'), ('GT', 'Greater Than'), ('LT', 'Less Than')]
     )
     attribute_value = models.CharField(max_length=255)
 
