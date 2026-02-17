@@ -1,0 +1,17 @@
+# Core Framework
+Django>=5.0,<6.0
+
+# API Support (For Phase 2)
+
+django-cors-headers>=4.0
+djangorestframework>=3.14.0
+markdown>=3.0.0
+django-cors-headers>=4.3.1
+# Configuration Management (Best Practice)
+python-dotenv>=1.0.0
+
+
+pymysql>=1.1.0
+cryptography>=41.0.0
+# Database (Optional - keeps it ready for Postgres, remove if using SQLite only)
+# psycopg2-binary>=2.9

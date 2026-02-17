@@ -1,274 +1,177 @@
 from django.db import models
-from django.contrib.auth.models import User
-import uuid
 
-# -----------------------------
-# Base / Shared Mixins
-# -----------------------------
+# ==========================================
+# 1. REFERENCE DATA (The Foundation)
+# ==========================================
 
-class TimeStampedModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class RefProcedureCode(models.Model):
+    # Physical Table: ref_procedure_codes (Composite PK: code_id + code_type)
+    # Django Constraint: Must have one single primary_key=True field.
+    # Logic: We treat code_id as the primary handle, but enforcing uniqueness via unique_together.
+    code_id = models.CharField(max_length=20, primary_key=True) 
+    code_type = models.CharField(max_length=8) # ENUM: 'CPT', 'HCPCS', 'DRG', 'REV_CODE'
+    description = models.CharField(max_length=255, null=True, blank=True)
+    
+    # RBRVS Columns
+    work_rvu = models.DecimalField(max_digits=10, decimal_places=4, default=0.0000)
+    pe_rvu = models.DecimalField(max_digits=10, decimal_places=4, default=0.0000)
+    mp_rvu = models.DecimalField(max_digits=10, decimal_places=4, default=0.0000)
+    conversion_factor = models.DecimalField(max_digits=10, decimal_places=4, null=True, blank=True)
+    
+    effective_start_date = models.DateField(default='1900-01-01')
+    effective_end_date = models.DateField(null=True, blank=True)
 
     class Meta:
-        abstract = True
+        managed = True # Django will NOT create/alter this table
+        db_table = 'ref_procedure_codes'
+        unique_together = (('code_id', 'code_type'),)
 
-class EffectiveDatedModel(models.Model):
+class RefModifier(models.Model):
+    # Physical Table: ref_modifiers
+    modifier_code = models.CharField(max_length=5, primary_key=True)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    impact_type = models.CharField(max_length=50, null=True, blank=True)
+    percentage_adjustment = models.DecimalField(max_digits=5, decimal_places=2, default=100.00)
+
+    class Meta:
+        managed = True
+        db_table = 'ref_modifiers'
+
+class RefGeoIndex(models.Model):
+    # Physical Table: ref_geo_indices
+    geo_id = models.AutoField(primary_key=True)
+    locality_code = models.CharField(max_length=20, null=True, blank=True)
+    description = models.CharField(max_length=100, null=True, blank=True)
+    gpci_work = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
+    gpci_pe = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
+    gpci_mp = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
+    year = models.IntegerField()
+
+    class Meta:
+        managed = True
+        db_table = 'ref_geo_indices'
+
+# ==========================================
+# 2. ORGANIZATION & NETWORK LAYER
+# ==========================================
+
+class ProviderOrganization(models.Model):
+    # Physical Table: provider_organizations
+    organization_id = models.CharField(max_length=50, primary_key=True)
+    name = models.CharField(max_length=255)
+    tax_id = models.CharField(max_length=20, null=True, blank=True)
+    npi = models.CharField(max_length=15, null=True, blank=True)
+    address_json = models.JSONField(null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'provider_organizations'
+
+class PayerNetwork(models.Model):
+    # Physical Table: payer_networks
+    network_id = models.CharField(max_length=50, primary_key=True)
+    network_name = models.CharField(max_length=100, null=True, blank=True)
+    payer_org = models.ForeignKey(ProviderOrganization, on_delete=models.CASCADE, db_column='payer_org_id')
+    line_of_business = models.CharField(max_length=50, null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'payer_networks'
+
+class ProviderContract(models.Model):
+    # Physical Table: contracts
+    contract_id = models.AutoField(primary_key=True)
+    legacy_contract_number = models.CharField(max_length=100, null=True, blank=True)
+    contract_name = models.CharField(max_length=150, null=True, blank=True)
+    
+    # Relationships
+    provider_org = models.ForeignKey(ProviderOrganization, on_delete=models.CASCADE, db_column='provider_org_id')
+    network = models.ForeignKey(PayerNetwork, on_delete=models.CASCADE, db_column='network_id')
+    
+    status = models.CharField(max_length=10, default='DRAFT')
     effective_start_date = models.DateField()
     effective_end_date = models.DateField(null=True, blank=True)
 
     class Meta:
-        abstract = True
+        managed = True
+        db_table = 'contracts'
 
-class VersionedModel(models.Model):
+# ==========================================
+# 3. PRICING RULES (The Engine Logic)
+# ==========================================
+
+class FeeSchedule(models.Model):
+    # Physical Table: fee_schedules
+    fee_schedule_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, null=True, blank=True)
+    effective_date = models.DateField(null=True, blank=True)
     version = models.IntegerField(default=1)
-    is_active = models.BooleanField(default=False)
-    previous_version = models.ForeignKey(
-        'self',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='next_versions'
-    )
 
     class Meta:
-        abstract = True
+        managed = True
+        db_table = 'fee_schedules'
 
-class AuditableModel(models.Model):
-    created_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='+'
-    )
-    approved_by = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='+'
-    )
-    approved_at = models.DateTimeField(null=True, blank=True)
+class FeeScheduleRate(models.Model):
+    # Physical Table: fee_schedule_rates
+    rate_id = models.BigAutoField(primary_key=True)
+    fee_schedule = models.ForeignKey(FeeSchedule, on_delete=models.CASCADE, db_column='fee_schedule_id')
+    code_id = models.CharField(max_length=20) 
+    rate_amount = models.DecimalField(max_digits=12, decimal_places=2)
 
     class Meta:
-        abstract = True
+        managed = True
+        db_table = 'fee_schedule_rates'
 
-# -----------------------------
-# Provider & Contract Entities
-# -----------------------------
-
-class ProviderOrganization(TimeStampedModel):
-    organization_id = models.UUIDField(default=uuid.uuid4, unique=True)
-    name = models.CharField(max_length=255)
-    tax_id = models.CharField(max_length=15)
-    network_code = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-class Provider(TimeStampedModel):
-    provider_id = models.UUIDField(default=uuid.uuid4, unique=True)
-    npi = models.CharField(max_length=10)
-    organization = models.ForeignKey(
-        ProviderOrganization,
-        on_delete=models.CASCADE,
-        related_name='providers'
-    )
-    specialty_code = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.npi
-
-class ProviderContract(TimeStampedModel, EffectiveDatedModel):
-    contract_id = models.UUIDField(default=uuid.uuid4, unique=True)
-    provider_org = models.ForeignKey(
-        ProviderOrganization,
-        on_delete=models.CASCADE,
-        related_name='contracts'
-    )
-    contract_name = models.CharField(max_length=255)
-    product_line = models.CharField(max_length=50)
-    status = models.CharField(
-        max_length=30,
-        choices=[
-            ('DRAFT', 'Draft'),
-            ('ACTIVE', 'Active'),
-            ('TERMINATED', 'Terminated')
-        ]
-    )
-
-    def __str__(self):
-        return self.contract_name
-
-# -----------------------------
-# Code Systems
-# -----------------------------
-
-class CodeSet(TimeStampedModel):
-    code_set_name = models.CharField(max_length=50)
-    code_system_uri = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.code_set_name
-
-class Code(TimeStampedModel):
-    code_set = models.ForeignKey(
-        CodeSet,
-        on_delete=models.CASCADE,
-        related_name='codes'
-    )
-    code = models.CharField(max_length=20)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.code
-
-# -----------------------------
-# Fee Schedules
-# -----------------------------
-
-class FeeSchedule(TimeStampedModel, VersionedModel, EffectiveDatedModel, AuditableModel):
-    fee_schedule_id = models.UUIDField(default=uuid.uuid4, unique=True)
-    name = models.CharField(max_length=255)
-    source = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"{self.name} v{self.version}"
-
-class FeeScheduleRate(TimeStampedModel):
-    fee_schedule = models.ForeignKey(
-        FeeSchedule,
-        on_delete=models.CASCADE,
-        related_name='rates'
-    )
-    code = models.ForeignKey(
-        Code,
-        on_delete=models.CASCADE
-    )
-    rate_amount = models.DecimalField(max_digits=12, decimal_places=4)
-
-    class Meta:
-        unique_together = ('fee_schedule', 'code')
-
-# -----------------------------
-# Pricing Methodologies & Rules
-# -----------------------------
-
-class PricingMethodology(models.Model):
-    methodology_code = models.CharField(max_length=50)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.methodology_code
-
-class PricingRule(TimeStampedModel, VersionedModel, EffectiveDatedModel, AuditableModel):
-    pricing_rule_id = models.UUIDField(default=uuid.uuid4, unique=True)
-    contract = models.ForeignKey(
-        ProviderContract,
-        on_delete=models.CASCADE,
-        related_name='pricing_rules'
-    )
-    methodology = models.ForeignKey(
-        PricingMethodology,
-        on_delete=models.PROTECT
-    )
+class PricingRule(models.Model):
+    # Physical Table: pricing_rules
+    rule_id = models.BigAutoField(primary_key=True)
+    contract = models.ForeignKey(ProviderContract, on_delete=models.CASCADE, db_column='contract_id')
+    rule_name = models.CharField(max_length=150, null=True, blank=True)
     
-    rule_type = models.CharField(
-        max_length=20,
-        choices=[
-            ('BASE', 'Base Rate (Standard)'),
-            ('ADD_ON', 'Add-on (Cumulative)'),
-            ('ADJUSTMENT', 'Adjustment (Multiplier)'), # <--- NEW
-            ('CAP', 'Cap / Limit (Restrictive)'),
-            ('STOP_LOSS', 'Stop Loss (Outlier)')
-        ],
-        default='BASE',
-        help_text="BASE=Exclusive. ADD_ON=Sum. ADJUSTMENT=Multiply. STOP_LOSS=Outlier."
-    )
-    # NEW FIELD for Stop Loss
-    threshold_amount = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, help_text="Trigger for Stop Loss")
+    # Logic Columns
+    rule_type = models.CharField(max_length=10) # 'BASE', 'ADJUSTMENT'
+    methodology_code = models.CharField(max_length=50) # 'RBRVS', 'FLAT_RATE'
+    multiplier = models.DecimalField(max_digits=6, decimal_places=4, default=1.0000)
+    flat_rate = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     
-    # --- NEW FIELD: AUTOMATIC SCORING ---
-    specificity_score = models.IntegerField(default=0, editable=False)
-    # ------------------------------------
+    base_fee_schedule = models.ForeignKey(FeeSchedule, on_delete=models.SET_NULL, null=True, db_column='base_fee_schedule_id')
+    
+    # The Critical "V2" Column
+    specificity_score = models.IntegerField(default=0)
+    
+    is_active = models.IntegerField(default=1) # Boolean in MySQL is TinyInt(1)
+    effective_start_date = models.DateField(default='1900-01-01')
 
-    base_fee_schedule = models.ForeignKey(
-        FeeSchedule,
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True
-    )
-    multiplier = models.DecimalField(max_digits=6, decimal_places=4, null=True, blank=True)
-    flat_rate = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
-    
-    # We removed 'rule_priority'
-    
-    status = models.CharField(
-        max_length=30,
-        choices=[('DRAFT', 'Draft'), ('ACTIVE', 'Active'), ('RETIRED', 'Retired')]
-    )
-
+    # Helper Logic (Used by Django, ignored by SQL)
     def calculate_score(self):
-        """
-        The Algorithm: Sums points based on attached conditions.
-        Must be called AFTER conditions are saved.
-        """
         score = 0
-        for cond in self.conditions.all():
-            attr = cond.attribute_name
-            op = cond.operator
-            
-            if attr == 'code':
-                if op == 'EQ':
-                    score += 1000  # Exact Code (Highest)
-                else:
-                    score += 100   # Range/Group (Medium)
-            elif attr == 'modifier':
-                score += 500       # Modifier (High)
-            elif attr == 'rev_code':
-                score += 10        # Revenue Code (Low)
-            elif attr == 'provider_id':
-                score += 5         # Network Context (Lowest)
-        
+        # Check associated conditions (Reverse Relationship)
+        if self.pk: 
+            for condition in self.conditions.all():
+                score += 10
+                # Boost score for Specific Overrides
+                if condition.attribute_name in ['plan_id', 'group_id', 'provider_id']:
+                    score += 50
         self.specificity_score = score
         self.save()
 
-    def __str__(self):
-        return f"Rule {self.pricing_rule_id} (Score: {self.specificity_score})"
+    class Meta:
+        managed = True
+        db_table = 'pricing_rules'
 
-# (PricingRuleCondition stays exactly the same)
-class PricingRuleCondition(TimeStampedModel):
-    pricing_rule = models.ForeignKey(
-        PricingRule,
-        on_delete=models.CASCADE,
-        related_name='conditions'
-    )
-    attribute_name = models.CharField(
-        max_length=50,
-        choices=[
-            ('code', 'Procedure Code (CPT/HCPCS/DRG)'),
-            ('rev_code', 'Revenue Code'),
-            ('modifier', 'Modifier'),
-            ('network_status', 'Network Status (INN/OON)'),
-            ('EQ', 'Equals'), ('IN', 'In'), ('GT', 'Greater Than'), ('LT', 'Less Than')]
-    )
+class PricingRuleCondition(models.Model):
+    # Physical Table: pricing_rule_conditions
+    condition_id = models.BigAutoField(primary_key=True)
+    # Note: related_name='conditions' is crucial for the calculate_score method above
+    pricing_rule = models.ForeignKey(PricingRule, on_delete=models.CASCADE, db_column='rule_id', related_name='conditions')
+    
+    attribute_name = models.CharField(max_length=50) # e.g. 'code'
+    operator = models.CharField(max_length=10, default='EQ')
     attribute_value = models.CharField(max_length=255)
 
-    def __str__(self):
-        return f"{self.attribute_name} {self.operator} {self.attribute_value}"
+    class Meta:
+        managed = True
+        db_table = 'pricing_rule_conditions'
+    
+    # ... existing imports ...
 
-class PricingRuleCondition(TimeStampedModel):
-    pricing_rule = models.ForeignKey(
-        PricingRule,
-        on_delete=models.CASCADE,
-        related_name='conditions'
-    )
-    attribute_name = models.CharField(max_length=100)
-    operator = models.CharField(
-        max_length=20,
-        choices=[('EQ', 'Equals'), ('IN', 'In'), ('GT', 'Greater Than'), ('LT', 'Less Than')]
-    )
-    attribute_value = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f"{self.attribute_name} {self.operator} {self.attribute_value}"

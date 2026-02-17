@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Sandbox — Matrix</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.25rem; margin-bottom: 1rem; }
+    label { display: block; margin-top: 0.75rem; font-weight: 500; }
+    input, button { font-size: 1rem; padding: 0.5rem; }
+    input[type="number"] { width: 8rem; }
+    input[type="text"] { width: 100%; max-width: 20rem; }
+    button { margin-top: 1rem; padding: 0.5rem 1rem; cursor: pointer; background: #0d6efd; color: #fff; border: none; border-radius: 4px; }
+    button:hover { background: #0b5ed7; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .hint { font-size: 0.875rem; color: #6c757d; margin-top: 0.25rem; }
+    #response { margin-top: 1.5rem; white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 0.875rem; background: #f8f9fa; padding: 1rem; border-radius: 4px; border: 1px solid #dee2e6; min-height: 4rem; }
+    #response.error { background: #f8d7da; border-color: #f5c2c7; }
+    #response:empty::before { content: 'Response will appear here…'; color: #adb5bd; }
+  </style>
+</head>
+<body>
+  <h1>Pricing Sandbox</h1>
+  <p class="hint">Enter a procedure code and contract ID to run a single-line pricing request and see the JSON response.</p>
+
+  <form id="sandbox-form">
+    {% csrf_token %}
+    <label for="contract_id">Contract ID (legacy number or PK)</label>
+    <input type="text" id="contract_id" name="contract_id" placeholder="e.g. CONT-MATRIX-2026 or 1" value="">
+    <span class="hint">Use legacy_contract_number or numeric contract_id from the contracts API.</span>
+
+    <label for="procedure_code">Procedure code</label>
+    <input type="text" id="procedure_code" name="procedure_code" placeholder="e.g. 99213" value="99213">
+
+    <label for="billed_amount">Billed amount</label>
+    <input type="number" id="billed_amount" name="billed_amount" step="0.01" min="0" value="200.00">
+
+    <label for="units">Units</label>
+    <input type="number" id="units" name="units" min="1" value="1">
+
+    <label for="modifiers">Modifiers (comma-separated, optional)</label>
+    <input type="text" id="modifiers" name="modifiers" placeholder="e.g. 26, 50">
+
+    <button type="submit" id="submit-btn">Price line</button>
+  </form>
+
+  <h2 style="font-size: 1rem; margin-top: 1.5rem;">Response</h2>
+  <pre id="response"></pre>
+
+  <script>
+    (function () {
+      var form = document.getElementById('sandbox-form');
+      var responseEl = document.getElementById('response');
+      var submitBtn = document.getElementById('submit-btn');
+
+      function getCsrfToken() {
+        var input = document.querySelector('[name=csrfmiddlewaretoken]');
+        return input ? input.value : '';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var contractId = document.getElementById('contract_id').value.trim();
+        var procedureCode = document.getElementById('procedure_code').value.trim();
+        var billedAmount = document.getElementById('billed_amount').value;
+        var units = parseInt(document.getElementById('units').value, 10) || 1;
+        var modsStr = document.getElementById('modifiers').value.trim();
+        var modifiers = modsStr ? modsStr.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
+
+        if (!contractId || !procedureCode) {
+          responseEl.textContent = 'Please enter Contract ID and Procedure code.';
+          responseEl.className = 'error';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        responseEl.textContent = 'Loading…';
+        responseEl.classList.remove('error');
+
+        var payload = {
+          contract_id: contractId,
+          procedure_code: procedureCode,
+          billed_amount: billedAmount,
+          units: units,
+          modifiers: modifiers
+        };
+
+        fetch('/api/price-line/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
+          },
+          body: JSON.stringify(payload)
+        })
+          .then(function (res) {
+            return res.json().then(function (data) {
+              return { ok: res.ok, status: res.status, data: data };
+            });
+          })
+          .then(function (result) {
+            responseEl.textContent = JSON.stringify(result.data, null, 2);
+            if (!result.ok) responseEl.classList.add('error');
+          })
+          .catch(function (err) {
+            responseEl.textContent = 'Error: ' + err.message;
+            responseEl.classList.add('error');
+          })
+          .then(function () {
+            submitBtn.disabled = false;
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

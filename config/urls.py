@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from core.views import pricing_sandbox
+
 urlpatterns = [
-    # The Analyst UI (Use Case 1)
     path('admin/', admin.site.urls),
-    
-    # We will put the API endpoints here later
-    # path('api/', include('core.urls')), 
+    path('api/', include('core.api.urls')),
+    path('sandbox/', pricing_sandbox, name='pricing-sandbox'),
 ]

@@ -1,24 +1,51 @@
 from django.contrib import admin
-from .models import ProviderOrganization, ProviderContract, FeeSchedule, PricingRule, PricingRuleCondition, PricingMethodology
+from .models import (
+    ProviderOrganization, 
+    PayerNetwork, 
+    ProviderContract, 
+    FeeSchedule, 
+    FeeScheduleRate, 
+    PricingRule, 
+    PricingRuleCondition,
+    RefProcedureCode,
+    RefModifier
+)
 
-class ConditionInline(admin.TabularInline):
-    model = PricingRuleCondition
-    extra = 1
+@admin.register(ProviderOrganization)
+class ProviderOrganizationAdmin(admin.ModelAdmin):
+    list_display = ('organization_id', 'name', 'npi')
+    search_fields = ('name', 'organization_id')
+
+@admin.register(PayerNetwork)
+class PayerNetworkAdmin(admin.ModelAdmin):
+    list_display = ('network_id', 'network_name', 'payer_org')
+
+@admin.register(ProviderContract)
+class ProviderContractAdmin(admin.ModelAdmin):
+    # Updated to use 'provider_org' instead of old 'organization'
+    list_display = ('contract_id', 'contract_name', 'provider_org', 'status', 'effective_start_date')
+    list_filter = ('status', 'provider_org')
+
+@admin.register(FeeSchedule)
+class FeeScheduleAdmin(admin.ModelAdmin):
+    list_display = ('fee_schedule_id', 'name', 'effective_date', 'version')
 
 @admin.register(PricingRule)
 class PricingRuleAdmin(admin.ModelAdmin):
-    # CHANGED: Replaced 'rule_priority' with 'specificity_score'
-    list_display = ('contract', 'methodology', 'rule_type', 'specificity_score', 'status')
-    
-    # NEW: Show the score but keep it read-only (since it's auto-calculated)
-    readonly_fields = ('specificity_score',) 
-    
-    inlines = [ConditionInline]
+    # Updated to use 'methodology_code' instead of relationship
+    list_display = ('rule_id', 'rule_name', 'contract', 'methodology_code', 'multiplier', 'specificity_score')
+    list_filter = ('methodology_code', 'rule_type')
 
-@admin.register(ProviderContract)
-class ContractAdmin(admin.ModelAdmin):
-    list_display = ('contract_name', 'provider_org', 'status', 'effective_start_date')
+@admin.register(PricingRuleCondition)
+class PricingRuleConditionAdmin(admin.ModelAdmin):
+    list_display = ('condition_id', 'pricing_rule', 'attribute_name', 'operator', 'attribute_value')
 
-admin.site.register(ProviderOrganization)
-admin.site.register(FeeSchedule)
-admin.site.register(PricingMethodology)
+@admin.register(RefProcedureCode)
+class RefProcedureCodeAdmin(admin.ModelAdmin):
+    list_display = ('code_id', 'code_type', 'description', 'work_rvu')
+    search_fields = ('code_id', 'description')
+    list_filter = ('code_type',)
+
+@admin.register(RefModifier)
+class RefModifierAdmin(admin.ModelAdmin):
+    list_display = ('modifier_code', 'description', 'percentage_adjustment')

@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.RequestTimingMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -77,8 +78,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'pricing_engine_v2',  # The DB we created in MySQL
+        'USER': 'root',               # Your MySQL Username
+        'PASSWORD': 'root',       # <--- UPDATE THIS TO YOUR REAL PASSWORD
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -118,3 +123,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Request timing logger (for dashboard / monitoring)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'timing': {
+            'format': '%(asctime)s [%(levelname)s] %(message)s',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'timing',
+        },
+    },
+    'loggers': {
+        'pricing_engine.request_timing': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
