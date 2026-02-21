@@ -57,6 +57,7 @@ class Command(BaseCommand):
             methodology_code="RBRVS",
             base_fee_schedule=fs,
             multiplier=Decimal("1.50"),
+            status=PricingRule.RuleStatus.ACTIVE,
         )
         PricingRuleCondition.objects.create(pricing_rule=r1, attribute_name="procedure_code", operator="EQ", attribute_value="99213")
 

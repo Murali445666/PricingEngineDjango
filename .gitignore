@@ -18,3 +18,22 @@ env/
 # IDE settings
 .vscode/
 .idea/
+
+# Python & Django
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+.env
+media/
+
+# Node & React
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+.env.local
+
+# OS & IDE
+.DS_Store
+.vscode/
+.cursor/

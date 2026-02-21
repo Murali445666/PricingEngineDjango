@@ -5,7 +5,7 @@ Status is aligned to the [Master Roadmap](ROADMAP.md).
 | Phase | Name | Status |
 |-------|------|--------|
 | **1** | Core Engine Stabilization | **COMPLETE** |
-| **2** | API Layer & Pricing Execution Services | **IN PROGRESS** |
+| **2** | API Layer & Pricing Execution Services | **COMPLETE** |
 | 3 | Analyst Rule Visibility & Governance UI | Not started |
 | 4 | Rule Authoring & Condition Builder UI | Not started |
 | 5 | Pricing Simulation & Contract Testing Workbench | Not started |
@@ -23,7 +23,8 @@ Status is aligned to the [Master Roadmap](ROADMAP.md).
 
 ---
 
-## Phase 2 — IN PROGRESS
+## Phase 2 — COMPLETE
 
-- REST endpoints: single-line pricing (`POST /api/price-line/`), contract lookup (`GET /api/contracts/`) implemented.
-- Remaining for Phase 2: multi-line pricing endpoint, request/response DTO versioning, authentication and logging middleware, and basic internal pricing sandbox UI.
+- **Done:** Single-line pricing (`POST /api/price-line/`), multi-line pricing (`POST /api/price-claim/`), contract lookup (`GET /api/contracts/`), request timing middleware, Django sandbox (`/sandbox/`), React foundational UI (layout, routes, Pricing Sandbox, Contracts/Rules pages, placeholders for Simulator, Batch Monitor, Admin).
+- **Remaining (optional / later):** Request/response DTO versioning, authentication; can be addressed in a later phase.
+- **React app:** Lives in `frontend/`. Run with `cd frontend && npm run dev` (see [frontend/README.md](frontend/README.md)).

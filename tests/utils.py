@@ -78,21 +78,24 @@ class MatrixPricingEngine(TestCase):
         # A. RBRVS (Specificity 10)
         r1 = PricingRule.objects.create(
             contract=self.contract, rule_name="RBRVS Standard", specificity_score=10, 
-            methodology_code="RBRVS", base_fee_schedule=fs, multiplier=Decimal("1.50")
+            methodology_code="RBRVS", base_fee_schedule=fs, multiplier=Decimal("1.50"),
+            status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r1, attribute_name="procedure_code", operator="EQ", attribute_value="99213")
 
         # B. Flat Rate (Specificity 20)
         r2 = PricingRule.objects.create(
             contract=self.contract, rule_name="Radiology Flat", specificity_score=20, 
-            methodology_code="FLAT_RATE", flat_rate=Decimal("75.00")
+            methodology_code="FLAT_RATE", flat_rate=Decimal("75.00"),
+            status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r2, attribute_name="procedure_code", operator="EQ", attribute_value="73030")
         
         # C. Percent Billed (Specificity 30)
         r3 = PricingRule.objects.create(
             contract=self.contract, rule_name="Surgery Percent", specificity_score=30, 
-            methodology_code="PERCENT_BILLED", multiplier=Decimal("0.50")
+            methodology_code="PERCENT_BILLED", multiplier=Decimal("0.50"),
+            status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r3, attribute_name="procedure_code", operator="EQ", attribute_value="29806")
 
@@ -100,41 +103,47 @@ class MatrixPricingEngine(TestCase):
         r4 = PricingRule.objects.create(
             contract=self.contract, rule_name="Stop Loss Protection", specificity_score=99,
             rule_type="STOP_LOSS", methodology_code="PERCENT_BILLED",
-            flat_rate=Decimal("10000.00"), multiplier=Decimal("0.60")
+            flat_rate=Decimal("10000.00"), multiplier=Decimal("0.60"),
+            status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r4, attribute_name="procedure_code", operator="EQ", attribute_value="SL-TRIG")
 
         # E. DRG (Specificity 40)
         r5 = PricingRule.objects.create(
             contract=self.contract, rule_name="Inpatient DRG", specificity_score=40,
-            methodology_code="DRG", flat_rate=Decimal("6000.00")
+            methodology_code="DRG", flat_rate=Decimal("6000.00"),
+            status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r5, attribute_name="procedure_code", operator="EQ", attribute_value="DRG-470")
         
         r5b = PricingRule.objects.create(
              contract=self.contract, rule_name="Inpatient DRG 2", specificity_score=40,
-             methodology_code="DRG", flat_rate=Decimal("6000.00")
+             methodology_code="DRG", flat_rate=Decimal("6000.00"),
+             status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r5b, attribute_name="procedure_code", operator="EQ", attribute_value="DRG-194")
 
         # F. Per Diem (Specificity 50)
         r6 = PricingRule.objects.create(
             contract=self.contract, rule_name="Per Diem Bed", specificity_score=50,
-            methodology_code="PER_DIEM", flat_rate=Decimal("1200.00")
+            methodology_code="PER_DIEM", flat_rate=Decimal("1200.00"),
+            status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r6, attribute_name="procedure_code", operator="EQ", attribute_value="0120")
 
         # G. Anesthesia (Specificity 60)
         r7 = PricingRule.objects.create(
             contract=self.contract, rule_name="Anesthesia Group", specificity_score=60,
-            methodology_code="ANESTHESIA", base_fee_schedule=fs, multiplier=Decimal("45.00")
+            methodology_code="ANESTHESIA", base_fee_schedule=fs, multiplier=Decimal("45.00"),
+            status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r7, attribute_name="procedure_code", operator="EQ", attribute_value="00100")
 
         # H. Dependency (Specificity 15)
         r8 = PricingRule.objects.create(
              contract=self.contract, rule_name="AddOn Test", specificity_score=15,
-             methodology_code="FLAT_RATE", flat_rate=Decimal("75.00")
+             methodology_code="FLAT_RATE", flat_rate=Decimal("75.00"),
+             status=PricingRule.RuleStatus.ACTIVE
         )
         PricingRuleCondition.objects.create(pricing_rule=r8, attribute_name="procedure_code", operator="EQ", attribute_value="99100")
 

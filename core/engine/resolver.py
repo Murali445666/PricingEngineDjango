@@ -10,7 +10,7 @@ class StrictRuleResolver:
         # FIX: Order by 'specificity_score' descending (Highest score = Best Match)
         rules = PricingRule.objects.filter(
             contract=self.contract,
-            is_active=1
+            status=PricingRule.RuleStatus.ACTIVE
         ).order_by('-specificity_score').prefetch_related('conditions')
 
         trace.log("RESOLVER", f"Evaluating {len(rules)} rules for Contract {self.contract.contract_name}")

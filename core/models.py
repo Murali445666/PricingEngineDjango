@@ -123,6 +123,11 @@ class FeeScheduleRate(models.Model):
         db_table = 'fee_schedule_rates'
 
 class PricingRule(models.Model):
+    class RuleStatus(models.TextChoices):
+        DRAFT = 'DRAFT', 'Draft'
+        ACTIVE = 'ACTIVE', 'Active'
+        RETIRED = 'RETIRED', 'Retired'
+
     # Physical Table: pricing_rules
     rule_id = models.BigAutoField(primary_key=True)
     contract = models.ForeignKey(ProviderContract, on_delete=models.CASCADE, db_column='contract_id')
@@ -139,8 +144,14 @@ class PricingRule(models.Model):
     # The Critical "V2" Column
     specificity_score = models.IntegerField(default=0)
     
-    is_active = models.IntegerField(default=1) # Boolean in MySQL is TinyInt(1)
+    status = models.CharField(
+        max_length=20,
+        choices=RuleStatus.choices,
+        default=RuleStatus.DRAFT,
+        db_column='status',
+    )
     effective_start_date = models.DateField(default='1900-01-01')
+    effective_end_date = models.DateField(null=True, blank=True)
 
     # Helper Logic (Used by Django, ignored by SQL)
     def calculate_score(self):
@@ -172,6 +183,20 @@ class PricingRuleCondition(models.Model):
     class Meta:
         managed = True
         db_table = 'pricing_rule_conditions'
-    
-    # ... existing imports ...
+
+
+class RuleHistory(models.Model):
+    """Audit log for PricingRule status changes (Phase 3 Segment 4)."""
+    pricing_rule = models.ForeignKey(
+        PricingRule, on_delete=models.CASCADE, db_column='rule_id', related_name='history'
+    )
+    change_date = models.DateTimeField(auto_now_add=True)
+    previous_status = models.CharField(max_length=20, blank=True)
+    new_status = models.CharField(max_length=20)
+    change_reason = models.TextField(blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'rule_history'
+        ordering = ['-change_date']
 
