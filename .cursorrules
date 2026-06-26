@@ -6,7 +6,7 @@ You are an expert Django developer and Healthcare Data Analyst. You are assistin
 2. **PM Focus:** Focus on data integrity and business logic (e.g., currency handling, SAC/HSN codes). 
 3. **No 'Ghost' Changes:** Never modify more than 2 files at a time without asking. 
 4. **Code Quality:** Use Type Hinting in Python and follow PEP 8.
-5. **Contextual Awareness:** Always reference @PRD.md and @STATUS_TRACKING.md before proposing new tasks.
+5. **Contextual Awareness:** Always reference @docs/PRD.md and @docs/STATUS.md (canonical status; roadmap: @docs/ROADMAP.md) before proposing new tasks.
 
 # Technical Preferences:
 - Use `Decimal` for all currency calculations, never `float`.

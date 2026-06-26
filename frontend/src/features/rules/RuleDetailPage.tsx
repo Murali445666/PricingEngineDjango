@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { PageLayout, FormPanel, LoadingSpinner, ErrorState, DataTable, Select, StatusBadge } from '@/shared/ui'
 import { fetchRuleById, fetchRuleHistory, updateRuleStatus } from '@/services/ruleService'
+import { RuleSimulateConflictPanel } from './RuleSimulateConflictPanel'
 import type { Column } from '@/shared/ui'
 import type { PricingRuleCondition, RuleHistory, RuleStatus } from '@/types'
 
@@ -155,6 +156,33 @@ export function RuleDetailPage() {
               />
             </FormPanel>
           )}
+          <div className="mt-4">
+            <RuleSimulateConflictPanel
+              contractId={data.contract_id}
+              useDraftLineSimulation={data.status === 'DRAFT'}
+              buildDraftRule={() => ({
+                rule_id: data.rule_id,
+                rule_name: data.rule_name,
+                rule_type: data.rule_type,
+                methodology_code: data.methodology_code,
+                multiplier: data.multiplier,
+                flat_rate: data.flat_rate,
+                base_fee_schedule_id: data.base_fee_schedule_id ?? undefined,
+                conditions: (data.conditions ?? []).map((c) => ({
+                  attribute_name: c.attribute_name,
+                  attribute_value: c.attribute_value,
+                })),
+              })}
+              conditionsForConflicts={
+                (data.conditions ?? []).map((c) => ({
+                  attribute_name: c.attribute_name,
+                  operator: c.operator,
+                  attribute_value: c.attribute_value,
+                }))
+              }
+              excludeRuleId={data.rule_id}
+            />
+          </div>
           <FormPanel title="Audit History" className="mt-4">
             {historyLoading && (
               <div className="flex justify-center py-4">

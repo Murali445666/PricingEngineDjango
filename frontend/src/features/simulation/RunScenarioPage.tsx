@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { PageLayout, FormPanel, Button, Input, Select, LoadingSpinner, ErrorState } from '@/shared/ui'
+import { PageLayout, FormPanel, Button, Select, LoadingSpinner, ErrorState } from '@/shared/ui'
 import { fetchContracts } from '@/services/contractService'
 import { priceClaim } from '@/services/pricingService'
 import type { PriceClaimResponse, PriceClaimLine } from '@/services/pricingService'

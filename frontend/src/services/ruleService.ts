@@ -5,6 +5,8 @@ import type {
   RuleStatus,
   FeeSchedule,
   RuleCreatePayload,
+  RuleConditionRow,
+  RuleConflictItem,
 } from '@/types'
 
 export async function fetchRules(status?: RuleStatus): Promise<PricingRule[]> {
@@ -45,6 +47,26 @@ export async function updateRuleStatus(
 ): Promise<PricingRule> {
   const { data } = await apiClient.patch<PricingRule>(`/rules/${ruleId}/`, { status })
   return data
+}
+
+export async function checkRuleConflicts(
+  contractId: number,
+  conditions: RuleConditionRow[],
+  excludeRuleId?: number
+): Promise<RuleConflictItem[]> {
+  const { data } = await apiClient.post<{ conflicts: RuleConflictItem[] }>(
+    '/rules/check-conflicts/',
+    {
+      contract_id: contractId,
+      conditions: conditions.map((c) => ({
+        attribute_name: c.attribute_name,
+        operator: c.operator,
+        attribute_value: c.attribute_value,
+      })),
+      ...(excludeRuleId != null ? { exclude_rule_id: excludeRuleId } : {}),
+    }
+  )
+  return data.conflicts ?? []
 }
 
 // Mock for development

@@ -1,13 +1,19 @@
+import { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { PageLayout, DataTable, LoadingSpinner, ErrorState, StatusBadge } from '@/shared/ui'
 import { fetchContractById, fetchContractRules } from '@/services/contractService'
+import { ConflictWarningsPanel } from './ConflictWarningsPanel'
+import { ContractExplorerPanel } from './ContractExplorerPanel'
 import type { PricingRule } from '@/types'
 import type { Column } from '@/shared/ui'
+
+type ContractTab = 'overview' | 'explorer'
 
 export function ContractDetailPage() {
   const { id } = useParams<{ id: string }>()
   const contractId = id != null ? Number(id) : NaN
+  const [tab, setTab] = useState<ContractTab>('overview')
 
   const {
     data: contract,
@@ -86,20 +92,57 @@ export function ContractDetailPage() {
       )}
       {contract && rules && (
         <>
-          <div className="mb-4">
-            <Link
-              to={`/contracts/${contract.contract_id}/rules/new`}
-              className="inline-flex items-center rounded border border-primary-600 bg-white px-3 py-2 text-sm font-medium text-primary-600 hover:bg-primary-50"
+          <div className="mb-4 mt-2 flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+            <button
+              type="button"
+              onClick={() => setTab('overview')}
+              className={`rounded px-3 py-1.5 text-sm font-medium ${
+                tab === 'overview'
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
             >
-              Create New Rule
-            </Link>
+              Overview
+            </button>
+            <button
+              type="button"
+              onClick={() => setTab('explorer')}
+              className={`rounded px-3 py-1.5 text-sm font-medium ${
+                tab === 'explorer'
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
+            >
+              Explorer
+            </button>
           </div>
-          <DataTable
-            columns={columns}
-            data={rules}
-            keyExtractor={(row) => row.rule_id}
-            emptyMessage="No rules for this contract."
-          />
+
+          {tab === 'overview' && (
+            <>
+              <ConflictWarningsPanel contractId={contract.contract_id} />
+
+              <div className="mb-4 mt-6">
+                <Link
+                  to={`/contracts/${contract.contract_id}/rules/new`}
+                  className="inline-flex items-center rounded border border-primary-600 bg-white px-3 py-2 text-sm font-medium text-primary-600 hover:bg-primary-50"
+                >
+                  Create New Rule
+                </Link>
+              </div>
+              <DataTable
+                columns={columns}
+                data={rules}
+                keyExtractor={(row) => row.rule_id}
+                emptyMessage="No rules for this contract."
+              />
+            </>
+          )}
+
+          {tab === 'explorer' && (
+            <div className="mt-4">
+              <ContractExplorerPanel contractId={contract.contract_id} />
+            </div>
+          )}
         </>
       )}
     </PageLayout>

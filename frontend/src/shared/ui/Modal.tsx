@@ -6,9 +6,11 @@ interface ModalProps {
   title: string
   children: React.ReactNode
   footer?: React.ReactNode
+  /** e.g. max-w-3xl for wide content */
+  panelClassName?: string
 }
 
-export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, footer, panelClassName }: ModalProps) {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -29,7 +31,7 @@ export function Modal({ isOpen, onClose, title, children, footer }: ModalProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-slate-900/50" aria-hidden onClick={onClose} />
       <div
-        className="relative z-10 w-full max-w-lg rounded border border-slate-200 bg-white shadow-lg"
+        className={`relative z-10 w-full rounded border border-slate-200 bg-white shadow-lg ${panelClassName ?? 'max-w-lg'}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

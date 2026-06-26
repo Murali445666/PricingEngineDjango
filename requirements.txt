@@ -15,3 +15,7 @@ pymysql>=1.1.0
 cryptography>=41.0.0
 # Database (Optional - keeps it ready for Postgres, remove if using SQLite only)
 # psycopg2-binary>=2.9
+
+# Excel support for CMS reference data (DRG, APC, ASP)
+openpyxl>=3.1.0
+xlrd>=1.2.0,<2.0  # .xls only; for .xlsx use openpyxl

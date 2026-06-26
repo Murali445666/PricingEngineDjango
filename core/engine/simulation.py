@@ -23,6 +23,7 @@ class _ShadowRule:
     """Rule-like object for draft simulation. Loader and resolver use attribute access."""
     def __init__(self, contract: ProviderContract, payload: Dict[str, Any]):
         self.contract = contract
+        self.contract_id = contract.pk
         self.rule_id = int(payload.get('rule_id') or 0)
         self.rule_name = str(payload.get('rule_name') or 'Draft')
         self.rule_type = str(payload.get('rule_type') or 'BASE')
@@ -135,6 +136,6 @@ def run_line_simulation(
                 rule=shadow,
             )
 
-    # No draft: use normal engine (ACTIVE rules only)
-    from .orchestrator import PricingEngine
-    return PricingEngine().calculate_line(contract, request)
+    # No draft: use normal engine (ACTIVE rules only) via ClaimPricingService
+    from .service import ClaimPricingService
+    return ClaimPricingService().price_line(contract, request)

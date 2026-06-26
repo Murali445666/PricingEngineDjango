@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from core.views import pricing_sandbox
+from core.views import pricing_sandbox, ContractVersionWorkflowView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('core.api.urls')),
     path('sandbox/', pricing_sandbox, name='pricing-sandbox'),
+    path('contracts/<int:contract_id>/versions/<int:version_id>/ui/', ContractVersionWorkflowView.as_view(), name='contract-version-workflow'),
 ]

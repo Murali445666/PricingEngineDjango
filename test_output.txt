@@ -1,0 +1,2178 @@
+﻿python : Creating test database for alias 'default'...
+At C:\Users\Murali\AppData\Local\Temp\ps-script-1a3fd47b-4484-4ef0-b070-6be4fef360a8.ps1:105 char:1
++ python manage.py test 2>&1 | Out-File -FilePath test_output.txt -Enco ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Creating test d...as 'default'...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+2026-06-23 14:31:27,967 [INFO] request_timing path=/api/contracts/1/explorer/ method=GET status=200 duration_ms=19.72
+.2026-06-23 14:31:27,984 [INFO] request_timing path=/api/contracts/2/explorer/ method=GET status=200 duration_ms=12.03
+.2026-06-23 14:31:28,000 [INFO] request_timing path=/api/contracts/3/explorer/ method=GET status=200 duration_ms=12.42
+F2026-06-23 14:31:28,017 [INFO] request_timing path=/api/contracts/4/explorer/ method=GET status=200 duration_ms=11.78
+.2026-06-23 14:31:28,033 [INFO] request_timing path=/api/contracts/5/explorer/ method=GET status=200 duration_ms=10.45
+.2026-06-23 14:31:28,050 [INFO] request_timing path=/api/contracts/6/explorer/ method=GET status=200 duration_ms=11.14
+.2026-06-23 14:31:28,067 [INFO] request_timing path=/api/contracts/7/explorer/ method=GET status=200 duration_ms=12.09
+.2026-06-23 14:31:28,084 [INFO] request_timing path=/api/contracts/8/explorer/ method=GET status=200 duration_ms=11.78
+.2026-06-23 14:31:28,100 [INFO] request_timing path=/api/contracts/9/explorer/ method=GET status=200 duration_ms=11.50
+.2026-06-23 14:31:28,116 [INFO] request_timing path=/api/contracts/10/explorer/ method=GET status=200 duration_ms=10.87
+.2026-06-23 14:31:28,134 [INFO] request_timing path=/api/contracts/999999/explorer/ method=GET status=404 
+duration_ms=1.05
+.2026-06-23 14:31:28,150 [INFO] request_timing path=/api/contracts/12/explorer/ method=GET status=200 duration_ms=11.70
+....[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 22 | Version: 22
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=22 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 19 | Version: 19
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=19 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 20 | Version: 20
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=20 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 16 | Version: 16
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=16 claim_level_drg_enabled=True (raw=True)
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] DRG plugin present=True, invoking run()
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] after DRG plugin: drg_applied=True claim_total=12000.00000000
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 17 | Version: 17
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=17 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 18 | Version: 18
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=18 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 21 | Version: 21
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=21 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 15 | Version: 15
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=15 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 24 | Version: 24
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=24 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=41 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=41 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=41 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=41 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=41 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] mppr_definition_id=4 scope_count=1 scopes=[{'procedure_code': '99213', 
+'code_group_id': None}]
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] in_scope line line_index=0 procedure_code=99213 
+base_allowed_amount=150.000000 current_before=150.000000 pct=100.00 -> current_after=150.00
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] read_back line_states[0].current_allowed_amount=150.00
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] in_scope line line_index=1 procedure_code=99213 
+base_allowed_amount=150.000000 current_before=150.000000 pct=50.00 -> current_after=75.00
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] read_back line_states[1].current_allowed_amount=75.00
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] after phase: context.claim_total=225.00 line_states 
+amounts=[Decimal('150.00'), Decimal('75.00')]
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] sync line_results[0].allowed_amount: 150.000000 -> 150.00 (from 
+line_states[0].current_allowed_amount=150.00)
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] sync line_results[1].allowed_amount: 150.000000 -> 75.00 (from 
+line_states[1].current_allowed_amount=75.00)
+[DEBUG] core.engine.orchestrator: [CROSS_LINE] sync done: total_allowed=final_total_allowed=225.00
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=41 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 41 | Version: 41
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=41 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 42 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 43 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 44 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 45 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 46 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 47 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 48 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 49 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 50 | Version: N/A
+
+F[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 51 | Version: N/A
+
+F[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 52 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 53 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 54 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 55 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 56 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 57 | Version: N/A
+
+F[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 58 | Version: N/A
+
+.EEE....2026-06-23 14:31:29,767 [INFO] request_timing path=/api/contracts/66/conflicts/99999/resolve/ method=PATCH 
+status=404 duration_ms=1.99
+.2026-06-23 14:31:29,783 [INFO] request_timing path=/api/contracts/68/conflicts/14/resolve/ method=PATCH status=404 
+duration_ms=1.96
+.2026-06-23 14:31:29,783 [INFO] request_timing path=/api/contracts/69/conflicts/15/resolve/ method=PATCH status=200 
+duration_ms=4.08
+.2026-06-23 14:31:29,800 [INFO] request_timing path=/api/contracts/70/conflicts/16/resolve/ method=PATCH status=200 
+duration_ms=3.15
+.2026-06-23 14:31:29,816 [INFO] request_timing path=/api/contracts/99999/conflicts/ method=GET status=404 
+duration_ms=0.89
+.2026-06-23 14:31:29,816 [INFO] request_timing path=/api/contracts/72/conflicts/ method=GET status=200 duration_ms=1.92
+.2026-06-23 14:31:29,833 [INFO] request_timing path=/api/contracts/73/conflicts/ method=GET status=200 duration_ms=2.46
+.2026-06-23 14:31:29,833 [INFO] request_timing path=/api/contracts/75/conflicts/ method=GET status=200 duration_ms=1.51
+.2026-06-23 14:31:29,833 [INFO] request_timing path=/api/contracts/76/conflicts/ method=GET status=200 duration_ms=1.95
+.2026-06-23 14:31:29,869 [INFO] request_timing path=/api/contracts/ method=GET status=200 duration_ms=4.22
+.2026-06-23 14:31:29,884 [INFO] request_timing path=/api/contracts/ method=GET status=200 duration_ms=4.05
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 80 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 80 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+..........................2026-06-23 14:31:30,167 [INFO] request_timing path=/api/contract-versions/76/activate/ 
+method=POST status=400 duration_ms=2.27
+.2026-06-23 14:31:30,184 [INFO] request_timing path=/api/contract-versions/77/activate/ method=POST status=200 
+duration_ms=4.99
+.2026-06-23 14:31:30,198 [INFO] request_timing path=/api/contract-versions/99999/activate/ method=POST status=404 
+duration_ms=1.01
+.2026-06-23 14:31:30,200 [INFO] request_timing path=/api/contract-versions/82/archive/ method=POST status=400 
+duration_ms=2.02
+.2026-06-23 14:31:30,217 [INFO] request_timing path=/api/contract-versions/83/archive/ method=POST status=200 
+duration_ms=3.47
+.2026-06-23 14:31:30,233 [INFO] request_timing path=/api/contracts/111/version-audit/ method=GET status=200 
+duration_ms=5.38
+.2026-06-23 14:31:30,248 [INFO] request_timing path=/api/contract-versions/87/ method=GET status=200 duration_ms=3.78
+.........2026-06-23 14:31:30,333 [INFO] request_timing path=/api/contracts/119/methodologies/ method=POST status=400 
+duration_ms=1.33
+.2026-06-23 14:31:30,333 [INFO] request_timing path=/api/contracts/120/methodologies/ method=POST status=201 
+duration_ms=1.85
+.2026-06-23 14:31:30,348 [INFO] request_timing path=/api/contracts/121/methodologies/ method=POST status=201 
+duration_ms=2.42
+...................[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> 
+PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 122 | Version: 95
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=95 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 123 | Version: 96
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=96 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 124 | Version: 97
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=97 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 125 | Version: 98
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=98 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 126 | Version: 99
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=99 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 127 | Version: 100
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=100 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 128 | Version: 101
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=101 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 129 | Version: 102
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=102 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 130 | Version: 103
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=103 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 130 | Version: 103
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=103 claim_level_drg_enabled=False (raw=False)
+.............................[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 131 | Version: N/A
+
+2026-06-23 14:31:30,851 [INFO] request_timing path=/api/price-line/ method=POST status=200 duration_ms=4.67
+....2026-06-23 14:31:30,935 [INFO] request_timing path=/api/validate-contracts/bulk/ method=POST status=400 
+duration_ms=0.58
+.2026-06-23 14:31:30,950 [INFO] request_timing path=/api/validate-contracts/bulk/ method=POST status=200 
+duration_ms=8.75
+.2026-06-23 14:31:30,950 [INFO] request_timing path=/api/validate-contracts/bulk/ method=POST status=200 
+duration_ms=6.12
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 140 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 141 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 142 | Version: N/A
+
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 143 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 143 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+Found 322 test(s).
+System check identified no issues (0 silenced).
+[CONFIG] loaded 1 rules: rule_ids=[13]
+[CONFIG] loaded rule_id=13, rule_type='BASE', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[13]
+[CONFIG] loaded 1 rules: rule_ids=[10]
+[CONFIG] loaded rule_id=10, rule_type='BASE', conditions=[('procedure_code', 'EQ', '5121')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[10]
+[CONFIG] loaded 1 rules: rule_ids=[11]
+[CONFIG] loaded rule_id=11, rule_type='BASE', conditions=[('procedure_code', 'EQ', 'J0129')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[11]
+[CONFIG] loaded 1 rules: rule_ids=[7]
+[CONFIG] loaded rule_id=7, rule_type='BASE', conditions=[('procedure_code', 'EQ', '470')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[7]
+[CLAIM_DRG] applied: drg_code=470 base_rate=6000.00 weight=2.000000 claim_total=12000.00000000
+[CONFIG] loaded 1 rules: rule_ids=[8]
+[CONFIG] loaded rule_id=8, rule_type='BASE', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[8]
+[CONFIG] loaded 1 rules: rule_ids=[9]
+[CONFIG] loaded rule_id=9, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[9]
+[CONFIG] loaded 1 rules: rule_ids=[12]
+[CONFIG] loaded rule_id=12, rule_type='BASE', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[12]
+[CONFIG] loaded 1 rules: rule_ids=[6]
+[CONFIG] loaded rule_id=6, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[6]
+[CONFIG] loaded 1 rules: rule_ids=[17]
+[CONFIG] loaded rule_id=17, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[17]
+[CONFIG] loaded 3 rules: rule_ids=[36, 37, 38]
+[CONFIG] loaded rule_id=36, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=37, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] loaded rule_id=38, rule_type='BASE', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 3 rules, rule_ids=[36, 37, 38]
+[CONFIG] loaded 3 rules: rule_ids=[36, 37, 38]
+[CONFIG] loaded rule_id=36, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=37, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] loaded rule_id=38, rule_type='BASE', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 3 rules, rule_ids=[36, 37, 38]
+[CONFIG] loaded 3 rules: rule_ids=[36, 37, 38]
+[CONFIG] loaded rule_id=36, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=37, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] loaded rule_id=38, rule_type='BASE', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 3 rules, rule_ids=[36, 37, 38]
+[CONFIG] loaded 3 rules: rule_ids=[36, 37, 38]
+[CONFIG] loaded rule_id=36, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=37, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] loaded rule_id=38, rule_type='BASE', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 3 rules, rule_ids=[36, 37, 38]
+[CONFIG] loaded 3 rules: rule_ids=[36, 37, 38]
+[CONFIG] loaded rule_id=36, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=37, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] loaded rule_id=38, rule_type='BASE', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 3 rules, rule_ids=[36, 37, 38]
+[CONFIG] loaded 3 rules: rule_ids=[36, 37, 38]
+[CONFIG] loaded rule_id=36, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=37, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] loaded rule_id=38, rule_type='BASE', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 3 rules, rule_ids=[36, 37, 38]
+[CONFIG] loaded 3 rules: rule_ids=[36, 37, 38]
+[CONFIG] loaded rule_id=36, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=37, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] loaded rule_id=38, rule_type='BASE', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 3 rules, rule_ids=[36, 37, 38]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 1 rules: rule_ids=[192]
+[CONFIG] loaded rule_id=192, rule_type='BASE', conditions=[]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[192]
+[CONFIG] loaded 1 rules: rule_ids=[192]
+[CONFIG] loaded rule_id=192, rule_type='BASE', conditions=[]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[192]
+[CONFIG] loaded 1 rules: rule_ids=[194]
+[CONFIG] loaded rule_id=194, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[194]
+[CONFIG] loaded 1 rules: rule_ids=[195]
+[CONFIG] loaded rule_id=195, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[195]
+[CONFIG] loaded 1 rules: rule_ids=[196]
+[CONFIG] loaded rule_id=196, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[196]
+[CONFIG] loaded 1 rules: rule_ids=[197]
+[CONFIG] loaded rule_id=197, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[197]
+[CONFIG] loaded 1 rules: rule_ids=[198]
+[CONFIG] loaded rule_id=198, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[198]
+[CONFIG] loaded 1 rules: rule_ids=[199]
+[CONFIG] loaded rule_id=199, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[199]
+[CONFIG] loaded 1 rules: rule_ids=[200]
+[CONFIG] loaded rule_id=200, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[200]
+[CONFIG] loaded 1 rules: rule_ids=[201]
+[CONFIG] loaded rule_id=201, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[201]
+[CONFIG] loaded 1 rules: rule_ids=[202]
+[CONFIG] loaded rule_id=202, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[202]
+[CONFIG] loaded 1 rules: rule_ids=[202]
+[CONFIG] loaded rule_id=202, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[202]
+[CONFIG] loaded 1 rules: rule_ids=[209]
+[CONFIG] loaded rule_id=209, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[209]
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 144 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 144 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 145 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 146 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 146 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 147 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 148 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 149 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 150 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 150 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.2026-06-23 14:31:31,267 [INFO] request_timing path=/api/contracts/151/outlier-rules/ method=POST status=400 
+duration_ms=1.03
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 152 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 152 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 153 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 153 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 154 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 154 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 155 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 156 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 156 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 157 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 157 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 158 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 159 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 160 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 160 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+......[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> 
+PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 166 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 167 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+..[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:31,751 [INFO] request_timing path=/api/price-claim/ method=POST status=200 duration_ms=9.18
+.2026-06-23 14:31:31,784 [INFO] request_timing path=/api/price-claim/ method=POST status=404 duration_ms=1.36
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 172 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 172 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:31,833 [INFO] request_timing path=/api/price-claim/ method=POST status=200 duration_ms=11.87
+.2026-06-23 14:31:31,884 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=400 duration_ms=0.72
+.2026-06-23 14:31:31,917 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=404 duration_ms=1.19
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 175 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 175 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:31,967 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=200 duration_ms=13.38
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 176 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:32,017 [INFO] request_timing path=/api/price-claim/ method=POST status=200 duration_ms=10.61
+[CONFIG] loaded 1 rules: rule_ids=[210]
+[CONFIG] loaded rule_id=210, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[210]
+[CONFIG] loaded 1 rules: rule_ids=[211]
+[CONFIG] loaded rule_id=211, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[211]
+[CONFIG] loaded 1 rules: rule_ids=[212]
+[CONFIG] loaded rule_id=212, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[212]
+[CONFIG] loaded 1 rules: rule_ids=[213]
+[CONFIG] loaded rule_id=213, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[213]
+[CONFIG] loaded 1 rules: rule_ids=[214]
+[CONFIG] loaded rule_id=214, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[214]
+[CONFIG] loaded 1 rules: rule_ids=[215]
+[CONFIG] loaded rule_id=215, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[215]
+[CONFIG] loaded 1 rules: rule_ids=[216]
+[CONFIG] loaded rule_id=216, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[216]
+[CONFIG] loaded 1 rules: rule_ids=[218]
+[CONFIG] loaded rule_id=218, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[218]
+[CONFIG] loaded 1 rules: rule_ids=[219]
+[CONFIG] loaded rule_id=219, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[219]
+[CONFIG] loaded 1 rules: rule_ids=[220]
+[CONFIG] loaded rule_id=220, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[220]
+[CONFIG] loaded 1 rules: rule_ids=[221]
+[CONFIG] loaded rule_id=221, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[221]
+[CONFIG] loaded 1 rules: rule_ids=[222]
+[CONFIG] loaded rule_id=222, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[222]
+[CONFIG] loaded 1 rules: rule_ids=[223]
+[CONFIG] loaded rule_id=223, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[223]
+[CONFIG] loaded 1 rules: rule_ids=[224]
+[CONFIG] loaded rule_id=224, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[224]
+[CONFIG] loaded 1 rules: rule_ids=[225]
+[CONFIG] loaded rule_id=225, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[225]
+[CONFIG] loaded 1 rules: rule_ids=[226]
+[CONFIG] loaded rule_id=226, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[226]
+[CONFIG] loaded 1 rules: rule_ids=[232]
+[CONFIG] loaded rule_id=232, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[232]
+[CONFIG] loaded 1 rules: rule_ids=[233]
+[CONFIG] loaded rule_id=233, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[233]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[236, 237, 238, 239, 240, 241, 242, 243, 244]
+[CONFIG] loaded rule_id=236, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=237, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=238, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=239, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=240, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=241, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=242, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=243, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=244, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[236, 237, 238, 240, 241, 242, 243, 244]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[239]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[254, 255, 256, 257, 258, 259, 260, 261, 262]
+[CONFIG] loaded rule_id=254, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=255, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=256, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=257, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=258, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=259, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=260, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=261, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=262, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[254, 255, 256, 258, 259, 260, 261, 262]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[257]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[281, 282, 283, 284, 285, 286, 287, 288, 289]
+[CONFIG] loaded rule_id=281, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=282, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=283, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=284, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=285, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=286, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=287, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=288, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=289, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[281, 282, 283, 285, 286, 287, 288, 289]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[284]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[290, 291, 292, 293, 294, 295, 296, 297, 298]
+[CONFIG] loaded rule_id=290, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=291, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=292, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=293, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=294, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=295, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=296, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=297, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=298, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[290, 291, 292, 294, 295, 296, 297, 298]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[293]
+[CONFIG] loaded 9 rules: rule_ids=[290, 291, 292, 293, 294, 295, 296, 297, 298]
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 176 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:32,033 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=200 duration_ms=14.09
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 177 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 177 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:32,084 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=200 duration_ms=15.60
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 178 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 178 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 178 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:32,150 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=200 duration_ms=19.08
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 179 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 179 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 179 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 180 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 180 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 180 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+..[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 182 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 182 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 182 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 182 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 182 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 182 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[CONFIG] loaded rule_id=290, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=291, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=292, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=293, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=294, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=295, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=296, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=297, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=298, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[290, 291, 292, 294, 295, 296, 297, 298]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[293]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[299, 300, 301, 302, 303, 304, 305, 306, 307]
+[CONFIG] loaded rule_id=299, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=300, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=301, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=302, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=303, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=304, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=305, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=306, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=307, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[299, 300, 301, 303, 304, 305, 306, 307]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[302]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[308, 309, 310, 311, 312, 313, 314, 315, 316]
+[CONFIG] loaded rule_id=308, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=309, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=310, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=311, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=312, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=313, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=314, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=315, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=316, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[308, 309, 310, 312, 313, 314, 315, 316]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[311]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[317, 318, 319, 320, 321, 322, 323, 324, 325]
+[CONFIG] loaded rule_id=317, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=318, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=319, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=320, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=321, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=322, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=323, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=324, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=325, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[317, 318, 319, 321, 322, 323, 324, 325]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[320]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[326, 327, 328, 329, 330, 331, 332, 333, 334]
+[CONFIG] loaded rule_id=326, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=327, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=328, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=329, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=330, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=331, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=332, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=333, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=334, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[326, 327, 328, 330, 331, 332, 333, 334]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[329]
+[CONFIG] loaded 9 rules: rule_ids=[326, 327, 328, 329, 330, 331, 332, 333, 334]
+[CONFIG] loaded rule_id=326, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=327, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=328, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=329, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=330, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=331, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=332, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=333, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=334, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[326, 327, 328, 330, 331, 332, 333, 334]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[329]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[344, 345, 346, 347, 348, 349, 350, 351, 352]
+[CONFIG] loaded rule_id=344, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=345, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=346, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=347, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=348, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=349, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=350, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=351, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=352, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[344, 345, 346, 348, 349, 350, 351, 352]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[347]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[353, 354, 355, 356, 357, 358, 359, 360, 361]
+[CONFIG] loaded rule_id=353, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=354, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=355, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 183 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 183 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 184 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 184 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 185 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 185 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 185 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.2026-06-23 14:31:32,567 [INFO] request_timing path=/api/claims/ method=POST status=201 duration_ms=7.70
+.2026-06-23 14:31:32,583 [INFO] request_timing path=/api/claims/ method=POST status=201 duration_ms=5.85
+......[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> 
+PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 190 | Version: 108
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=108 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 191 | Version: 109
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=109 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 192 | Version: 110
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=110 claim_level_drg_enabled=False (raw=False)
+.......[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 193 | Version: N/A
+
+....................[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> 
+PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 198 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+.....2026-06-23 14:31:33,017 [INFO] request_timing path=/api/resolve-context/ method=GET status=200 duration_ms=9.58
+.2026-06-23 14:31:33,050 [INFO] request_timing path=/api/members/MEM-S4-001/enrollment/ method=GET status=200 
+duration_ms=5.63
+.2026-06-23 14:31:33,050 [INFO] request_timing path=/api/products/ method=GET status=200 duration_ms=1.46
+.2026-06-23 14:31:33,067 [INFO] request_timing path=/api/providers/ method=GET status=200 duration_ms=1.31
+.2026-06-23 14:31:33,083 [INFO] request_timing path=/api/providers/ method=GET status=200 duration_ms=1.23
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code='' -> PricingInput.revenue_code=''
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 208 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:33,117 [INFO] request_timing path=/api/reprice-claim-batch/ method=POST status=200 duration_ms=21.41
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code='' -> PricingInput.revenue_code=''
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 209 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code='' -> PricingInput.revenue_code=''
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 209 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:33,166 [INFO] request_timing path=/api/reprice-claim-batch/ method=POST status=200 duration_ms=39.35
+.2026-06-23 14:31:33,184 [INFO] request_timing path=/api/reprice-claim/ method=POST status=400 duration_ms=0.75
+.2026-06-23 14:31:33,200 [INFO] request_timing path=/api/reprice-claim/ method=POST status=400 duration_ms=0.51
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code='' -> PricingInput.revenue_code=''
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 212 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:33,235 [INFO] request_timing path=/api/reprice-claim/ method=POST status=200 duration_ms=20.36
+.2026-06-23 14:31:33,250 [INFO] request_timing path=/api/reprice-claim/ method=POST status=200 duration_ms=2.47
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 214 | Version: 111
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=111 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:33,284 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=200 duration_ms=16.07
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 215 | Version: 112
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=112 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:33,316 [INFO] request_timing path=/api/price-claim-simulate/ method=POST status=200 duration_ms=15.35
+.2026-06-23 14:31:33,334 [INFO] request_timing path=/api/price-claim-simulate/ method=POST status=400 duration_ms=2.16
+..[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 218 | Version: 115
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=115 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 219 | Version: 116
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=116 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:33,417 [INFO] request_timing path=/api/price-claim-simulate/ method=POST status=200 duration_ms=17.09
+.E[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 221 | Version: 118
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=118 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:33,468 [INFO] request_timing path=/api/price-claim/ method=POST status=200 duration_ms=14.96
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 222 | Version: 119
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=119 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:33,500 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=200 duration_ms=15.69
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 223 | Version: 120
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=120 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:33,534 [INFO] request_timing path=/api/price-claim/ method=POST status=200 duration_ms=14.73
+.2026-06-23 14:31:34,567 [INFO] request_timing path=/contracts/224/versions/121/ui/ method=GET status=200 
+duration_ms=18.60
+2026-06-23 14:31:34,583 [INFO] request_timing path=/api/contract-versions/121/activate/ method=POST status=200 
+duration_ms=8.13
+.2026-06-23 14:31:35,617 [INFO] request_timing path=/contracts/225/versions/122/ui/ method=GET status=200 
+duration_ms=5.28
+.2026-06-23 14:31:36,650 [INFO] request_timing path=/contracts/226/versions/123/ui/ method=GET status=200 
+duration_ms=5.56
+2026-06-23 14:31:36,667 [INFO] request_timing path=/api/contract-versions/123/archive/ method=POST status=200 
+duration_ms=6.20
+.2026-06-23 14:31:37,694 [INFO] request_timing path=/contracts/227/versions/124/ui/ method=GET status=200 
+duration_ms=5.85
+.2026-06-23 14:31:38,733 [INFO] request_timing path=/contracts/228/versions/125/ui/ method=GET status=200 
+duration_ms=6.61
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 228 | Version: 125
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=125 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 228 | Version: 126
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=126 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:38,767 [INFO] request_timing path=/contracts/228/versions/125/ui/ method=POST status=200 
+duration_ms=37.38
+.2026-06-23 14:31:39,786 [INFO] request_timing path=/contracts/229/versions/127/ui/ method=GET status=200 
+duration_ms=5.56
+.2026-06-23 14:31:40,370 [INFO] request_timing path=/contracts/230/versions/128/ui/ method=GET status=302 
+duration_ms=52.83
+.2026-06-23 14:31:41,367 [INFO] request_timing path=/contracts/231/versions/129/ui/ method=GET status=302 
+duration_ms=1.67
+.2026-06-23 14:31:42,395 [INFO] request_timing path=/contracts/232/versions/130/ui/ method=GET status=200 
+duration_ms=5.29
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 232 | Version: 130
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=130 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:42,418 [INFO] request_timing path=/contracts/232/versions/130/ui/ method=POST status=200 
+duration_ms=21.65
+[CONFIG] loaded rule_id=356, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=357, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=358, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=359, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=360, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=361, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[353, 354, 355, 357, 358, 359, 360, 361]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[356]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[362, 363, 364, 365, 366, 367, 368, 369, 370]
+[CONFIG] loaded rule_id=362, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=363, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=364, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=365, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=366, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=367, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=368, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=369, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=370, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[362, 363, 364, 366, 367, 368, 369, 370]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[365]
+[CONFIG] loaded 9 rules: rule_ids=[362, 363, 364, 365, 366, 367, 368, 369, 370]
+[CONFIG] loaded rule_id=362, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=363, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=364, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=365, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=366, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=367, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=368, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=369, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=370, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[362, 363, 364, 366, 367, 368, 369, 370]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[365]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[371, 372, 373, 374, 375, 376, 377, 378, 379]
+[CONFIG] loaded rule_id=371, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=372, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=373, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=374, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=375, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=376, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=377, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=378, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=379, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[371, 372, 373, 375, 376, 377, 378, 379]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[374]
+[CONFIG] loaded 1 rules: rule_ids=[380]
+[CONFIG] loaded rule_id=380, rule_type='BASE', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[380]
+[CONFIG] loaded 1 rules: rule_ids=[381]
+[CONFIG] loaded rule_id=381, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[381]
+[CONFIG] loaded 1 rules: rule_ids=[382]
+[CONFIG] loaded rule_id=382, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[382]
+[CONFIG] loaded 1 rules: rule_ids=[388]
+[CONFIG] loaded rule_id=388, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[388]
+[CONFIG] loaded 1 rules: rule_ids=[398]
+[CONFIG] loaded rule_id=398, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[398]
+[CONFIG] loaded 1 rules: rule_ids=[399]
+[CONFIG] loaded rule_id=399, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[399]
+[CONFIG] loaded 1 rules: rule_ids=[399]
+[CONFIG] loaded rule_id=399, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[399]
+[CONFIG] loaded 1 rules: rule_ids=[402]
+[CONFIG] loaded rule_id=402, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[402]
+[CONFIG] loaded 1 rules: rule_ids=[404]
+[CONFIG] loaded rule_id=404, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[404]
+[SIMULATE] parsed request line[0] revenue_code=None (keys=['procedure_code', 'billed_amount', 'units', 'modifiers'])
+[SIMULATE] claim line DTO line[0] revenue_code=None (from validated_data)
+[CONFIG] loaded 1 rules: rule_ids=[405]
+[CONFIG] loaded rule_id=405, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[405]
+[SIMULATE] parsed request line[0] revenue_code=None (keys=['procedure_code', 'billed_amount', 'units', 'modifiers'])
+[SIMULATE] claim line DTO line[0] revenue_code=None (from validated_data)
+[CONFIG] loaded 1 rules: rule_ids=[408]
+[CONFIG] loaded rule_id=408, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[408]
+[SIMULATE] parsed request line[0] revenue_code=None (keys=['procedure_code', 'billed_amount', 'units', 'modifiers'])
+[SIMULATE] claim line DTO line[0] revenue_code=None (from validated_data)
+[CONFIG] loaded 1 rules: rule_ids=[409]
+[CONFIG] loaded rule_id=409, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[409]
+[CONFIG] loaded 1 rules: rule_ids=[411]
+[CONFIG] loaded rule_id=411, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[411]
+[CONFIG] loaded 1 rules: rule_ids=[412]
+[CONFIG] loaded rule_id=412, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[412]
+[CONFIG] loaded 1 rules: rule_ids=[413]
+[CONFIG] loaded rule_id=413, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[413]
+[CONFIG] loaded 1 rules: rule_ids=[414]
+[CONFIG] loaded rule_id=414, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[414]
+[CONFIG] loaded 1 rules: rule_ids=[414]
+[CONFIG] loaded rule_id=414, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[414]
+[CONFIG] loaded 1 rules: rule_ids=[415]
+[CONFIG] loaded rule_id=415, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[415]
+[SIMULATE] parsed request line[0] revenue_code=None (keys=['procedure_code', 'billed_amount', 'units', 'modifiers'])
+[SIMULATE] claim line DTO line[0] revenue_code=None (from validated_data)
+[CONFIG] loaded 1 rules: rule_ids=[416]
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: STAGED | Contract: 233 | Version: 131
+
+[DEBUG] core.engine.orchestrator: 
+--- DEBUG BASE STAGE ---
+[DEBUG] core.engine.orchestrator: Rules found by resolver: 1
+[DEBUG] core.engine.orchestrator:  -> Rule ID: 416 | Type: BASE | Methodology: PCT_BILLED
+[DEBUG] core.engine.orchestrator: ---------------------------
+
+[DEBUG] core.engine.orchestrator: 
+--- DEBUG ADJUSTMENT STAGE ---
+[DEBUG] core.engine.orchestrator: Rules found by resolver: 0
+[DEBUG] core.engine.orchestrator: ---------------------------
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=131 claim_level_drg_enabled=False (raw=False)
+2026-06-23 14:31:42,450 [INFO] request_timing path=/api/price-claim-simulate/ method=POST status=200 duration_ms=19.80
+......[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> 
+PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 237 | Version: 135
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 237 | Version: 135
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=135 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 237 | Version: 135
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=135 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 237 | Version: 135
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 237 | Version: 135
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=135 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 238 | Version: 136
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=136 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 238 | Version: 136
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=136 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 238 | Version: 136
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=136 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 239 | Version: 137
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=137 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 239 | Version: 137
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=137 claim_level_drg_enabled=False (raw=False)
+[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 239 | Version: 137
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=137 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 240 | Version: 138
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 240 | Version: 138
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=138 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 241 | Version: 139
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=139 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 242 | Version: 140
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=140 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 243 | Version: 141
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=141 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 244 | Version: 142
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=142 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 245 | Version: 143
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=143 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 246 | Version: 144
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=144 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 247 | Version: 145
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=145 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 248 | Version: 146
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=146 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 249 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:42,966 [INFO] request_timing path=/api/price-claim/ method=POST status=200 duration_ms=10.76
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 250 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:43,016 [INFO] request_timing path=/api/price-claim/ method=POST status=200 duration_ms=11.67
+[CONFIG] loaded rule_id=416, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[416]
+[RESOLVER] resolve_for_stage(BASE): 1 candidate rules rule_ids=[416] (before _matches)
+[RESOLVER] line_ctx keys: ['procedure_code', 'billed_amount', 'units', 'claim_type', 'modifiers_count', 'revenue_code', 'base_allowed_amount', 'current_allowed_amount'] | revenue_code='' | base_allowed_amount=0 | current_allowed_amount=0.00
+[RESOLVER] request.revenue_code=None (PricingInput)
+[RESOLVER] MATCH rule_id=416 | Pct staged | type=BASE | methodology=PCT_BILLED
+[RESOLVER] resolve_for_stage(BASE): returning 1 rules after conditions
+
+[RESOLVER] resolve_for_stage(ADJUSTMENT): 0 candidate rules rule_ids=[] (before _matches)
+[RESOLVER] line_ctx keys: ['procedure_code', 'billed_amount', 'units', 'claim_type', 'modifiers_count', 'revenue_code', 'base_allowed_amount', 'current_allowed_amount'] | revenue_code='' | base_allowed_amount=80.000000 | current_allowed_amount=80.000000
+[RESOLVER] request.revenue_code=None (PricingInput)
+[RESOLVER] resolve_for_stage(ADJUSTMENT): returning 0 rules after conditions
+
+[CONFIG] loaded 1 rules: rule_ids=[418]
+[CONFIG] loaded rule_id=418, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[418]
+[RESOLVER] resolve_for_stage(BASE): 1 candidate rules rule_ids=[418] (before _matches)
+[RESOLVER] request.revenue_code=None (PricingInput)
+[RESOLVER] MATCH rule_id=418 | Tier PPO rule | type=BASE | methodology=FLAT_RATE
+[RESOLVER] resolve_for_stage(BASE): returning 1 rules after conditions
+
+[CONFIG] loaded 1 rules: rule_ids=[419]
+[CONFIG] loaded rule_id=419, rule_type='BASE', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] rules_by_stage[BASE]: 1 rules, rule_ids=[419]
+[RESOLVER] resolve_for_stage(BASE): 0 candidate rules rule_ids=[] (before _matches)
+[RESOLVER] request.revenue_code=None (PricingInput)
+[RESOLVER] resolve_for_stage(BASE): returning 0 rules after conditions
+
+[CONFIG] loaded 2 rules: rule_ids=[420, 421]
+[CONFIG] loaded rule_id=420, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=421, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[420, 421]
+[CONFIG] loaded 2 rules: rule_ids=[422, 423]
+[CONFIG] loaded rule_id=422, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=423, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[422, 423]
+[CONFIG] loaded 2 rules: rule_ids=[424, 425]
+[CONFIG] loaded rule_id=424, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=425, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[424, 425]
+[CONFIG] loaded 2 rules: rule_ids=[426, 427]
+[CONFIG] loaded rule_id=426, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=427, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[426, 427]
+[CONFIG] loaded 2 rules: rule_ids=[428, 429]
+[CONFIG] loaded rule_id=428, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=429, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[428, 429]
+[CONFIG] loaded 2 rules: rule_ids=[430, 431]
+[CONFIG] loaded rule_id=430, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=431, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[430, 431]
+[CONFIG] loaded 2 rules: rule_ids=[432, 433]
+[CONFIG] loaded rule_id=432, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=433, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[432, 433]
+[CONFIG] loaded 2 rules: rule_ids=[434, 435]
+[CONFIG] loaded rule_id=434, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=435, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[434, 435]
+[CONFIG] loaded 2 rules: rule_ids=[436, 437]
+[CONFIG] loaded rule_id=436, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=437, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[436, 437]
+[CONFIG] loaded 2 rules: rule_ids=[438, 439]
+[CONFIG] loaded rule_id=438, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=439, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[438, 439]
+[CONFIG] loaded 2 rules: rule_ids=[440, 441]
+[CONFIG] loaded rule_id=440, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=441, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[440, 441]
+[CONFIG] loaded 2 rules: rule_ids=[442, 443]
+[CONFIG] loaded rule_id=442, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=443, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[442, 443]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[444, 445, 446, 447, 448, 449, 450, 451, 452]
+[CONFIG] loaded rule_id=444, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=445, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=446, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=447, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=448, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=449, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=450, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=451, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=452, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[444, 445, 446, 448, 449, 450, 451, 452]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[447]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[453, 454, 455, 456, 457, 458, 459, 460, 461]
+[CONFIG] loaded rule_id=453, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=454, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=455, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+[CONFIG] loaded rule_id=456, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=457, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=458, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=459, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=460, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=461, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[453, 454, 455, 457, 458, 459, 460, 461]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[456]
+≡ƒÅù∩╕Å  Building Full Matrix Test Data...
+Γ£à Matrix Data Seeded.
+[CONFIG] loaded 9 rules: rule_ids=[462, 463, 464, 465, 466, 467, 468, 469, 470]
+[CONFIG] loaded rule_id=462, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=463, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] loaded rule_id=464, rule_type='', conditions=[('procedure_code', 'EQ', '29806')]
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 251 | Version: N/A
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=None claim_level_drg_enabled=False (raw='MISSING')
+2026-06-23 14:31:43,066 [INFO] request_timing path=/api/price-claims-bulk/ method=POST status=200 duration_ms=12.49
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 252 | Version: 147
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 252 | Version: 147
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=147 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 253 | Version: 148
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=148 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 254 | Version: 149
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=149 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 255 | Version: 150
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=150 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 256 | Version: 151
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 256 | Version: 151
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=151 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 257 | Version: 152
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=152 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 258 | Version: 153
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=153 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 259 | Version: 154
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=154 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 260 | Version: 155
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 260 | Version: 155
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=155 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 261 | Version: 156
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 261 | Version: 156
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=156 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 262 | Version: 157
+
+[DEBUG] core.engine.orchestrator: [ORCH] line[1] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 262 | Version: 157
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=157 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 263 | Version: 158
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=158 claim_level_drg_enabled=False (raw=False)
+.[DEBUG] core.engine.orchestrator: [ORCH] line[0] ClaimLineInput.revenue_code=None -> PricingInput.revenue_code=None
+[DEBUG] core.engine.orchestrator: 
+[!] ENGINE STARTING - Mode: LEGACY | Contract: 264 | Version: 159
+
+[DEBUG] core.engine.orchestrator: [CLAIM_METHOD] version_id=159 claim_level_drg_enabled=False (raw=False)
+.
+======================================================================
+ERROR: test_apc_01_allowed_amount (tests.test_12_apc.TestAPCPricing.test_apc_01_allowed_amount)
+APC: relative_weight * conversion_factor * units.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.DataError: (1264, "Out of range value for column 'multiplier' at row 1")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_12_apc.py", line 51, in setUp
+    rule = PricingRule.objects.create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+669, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 874, 
+in save
+    self.save_base(
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 966, 
+in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1220, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\sql\compiler.py", 
+line 1925, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\utils.py", line 94, in 
+__exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.DataError: (1264, "Out of range value for column 'multiplier' at row 1")
+
+======================================================================
+ERROR: test_apc_02_units (tests.test_12_apc.TestAPCPricing.test_apc_02_units)
+APC: multiple units.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.DataError: (1264, "Out of range value for column 'multiplier' at row 1")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_12_apc.py", line 51, in setUp
+    rule = PricingRule.objects.create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+669, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 874, 
+in save
+    self.save_base(
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 966, 
+in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1220, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\sql\compiler.py", 
+line 1925, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\utils.py", line 94, in 
+__exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.DataError: (1264, "Out of range value for column 'multiplier' at row 1")
+
+======================================================================
+ERROR: test_apc_03_no_apc_found (tests.test_12_apc.TestAPCPricing.test_apc_03_no_apc_found)
+APC: unknown procedure code returns NO_APC_FOUND and zero amount.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.DataError: (1264, "Out of range value for column 'multiplier' at row 1")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_12_apc.py", line 51, in setUp
+    rule = PricingRule.objects.create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+669, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 874, 
+in save
+    self.save_base(
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 966, 
+in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1220, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\sql\compiler.py", 
+line 1925, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\utils.py", line 94, in 
+__exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.DataError: (1264, "Out of range value for column 'multiplier' at row 1")
+
+======================================================================
+ERROR: test_wrong_version_for_contract_returns_400 
+(tests.test_step13_simulation.TestSimulateVersionMismatch.test_wrong_version_for_contract_returns_400)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.IntegrityError: (1062, "Duplicate entry 'SIM-PAYER' for key 'provider_organizations.PRIMARY'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_step13_simulation.py", line 252, in setUp
+    self.other_contract, self.other_version = _make_contract_and_version(
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_step13_simulation.py", line 34, in 
+_make_contract_and_version
+    payer = ProviderOrganization.objects.create(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+669, in create
+    obj.save(force_insert=True, using=self.db)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 874, 
+in save
+    self.save_base(
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 966, 
+in save_base
+    updated = self._save_table(
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1169, in _save_table
+    results = self._do_insert(
+              ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\base.py", line 
+1220, in _do_insert
+    return manager._insert(
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\manager.py", line 
+87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\query.py", line 
+1918, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\models\sql\compiler.py", 
+line 1925, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\utils.py", line 94, in 
+__exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\utils.py", line 
+105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\django\db\backends\mysql\base.py", 
+line 78, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 153, in 
+execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\cursors.py", line 322, in 
+_query
+    conn.query(q)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 563, 
+in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 825, 
+in _read_query_result
+    result.read()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 1199, 
+in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\connections.py", line 775, 
+in _read_packet
+    packet.raise_for_error()
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\protocol.py", line 219, in 
+raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "C:\Users\Murali\AppData\Local\Programs\Python\Python312\Lib\site-packages\pymysql\err.py", line 150, in 
+raise_mysql_exception
+    raise errorclass(errno, errval)
+django.db.utils.IntegrityError: (1062, "Duplicate entry 'SIM-PAYER' for key 'provider_organizations.PRIMARY'")
+
+======================================================================
+FAIL: test_explorer_includes_cap_floors 
+(core.tests.test_contract_explorer.ContractExplorerAPITests.test_explorer_includes_cap_floors)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\core\tests\test_contract_explorer.py", line 160, in 
+test_explorer_includes_cap_floors
+    self.assertEqual(len(ver["cap_floors"]), 1)
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_drg_01_base_weight (tests.test_05_drg.TestDRGPricing.test_drg_01_base_weight)
+DRG-01: DRG Base Rate * Weight
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_05_drg.py", line 12, in test_drg_01_base_weight
+    self.assertEqual(price, Decimal('15000.00'))
+AssertionError: Decimal('0.00') != Decimal('15000.00')
+
+======================================================================
+FAIL: test_drg_02_low_weight (tests.test_05_drg.TestDRGPricing.test_drg_02_low_weight)
+DRG-02: Low weight DRG calculation
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_05_drg.py", line 20, in test_drg_02_low_weight
+    self.assertEqual(price, Decimal('4800.00'))
+AssertionError: Decimal('0.00') != Decimal('4800.00')
+
+======================================================================
+FAIL: test_err_01_missing_rule (tests.test_10_failure.TestFailureModes.test_err_01_missing_rule)
+ERR-01: Code with no Fee Schedule rate should return Error
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Murali\Portolfio projects\PricingEngineDjango\tests\test_10_failure.py", line 15, in 
+test_err_01_missing_rule
+    self.assertEqual(method, 'DENIED_CALCULATION_ERROR')
+AssertionError: '' != 'DENIED_CALCULATION_ERROR'
++ DENIED_CALCULATION_ERROR
+
+
+----------------------------------------------------------------------
+Ran 322 tests in 15.573s
+
+FAILED (failures=4, errors=4)
+Destroying test database for alias 'default'...
+
+[CONFIG] loaded rule_id=465, rule_type='STOP_LOSS', conditions=[('procedure_code', 'EQ', 'SL-TRIG')]
+[CONFIG] loaded rule_id=466, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-470')]
+[CONFIG] loaded rule_id=467, rule_type='', conditions=[('procedure_code', 'EQ', 'DRG-194')]
+[CONFIG] loaded rule_id=468, rule_type='', conditions=[('procedure_code', 'EQ', '0120')]
+[CONFIG] loaded rule_id=469, rule_type='', conditions=[('procedure_code', 'EQ', '00100')]
+[CONFIG] loaded rule_id=470, rule_type='', conditions=[('procedure_code', 'EQ', '99100')]
+[CONFIG] rules_by_stage[BASE]: 8 rules, rule_ids=[462, 463, 464, 466, 467, 468, 469, 470]
+[CONFIG] rules_by_stage[STOP_LOSS]: 1 rules, rule_ids=[465]
+[CONFIG] loaded 2 rules: rule_ids=[471, 472]
+[CONFIG] loaded rule_id=471, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=472, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[471, 472]
+[CONFIG] loaded 2 rules: rule_ids=[473, 474]
+[CONFIG] loaded rule_id=473, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=474, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[473, 474]
+[CONFIG] loaded 2 rules: rule_ids=[473, 474]
+[CONFIG] loaded rule_id=473, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=474, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[473, 474]
+[CONFIG] loaded 2 rules: rule_ids=[475, 476]
+[CONFIG] loaded rule_id=475, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=476, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[475, 476]
+[CONFIG] loaded 2 rules: rule_ids=[475, 476]
+[CONFIG] loaded rule_id=475, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=476, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[475, 476]
+[CONFIG] loaded 2 rules: rule_ids=[477, 478]
+[CONFIG] loaded rule_id=477, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=478, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[477, 478]
+[CONFIG] loaded 2 rules: rule_ids=[479, 480]
+[CONFIG] loaded rule_id=479, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=480, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[479, 480]
+[CONFIG] loaded 2 rules: rule_ids=[481, 482]
+[CONFIG] loaded rule_id=481, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=482, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[481, 482]
+[CONFIG] loaded 2 rules: rule_ids=[483, 484]
+[CONFIG] loaded rule_id=483, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=484, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[483, 484]
+[CONFIG] loaded 2 rules: rule_ids=[485, 486]
+[CONFIG] loaded rule_id=485, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=486, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[485, 486]
+[CONFIG] loaded 2 rules: rule_ids=[487, 488]
+[CONFIG] loaded rule_id=487, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=488, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[487, 488]
+[CONFIG] loaded 2 rules: rule_ids=[489, 490]
+[CONFIG] loaded rule_id=489, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=490, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[489, 490]
+[CONFIG] loaded 2 rules: rule_ids=[491, 492]
+[CONFIG] loaded rule_id=491, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=492, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[491, 492]
+[CONFIG] loaded 2 rules: rule_ids=[493, 494]
+[CONFIG] loaded rule_id=493, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=494, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[493, 494]
+[CONFIG] loaded 2 rules: rule_ids=[495, 496]
+[CONFIG] loaded rule_id=495, rule_type='', conditions=[('procedure_code', 'EQ', '99213')]
+[CONFIG] loaded rule_id=496, rule_type='', conditions=[('procedure_code', 'EQ', '73030')]
+[CONFIG] rules_by_stage[BASE]: 2 rules, rule_ids=[495, 496]

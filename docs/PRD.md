@@ -2,11 +2,13 @@
 
 ## Summary
 
-The **Matrix** project is a portfolio-grade, enterprise healthcare pricing engine built with Hexagonal Architecture. It demonstrates senior-level engineering through domain-driven design, strategy patterns, and metadata-driven configuration. Delivery is organized in a **7-Phase Master Roadmap** (see [ROADMAP.md](../ROADMAP.md)).
+The **Matrix** project is a portfolio-grade, enterprise healthcare pricing engine built with Hexagonal Architecture. It demonstrates senior-level engineering through domain-driven design, strategy patterns, and metadata-driven configuration. Active delivery is tracked in the **architecture alignment roadmap** (Stages 0–6) in [ROADMAP.md](ROADMAP.md), with detailed specs in [UPGRADE_PLAN.md](UPGRADE_PLAN.md). Current progress: [STATUS.md](STATUS.md).
 
 ---
 
 ## Strategic Goals (Aligned to Roadmap)
+
+Historical phases 1–7 below reflect delivered and in-progress work. **Active roadmap** for new backend delivery: architecture alignment Stages 0–6 ([ROADMAP.md](ROADMAP.md), [UPGRADE_PLAN.md](UPGRADE_PLAN.md)).
 
 1. **Calculation kernel (Phase 1)**  
    Deterministic, extensible, testable domain layer with stable request/result contracts, metadata-driven resolver, pluggable strategies, and structured tracing.

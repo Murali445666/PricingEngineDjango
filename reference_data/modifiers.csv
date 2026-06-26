@@ -1,0 +1,11 @@
+modifier_code,description,percentage_adjustment
+26,Professional Component,40.00
+50,Bilateral Procedure,150.00
+TC,Technical Component,60.00
+25,Significant Separately Identifiable E&M,100.00
+52,Reduced Services,50.00
+22,Unusual Procedural Services,100.00
+59,Distinct Procedural Service,100.00
+76,Repeat Procedure by Same Physician,100.00
+77,Repeat Procedure by Another Physician,100.00
+78,Unplanned Return to OR,100.00

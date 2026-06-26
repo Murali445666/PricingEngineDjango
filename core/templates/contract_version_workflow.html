@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contract Version — {{ contract.contract_name }} v{{ version.version_number }}</title>
+</head>
+<body>
+  {% if error %}
+    <p><strong>Error:</strong> {{ error }}</p>
+    <p><a href="/admin/">Back to Admin</a></p>
+  {% else %}
+    <h1>Contract Version Workflow</h1>
+    <p><a href="/admin/core/providercontract/{{ contract.pk }}/change/">Contract: {{ contract.contract_name }}</a> — Version {{ version.version_number }} ({{ version_status }})</p>
+
+    {% for msg in messages %}
+      <p style="color: green;">{{ msg }}</p>
+    {% endfor %}
+
+    <h2>Version details</h2>
+    <table border="1" cellpadding="4" cellspacing="0">
+      <tr><th>Version ID</th><td>{{ version.version_id }}</td></tr>
+      <tr><th>Status</th><td>{{ version_status }}</td></tr>
+      <tr><th>Effective start</th><td>{{ effective_start }}</td></tr>
+      <tr><th>Effective end</th><td>{{ effective_end|default:"—" }}</td></tr>
+      <tr><th>Methodologies</th><td>{{ count_methodologies }}</td></tr>
+      <tr><th>Carveouts</th><td>{{ count_carveouts }}</td></tr>
+      <tr><th>Cap/Floors</th><td>{{ count_cap_floors }}</td></tr>
+      <tr><th>Blending rules</th><td>{{ count_blending_rules }}</td></tr>
+    </table>
+
+    <h2>Lifecycle</h2>
+    {% if show_activate %}
+      <form id="form-activate" method="post" action="/api/contract-versions/{{ version.version_id }}/activate/" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Activate</button>
+      </form>
+    {% endif %}
+    {% if show_archive %}
+      <form id="form-archive" method="post" action="/api/contract-versions/{{ version.version_id }}/archive/" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Archive</button>
+      </form>
+    {% endif %}
+    {% if not show_activate and not show_archive %}
+      <p>No lifecycle actions available for this status.</p>
+    {% endif %}
+
+    <h2>Simulation</h2>
+    <form method="post" action="">
+      {% csrf_token %}
+      <p>
+        <label for="claim_json">Claim JSON</label><br>
+        <textarea name="claim_json" id="claim_json" rows="10" cols="80">{{ claim_json }}</textarea>
+      </p>
+      {% if can_compare %}
+        <p>
+          <input type="checkbox" name="compare_to_active" id="compare_to_active" {% if compare_checked %}checked{% endif %}>
+          <label for="compare_to_active">Compare to ACTIVE version</label>
+        </p>
+      {% endif %}
+      <button type="submit">Run simulation</button>
+    </form>
+
+    {% if simulation_error %}
+      <p style="color: red;"><strong>Simulation error:</strong> {{ simulation_error }}</p>
+    {% endif %}
+
+    {% if simulation_result %}
+      <h2>Simulation result</h2>
+      <table border="1" cellpadding="4" cellspacing="0">
+        <tr><th>Version ID</th><td>{{ version.version_id }}</td></tr>
+        <tr><th>Total billed</th><td>{{ simulation_total_billed }}</td></tr>
+        <tr><th>Total allowed</th><td>{{ simulation_result.total_allowed }}</td></tr>
+      </table>
+      <h3>Line breakdown</h3>
+      <table border="1" cellpadding="4" cellspacing="0">
+        <tr><th>Procedure</th><th>Status</th><th>Allowed</th><th>Methodology</th></tr>
+        {% for row in simulation_lines %}
+          <tr>
+            <td>{{ row.procedure_code }}</td>
+            <td>{{ row.result.status.value|default:row.result.status }}</td>
+            <td>{{ row.result.allowed_amount }}</td>
+            <td>{{ row.result.methodology|default:"—" }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+
+      {% if active_result %}
+        <h2>ACTIVE comparison</h2>
+        <table border="1" cellpadding="4" cellspacing="0">
+          <tr><th>Active version ID</th><td>{{ active_version_id }}</td></tr>
+          <tr><th>Total allowed (ACTIVE)</th><td>{{ active_result.total_allowed }}</td></tr>
+          <tr><th>Difference (simulation − active)</th><td>{{ diff_allowed }}</td></tr>
+        </table>
+      {% endif %}
+    {% endif %}
+
+    <p><a href="/admin/">Back to Admin</a></p>
+
+    <script>
+      (function() {
+        var workflowUrl = window.location.pathname;
+        var params = new URLSearchParams(window.location.search);
+        if (params.get('msg') === 'activated') {
+          var p = document.createElement('p');
+          p.style.color = 'green';
+          p.textContent = 'Version activated successfully.';
+          document.body.insertBefore(p, document.body.firstChild);
+        }
+        if (params.get('msg') === 'archived') {
+          var p = document.createElement('p');
+          p.style.color = 'green';
+          p.textContent = 'Version archived successfully.';
+          document.body.insertBefore(p, document.body.firstChild);
+        }
+        var formActivate = document.getElementById('form-activate');
+        var formArchive = document.getElementById('form-archive');
+        if (formActivate) {
+          formActivate.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch(form.action, {
+              method: 'POST',
+              headers: { 'X-CSRFToken': token, 'Content-Type': 'application/json' },
+              body: '{}',
+              credentials: 'same-origin'
+            }).then(function(r) {
+              if (r.ok) return workflowUrl + '?msg=activated';
+              return r.json().then(function(d) { throw new Error(d.detail || d.error || 'Activate failed'); });
+            }).then(function(url) { window.location.href = url; })
+              .catch(function(err) { alert(err.message); });
+          });
+        }
+        if (formArchive) {
+          formArchive.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var token = form.querySelector('[name=csrfmiddlewaretoken]').value;
+            fetch(form.action, {
+              method: 'POST',
+              headers: { 'X-CSRFToken': token, 'Content-Type': 'application/json' },
+              body: '{}',
+              credentials: 'same-origin'
+            }).then(function(r) {
+              if (r.ok) return workflowUrl + '?msg=archived';
+              return r.json().then(function(d) { throw new Error(d.detail || d.error || 'Archive failed'); });
+            }).then(function(url) { window.location.href = url; })
+              .catch(function(err) { alert(err.message); });
+          });
+        }
+      })();
+    </script>
+  {% endif %}
+</body>
+</html>

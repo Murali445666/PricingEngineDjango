@@ -1,6 +1,8 @@
 # Architecture: How the Orchestrator Talks to the Models
 
-This document maps how the **PricingEngine** orchestrator in `core/engine/orchestrator.py` uses Django models and the rest of the engine. No code changes—reference only.
+This document maps how the **PricingEngine** orchestrator in `core/engine/orchestrator.py` uses Django models and the rest of the engine. Reference only.
+
+**Canonical:** [ROADMAP.md](ROADMAP.md) · [UPGRADE_PLAN.md](UPGRADE_PLAN.md) · [STATUS.md](STATUS.md) · [DATA_MODEL.md](DATA_MODEL.md) · [system_overview_pricing_engine.md](system_overview_pricing_engine.md)
 
 ---
 

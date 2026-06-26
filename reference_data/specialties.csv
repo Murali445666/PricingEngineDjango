@@ -1,0 +1,17 @@
+specialty_code,description
+01,General Practice
+02,General Surgery
+06,Cardiology
+08,Family Practice
+11,Internal Medicine
+13,Neurology
+16,Obstetrics/Gynecology
+18,Ophthalmology
+20,Orthopedic Surgery
+22,Pathology
+26,Psychiatry
+30,Diagnostic Radiology
+43,Certified Registered Nurse Anesthetist (CRNA)
+50,Nurse Practitioner
+65,Physical Therapist
+93,Emergency Medicine

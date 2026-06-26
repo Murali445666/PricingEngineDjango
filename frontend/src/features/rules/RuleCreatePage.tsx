@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { PageLayout, FormPanel, Button, Input, Select, LoadingSpinner, ErrorState } from '@/shared/ui'
+import { PageLayout, FormPanel, Button, Input, Select, ErrorState } from '@/shared/ui'
 import { createRule, fetchFeeSchedules } from '@/services/ruleService'
 import { ConditionBuilder } from './ConditionBuilder'
 import { ParameterEditor } from './ParameterEditor'
+import { RuleSimulateConflictPanel } from './RuleSimulateConflictPanel'
 import type { RuleConditionRow, RuleCreatePayload } from '@/types'
 
 const RULE_TYPE_OPTIONS = [
@@ -55,6 +56,43 @@ export function RuleCreatePage() {
       navigate(`/contracts/${cid}`, { replace: true })
     },
   })
+
+  const buildDraftRule = useCallback((): Record<string, unknown> => {
+    const conds = conditions
+      .filter((c) => c.attribute_value.trim() !== '')
+      .map((c) => ({
+        attribute_name: c.attribute_name,
+        attribute_value: c.attribute_value,
+      }))
+    const d: Record<string, unknown> = {
+      rule_name: ruleName.trim() || 'Draft',
+      rule_type: ruleType,
+      methodology_code: methodologyCode,
+      conditions: conds,
+    }
+    if (methodologyCode === 'RBRVS') {
+      const m = parseFloat(multiplier)
+      if (!Number.isNaN(m)) d.multiplier = m
+      if (baseFeeScheduleId) d.base_fee_schedule_id = parseInt(baseFeeScheduleId, 10)
+    }
+    if (methodologyCode === 'FLAT_RATE') {
+      const f = parseFloat(flatRate)
+      if (!Number.isNaN(f)) d.flat_rate = f
+    }
+    if (methodologyCode === 'PERCENT_BILLED' || methodologyCode === 'PCT_BILLED') {
+      const m = parseFloat(multiplier)
+      if (!Number.isNaN(m)) d.multiplier = m
+    }
+    return d
+  }, [
+    ruleName,
+    ruleType,
+    methodologyCode,
+    multiplier,
+    flatRate,
+    baseFeeScheduleId,
+    conditions,
+  ])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -151,6 +189,13 @@ export function RuleCreatePage() {
         <FormPanel title="Conditions">
           <ConditionBuilder value={conditions} onChange={setConditions} />
         </FormPanel>
+
+        <RuleSimulateConflictPanel
+          contractId={cid}
+          useDraftLineSimulation
+          buildDraftRule={buildDraftRule}
+          conditionsForConflicts={conditions}
+        />
 
         {createMutation.isError && (
           <ErrorState

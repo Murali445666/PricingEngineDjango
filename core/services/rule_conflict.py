@@ -22,13 +22,24 @@ def get_conflicts_for_rule(rule: PricingRule) -> List[Dict[str, str]]:
         )
 
 
-def get_conflicts_for_rule_payload(contract_id: int, conditions: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+def get_conflicts_for_rule_payload(
+    contract_id: int,
+    conditions: List[Dict[str, Any]],
+    exclude_rule_id: Optional[int] = None,
+) -> List[Dict[str, str]]:
     """
     Return list of conflict messages for a payload (e.g. new rule not yet saved).
     conditions: list of {"attribute_name": "...", "attribute_value": "..."}.
+    exclude_rule_id: when set, skip this rule (e.g. current rule on detail page).
     """
-    cond_tuples = [(c.get('attribute_name'), c.get('attribute_value')) for c in conditions if c.get('attribute_name') and c.get('attribute_value') is not None]
-    return _conflicts_for_conditions(contract_id=contract_id, conditions=cond_tuples, exclude_rule_id=None)
+    cond_tuples = [
+        (c.get('attribute_name'), c.get('attribute_value'))
+        for c in conditions
+        if c.get('attribute_name') and c.get('attribute_value') is not None
+    ]
+    return _conflicts_for_conditions(
+        contract_id=contract_id, conditions=cond_tuples, exclude_rule_id=exclude_rule_id
+    )
 
 
 def _conflicts_for_conditions(

@@ -13,8 +13,20 @@ function normalizeStatus(value: string): StatusVariant {
   if (v === 'draft') return 'Draft'
   if (v === 'active') return 'Active'
   if (v === 'retired') return 'Retired'
-  if (v === 'error' || v === 'denied' || v === 'failed') return 'Error'
+  if (
+    v === 'error' ||
+    v === 'denied' ||
+    v === 'failed' ||
+    v.includes('denied') ||
+    v.includes('missing') ||
+    v.includes('calculation_error')
+  ) {
+    return 'Error'
+  }
   if (v === 'success' || v === 'payable') return 'Success'
+  if (v.includes('applied') || v.includes('cap') || v.includes('floor') || v.includes('blending')) {
+    return 'Active'
+  }
   return 'Draft'
 }
 

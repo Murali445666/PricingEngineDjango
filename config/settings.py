@@ -24,11 +24,22 @@ SECRET_KEY = 'django-insecure-a4z200x^l4uz-&nvw0717eo1_%uj6y-(zxl9o7hd%f0fr))pzh
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# Phase D feature flag
+USE_REFERENCE_ONLY_PRICING = True
 
+# Step 14a: tiered rule resolution (product/version tier sort) and TierMultiplier defaults (default off)
+FEATURE_TIERED_RESOLUTION = False
+
+# Default line pricing: lesser of billed charge vs contract rate (via auto LINE PCT_BILLED_CAP at 100%)
+FEATURE_DEFAULT_LESSER_OF_BILLED = True
+
+claim_level_drg_enabled = True
 ALLOWED_HOSTS = []
 
 
 # Application definition
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -40,6 +51,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'core',
+    'providers',
+    'products',
+    'members',
 ]
 
 MIDDLEWARE = [
@@ -133,17 +147,29 @@ LOGGING = {
         'timing': {
             'format': '%(asctime)s [%(levelname)s] %(message)s',
         },
+        'simple': {
+            'format': '[%(levelname)s] %(name)s: %(message)s',
+        },
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'timing',
         },
+        'console_engine': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
     },
     'loggers': {
         'pricing_engine.request_timing': {
             'handlers': ['console'],
             'level': 'INFO',
+            'propagate': False,
+        },
+        'core.engine': {
+            'handlers': ['console_engine'],
+            'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': False,
         },
     },
@@ -153,4 +179,5 @@ LOGGING = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
+
 

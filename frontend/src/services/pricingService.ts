@@ -1,5 +1,10 @@
 import { apiClient } from './apiClient'
-import type { PriceLineRequest, PriceLineResult } from '@/types'
+import type {
+  PriceLineRequest,
+  PriceLineResult,
+  ClaimSimulateRequest,
+  ClaimSimulateResponse,
+} from '@/types'
 
 export interface SimulateLineRequest {
   contract_id: string | number
@@ -45,6 +50,14 @@ export async function simulateLine(payload: SimulateLineRequest): Promise<PriceL
 
 export async function priceClaim(payload: PriceClaimRequest): Promise<PriceClaimResponse> {
   const { data } = await apiClient.post<PriceClaimResponse>('/price-claim/', payload)
+  return data
+}
+
+/** Step 12f: POST /api/price-claim-simulate/ — price a claim against a specific contract version. */
+export async function priceClaimSimulate(
+  payload: ClaimSimulateRequest,
+): Promise<ClaimSimulateResponse> {
+  const { data } = await apiClient.post<ClaimSimulateResponse>('/price-claim-simulate/', payload)
   return data
 }
 
