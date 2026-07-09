@@ -40,6 +40,10 @@ class AspPricingStrategy(PricingMethodology):
         if not quarter:
             if context.base_rate is not None:
                 base_price = context.base_rate * units
+                context.methodology_events.append(
+                    f"ASP base via FEE_SCHEDULE base_rate={context.base_rate} units={units} "
+                    f"raw={base_price} (no quarter for service_date)"
+                )
                 return self.apply_modifiers(context, base_price)
             raise NoAspFoundError(f"No quarter for service_date={service_date}; no ASP or fallback rate")
 
@@ -56,11 +60,17 @@ class AspPricingStrategy(PricingMethodology):
             amount_per_unit = getattr(asp_row, "payment_limit", None) or asp_row.asp
             if amount_per_unit is not None:
                 base_price = amount_per_unit * units
+                context.methodology_events.append(
+                    f"ASP payment_limit={amount_per_unit} units={units} raw={base_price}"
+                )
                 return self.apply_modifiers(context, base_price)
 
         # Fallback: standard fee schedule rate
         if context.base_rate is not None:
             base_price = context.base_rate * units
+            context.methodology_events.append(
+                f"ASP base via FEE_SCHEDULE base_rate={context.base_rate} units={units} raw={base_price}"
+            )
             return self.apply_modifiers(context, base_price)
 
         raise NoAspFoundError(f"No ASP record for HCPCS={procedure_code!r} quarter={quarter}; no fallback rate")

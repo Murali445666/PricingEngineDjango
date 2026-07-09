@@ -15,4 +15,7 @@ class AnesthesiaMethod(PricingMethodology):
         cf = context.conversion_factor or Decimal("0.00")
         
         price = (base_units + time_units) * cf
+        context.methodology_events.append(
+            f"ANESTHESIA base_units={base_units} time_units={time_units} cf={cf} raw={price}"
+        )
         return self.apply_modifiers(context, price)

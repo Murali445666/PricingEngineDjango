@@ -33,4 +33,7 @@ class PercentBilledMethod(PricingMethodology):
 
         billed_amount = _to_decimal(getattr(context.input_data, "billed_amount", None))
         price = billed_amount * factor
+        context.methodology_events.append(
+            f"PERCENT_BILLED factor={factor} billed={billed_amount} raw={price}"
+        )
         return self.apply_modifiers(context, price)

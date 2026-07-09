@@ -9,5 +9,8 @@ class PerDiemMethod(PricingMethodology):
         
         # Math: Rate ($1200) * Units (5 Days)
         price = rate * context.input_data.units
-        
+        context.methodology_events.append(
+            f"PER_DIEM rate={rate} units={context.input_data.units} raw={price}"
+        )
+
         return self.apply_modifiers(context, price)

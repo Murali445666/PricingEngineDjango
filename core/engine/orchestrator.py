@@ -37,6 +37,7 @@ from .types import (
     ExecutionContext,
     LineState,
     TraceEntry,
+    PricingContext,
 )
 from .config import ClaimPricingInput, ClaimLineInput, ContractPricingConfig
 from .loader import (
@@ -54,6 +55,127 @@ from .conditions import evaluate_conditions, build_line_context, build_claim_con
 logger = logging.getLogger(__name__)
 
 VERSION = "1.0.1-Traceability"
+
+
+def _emit_rule_select_trace(
+    exec_context: Optional[ExecutionContext],
+    line_index: Optional[int],
+    rule,
+) -> None:
+    if exec_context is None or line_index is None or rule is None:
+        return
+    exec_context.trace.append(TraceEntry(
+        stage="LINE",
+        phase="RULE_SELECT",
+        line_index=line_index,
+        rule_id=rule.rule_id,
+        methodology_code=rule.methodology_code or "",
+        message=(
+            f"rule={rule.rule_name} id={rule.rule_id} "
+            f"methodology={rule.methodology_code}"
+        ),
+    ))
+
+
+def _emit_strategy_observability(
+    exec_context: Optional[ExecutionContext],
+    line_index: Optional[int],
+    rule,
+    pricing_context: PricingContext,
+) -> None:
+    if exec_context is None or line_index is None:
+        return
+    rid = rule.rule_id if rule else None
+    meth = (rule.methodology_code or "") if rule else ""
+    for msg in pricing_context.methodology_events:
+        exec_context.trace.append(TraceEntry(
+            stage="LINE",
+            phase="METHOD_BASE",
+            line_index=line_index,
+            rule_id=rid,
+            methodology_code=meth,
+            message=msg,
+        ))
+    for ev in pricing_context.modifier_events:
+        exec_context.trace.append(TraceEntry(
+            stage="LINE",
+            phase="MODIFIER",
+            line_index=line_index,
+            rule_id=rid,
+            methodology_code=meth,
+            message=ev.message,
+        ))
+
+
+def _line_cap_floor_eligible(cf, inp: PricingInput, service_date) -> bool:
+    """True when a line cap/floor rule passes date, code, and condition filters."""
+    if getattr(cf, 'effective_start_date', None) and cf.effective_start_date > service_date:
+        return False
+    end = getattr(cf, 'effective_end_date', None)
+    if end is not None and end < service_date:
+        return False
+    if getattr(cf, 'code_value', None):
+        code_val = (cf.code_value or '').strip()
+        if code_val and (inp.procedure_code or '').strip() != code_val:
+            return False
+    cf_conditions = getattr(cf, 'conditions', None)
+    if cf_conditions:
+        line_ctx = build_line_context(inp)
+        try:
+            if not evaluate_conditions(cf_conditions, line_ctx):
+                return False
+        except Exception:
+            return False
+    return True
+
+
+def _pct_billed_cap_label(cf) -> str:
+    pct = getattr(cf, 'percentage', None)
+    code_val = getattr(cf, 'code_value', None)
+    if pct == Decimal('100') and not (code_val or '').strip():
+        return f"lesser-of PCT_BILLED_CAP pct={pct}"
+    return f"PCT_BILLED_CAP pct={pct}"
+
+
+def _claim_cap_floor_eligible(
+    cf,
+    service_date,
+    final_total: Decimal,
+    total_billed: Decimal,
+    line_methodologies: set,
+    line_results: list,
+    claim_type: str,
+) -> bool:
+    """True when a claim cap/floor rule passes date, scope, and condition filters."""
+    if getattr(cf, 'effective_start_date', None) and cf.effective_start_date > service_date:
+        return False
+    end = getattr(cf, 'effective_end_date', None)
+    if end is not None and end < service_date:
+        return False
+    cf_conditions = getattr(cf, "conditions", None)
+    if cf_conditions:
+        claim_ctx = build_claim_context(total_billed, final_total, claim_type=claim_type)
+        try:
+            if not evaluate_conditions(cf_conditions, claim_ctx):
+                return False
+        except Exception:
+            return False
+    scope = (cf.scope or 'CLAIM').upper()
+    if scope == 'LINE':
+        return False
+    if scope == 'DRG' and 'DRG' not in line_methodologies:
+        return False
+    if scope == 'APC' and 'APC' not in line_methodologies and 'OPPS' not in line_methodologies:
+        return False
+    if cf.code_value and scope in ('DRG', 'APC'):
+        code_used = any(
+            r.status in (PricingStatus.SUCCESS, PricingStatus.CARVEOUT_REPRICED)
+            and r.methodology in (scope, 'OPPS')
+            for r in line_results
+        )
+        if not code_used:
+            return False
+    return True
 
 
 def _run_cross_line_phase(context, config) -> None:
@@ -211,6 +333,8 @@ class LineOrchestrator:
             if not rule:
                 return build_result(PricingStatus.DENIED_NO_RULE, details="No matching rule found in contract.")
 
+            _emit_rule_select_trace(exec_context, line_index, rule)
+
             # Step 12c: check ContractMethodology conditions before applying the methodology.
             # Only evaluated when config carries preloaded methodologies (no DB query).
             if config is not None and config.methodologies:
@@ -255,6 +379,7 @@ class LineOrchestrator:
             try:
                 strategy = get_methodology(context.methodology_code)
                 price = strategy.calculate(context)
+                _emit_strategy_observability(exec_context, line_index, rule, context)
                 if exec_context is not None and line_index is not None:
                     exec_context.trace.append(TraceEntry(
                         stage="LINE",
@@ -312,6 +437,7 @@ class LineOrchestrator:
                 logger.debug(f" -> Rule ID: {r.rule_id} | Type: {r.rule_type} | Methodology: {r.methodology_code}")
             logger.debug("---------------------------\n")
             for rule in rules:
+                _emit_rule_select_trace(exec_context, line_index, rule)
                 try:
                     context = self.loader.load_context(
                         request, rule, version=version, config=config, trace=trace,
@@ -322,6 +448,7 @@ class LineOrchestrator:
                 try:
                     strategy = get_methodology(context.methodology_code)
                     amount = strategy.calculate(context)
+                    _emit_strategy_observability(exec_context, line_index, rule, context)
                 except Exception as e:
                     if isinstance(e, NoApcFoundError):
                         return build_result(
@@ -480,7 +607,11 @@ class ClaimOrchestrator:
                 context=exec_context, line_index=line_index,
             )
             # Step 5: apply line-level carve-out (canonical order step 5)
-            result = _apply_carveout(result, inp, carveout_by_code)
+            result, carveout_traces = _apply_carveout(
+                result, inp, carveout_by_code, line_index=line_index,
+            )
+            for te in carveout_traces:
+                exec_context.trace.append(te)
             # Phase G: line-level cap/floor (LINE_CAP_FLOOR stage) — after ADJUSTMENT/carve-out
             line_cap_floors = getattr(config, 'line_cap_floors', None) or ()
             if line_cap_floors:
@@ -562,6 +693,13 @@ class ClaimOrchestrator:
         )
         for rule in config.stop_loss_rules:
             if total_cost <= rule.cost_threshold:
+                exec_context.trace.append(TraceEntry(
+                    stage="CLAIM", phase="STOP_LOSS", rule_id=rule.id,
+                    message=(
+                        f"total_cost={total_cost} threshold={rule.cost_threshold} "
+                        f"→ NOT APPLIED (cost ≤ threshold)"
+                    ),
+                ))
                 continue
             excess_cost = total_cost - rule.cost_threshold
             stoploss_payment = rule.cost_threshold + (
@@ -586,6 +724,13 @@ class ClaimOrchestrator:
         for rule in config.outlier_rules:
             if rule.threshold_scope == 'PER_CLAIM':
                 if total_billed <= rule.threshold_amount:
+                    exec_context.trace.append(TraceEntry(
+                        stage="CLAIM", phase="OUTLIER", rule_id=rule.id,
+                        message=(
+                            f"total_billed={total_billed} threshold={rule.threshold_amount} "
+                            f"→ NOT APPLIED (billed ≤ threshold)"
+                        ),
+                    ))
                     continue
                 if rule.reimbursement_percentage is not None:
                     outlier_payment = total_billed * (rule.reimbursement_percentage / Decimal('100'))
@@ -627,7 +772,7 @@ class ClaimOrchestrator:
         blended_total_allowed = final_total_allowed
         applied_blending_rule_ids: list = []
         if config.blending_rules:
-            blended_total_allowed, applied_blending_rule_ids, blend_status, blend_traces = (
+            blended_total_allowed, applied_blending_rule_ids, blend_status, blend_traces, blend_exec_traces = (
                 _apply_blending(
                     final_total_allowed,
                     total_billed,
@@ -640,22 +785,20 @@ class ClaimOrchestrator:
             )
             if blend_traces:
                 claim_trace.extend(blend_traces)
+            for te in blend_exec_traces:
+                exec_context.trace.append(te)
             if applied_blending_rule_ids:
                 final_total_allowed = blended_total_allowed
                 total_allowed = blended_total_allowed
                 if blend_status is not None:
                     result_status = blend_status
-                exec_context.trace.append(TraceEntry(
-                    stage="CLAIM", phase="BLENDING",
-                    message=f"blended_total_allowed={blended_total_allowed} rule_ids={applied_blending_rule_ids}",
-                ))
         else:
             blended_total_allowed = final_total_allowed
 
         # --- Step 10: Caps/floors — final clamp (canonical step 10) ---
         pre_cap_total_allowed = final_total_allowed
         applied_cap_floor_id = None
-        final_total_allowed, applied_cap_floor_id, cap_floor_status, cap_floor_trace = (
+        final_total_allowed, applied_cap_floor_id, cap_floor_status, cap_floor_trace, cap_floor_exec_traces = (
             _apply_cap_floor(
                 final_total_allowed,
                 total_billed,
@@ -667,14 +810,11 @@ class ClaimOrchestrator:
         )
         if cap_floor_trace:
             claim_trace.extend(cap_floor_trace)
+        for te in cap_floor_exec_traces:
+            exec_context.trace.append(te)
         if cap_floor_status is not None:
             result_status = cap_floor_status
         total_allowed = final_total_allowed
-        if applied_cap_floor_id is not None:
-            exec_context.trace.append(TraceEntry(
-                stage="CLAIM", phase="CAP_FLOOR", rule_id=applied_cap_floor_id,
-                message=f"final_total_allowed={final_total_allowed}",
-            ))
 
         exec_context.claim_total = total_allowed
         claim_id = claim_input.claim_id if claim_input.claim_id is not None else 0
@@ -703,7 +843,8 @@ def _apply_carveout(
     result: LineResult,
     inp: PricingInput,
     carveout_by_code: dict,
-) -> LineResult:
+    line_index: int = 0,
+) -> tuple:
     """
     Step 7: Apply a line-level carve-out after base methodology pricing.
     Canonical execution order step 5: after base methodology (step 4), before rule adjustments (step 6).
@@ -715,10 +856,23 @@ def _apply_carveout(
 
     Preserves base_allowed_amount in result for auditability.
     No DB queries — operates entirely on the preloaded carveout_by_code dict.
+
+    Returns: (result, trace_entries)
     """
     carveout = carveout_by_code.get(inp.procedure_code)
     if carveout is None:
-        return result
+        traces = []
+        if carveout_by_code:
+            traces.append(TraceEntry(
+                stage="LINE",
+                phase="CARVEOUT",
+                line_index=line_index,
+                message=(
+                    f"procedure_code={inp.procedure_code} not in carve-out set "
+                    f"→ NOT APPLIED"
+                ),
+            ))
+        return result, traces
 
     # Step 12c: evaluate optional structured conditions before applying carve-out.
     carveout_conditions = getattr(carveout, "conditions", None)
@@ -726,9 +880,25 @@ def _apply_carveout(
         line_ctx = build_line_context(inp)
         try:
             if not evaluate_conditions(carveout_conditions, line_ctx):
-                return result  # conditions not met → skip this carve-out
+                return result, [TraceEntry(
+                    stage="LINE",
+                    phase="CARVEOUT",
+                    line_index=line_index,
+                    message=(
+                        f"carveout_id={carveout.carveout_id} code={inp.procedure_code} "
+                        f"conditions not met → NOT APPLIED"
+                    ),
+                )]
         except Exception:
-            return result  # malformed condition → fail-safe: skip carve-out
+            return result, [TraceEntry(
+                stage="LINE",
+                phase="CARVEOUT",
+                line_index=line_index,
+                message=(
+                    f"carveout_id={carveout.carveout_id} code={inp.procedure_code} "
+                    f"conditions error → NOT APPLIED"
+                ),
+            )]
 
     methodology = (carveout.carveout_methodology or '').upper()
     base_amount = result.allowed_amount
@@ -764,7 +934,13 @@ def _apply_carveout(
             f"code={inp.procedure_code} fixed_rate={rate} "
             f"base_allowed={base_amount}"
         )
-    return result
+    trace = TraceEntry(
+        stage="LINE",
+        phase="CARVEOUT",
+        line_index=line_index,
+        message=result.details or f"carveout_id={carveout.carveout_id} methodology={methodology}",
+    )
+    return result, [trace]
 
 
 def _apply_line_cap_floor(
@@ -788,62 +964,78 @@ def _apply_line_cap_floor(
     line_billed = getattr(inp, 'billed_amount', None) or Decimal('0')
 
     for cf in line_cap_floors:
-        if getattr(cf, 'effective_start_date', None) and cf.effective_start_date > service_date:
+        if not _line_cap_floor_eligible(cf, inp, service_date):
             continue
-        end = getattr(cf, 'effective_end_date', None)
-        if end is not None and end < service_date:
-            continue
-        if getattr(cf, 'code_value', None):
-            code_val = (cf.code_value or '').strip()
-            if code_val and (inp.procedure_code or '').strip() != code_val:
-                continue
-        cf_conditions = getattr(cf, 'conditions', None)
-        if cf_conditions:
-            line_ctx = build_line_context(inp)
-            try:
-                if not evaluate_conditions(cf_conditions, line_ctx):
-                    continue
-            except Exception:
-                continue
         cap_type = (getattr(cf, 'cap_type', None) or '').upper()
+        cf_id = getattr(cf, 'cap_floor_id', None)
         if cap_type == 'CAP':
             cap_val = getattr(cf, 'value', None)
             if cap_val is not None and amount > cap_val:
                 result.allowed_amount = cap_val
                 result.status = PricingStatus.CAP_APPLIED
-                result.applied_line_cap_floor_id = getattr(cf, 'cap_floor_id', None)
+                result.applied_line_cap_floor_id = cf_id
                 traces.append(TraceEntry(
                     stage="LINE", phase="LINE_CAP_FLOOR", line_index=line_index,
-                    rule_id=getattr(cf, 'cap_floor_id', None),
+                    rule_id=cf_id,
                     message=f"procedure_code={inp.procedure_code} LINE_CAP cap={cap_val} pre={amount} post={cap_val}",
                 ))
                 return result, traces
+            if cap_val is not None:
+                traces.append(TraceEntry(
+                    stage="LINE", phase="LINE_CAP_FLOOR", line_index=line_index,
+                    rule_id=cf_id,
+                    message=(
+                        f"cap_floor_id={cf_id} type=CAP cap={cap_val} current={amount} "
+                        f"→ NOT APPLIED (current ≤ cap)"
+                    ),
+                ))
         elif cap_type == 'FLOOR':
             floor_val = getattr(cf, 'value', None)
             if floor_val is not None and amount < floor_val:
                 result.allowed_amount = floor_val
                 result.status = PricingStatus.FLOOR_APPLIED
-                result.applied_line_cap_floor_id = getattr(cf, 'cap_floor_id', None)
+                result.applied_line_cap_floor_id = cf_id
                 traces.append(TraceEntry(
                     stage="LINE", phase="LINE_CAP_FLOOR", line_index=line_index,
-                    rule_id=getattr(cf, 'cap_floor_id', None),
+                    rule_id=cf_id,
                     message=f"procedure_code={inp.procedure_code} LINE_FLOOR floor={floor_val} pre={amount} post={floor_val}",
                 ))
                 return result, traces
+            if floor_val is not None:
+                traces.append(TraceEntry(
+                    stage="LINE", phase="LINE_CAP_FLOOR", line_index=line_index,
+                    rule_id=cf_id,
+                    message=(
+                        f"cap_floor_id={cf_id} type=FLOOR floor={floor_val} current={amount} "
+                        f"→ NOT APPLIED (current ≥ floor)"
+                    ),
+                ))
         elif cap_type == 'PCT_BILLED_CAP':
             pct = getattr(cf, 'percentage', None)
             if pct is not None:
                 cap_val = (line_billed * pct / Decimal('100')).quantize(Decimal('0.01'))
+                type_label = _pct_billed_cap_label(cf)
                 if amount > cap_val:
                     result.allowed_amount = cap_val
                     result.status = PricingStatus.CAP_APPLIED
-                    result.applied_line_cap_floor_id = getattr(cf, 'cap_floor_id', None)
+                    result.applied_line_cap_floor_id = cf_id
                     traces.append(TraceEntry(
                         stage="LINE", phase="LINE_CAP_FLOOR", line_index=line_index,
-                        rule_id=getattr(cf, 'cap_floor_id', None),
-                        message=f"procedure_code={inp.procedure_code} LINE_PCT_BILLED_CAP pct={pct} cap={cap_val} pre={amount} post={cap_val}",
+                        rule_id=cf_id,
+                        message=(
+                            f"procedure_code={inp.procedure_code} LINE_{type_label} "
+                            f"cap={cap_val} pre={amount} post={cap_val}"
+                        ),
                     ))
                     return result, traces
+                traces.append(TraceEntry(
+                    stage="LINE", phase="LINE_CAP_FLOOR", line_index=line_index,
+                    rule_id=cf_id,
+                    message=(
+                        f"cap_floor_id={cf_id} type={type_label} ceiling={cap_val} "
+                        f"current={amount} → NOT APPLIED (current ≤ ceiling)"
+                    ),
+                ))
     return result, traces
 
 
@@ -860,95 +1052,102 @@ def _apply_cap_floor(
     Iterates cap_floors in priority order (highest priority first, already sorted by config).
     First matching rule wins; returns updated total + audit info.
 
-    Returns: (clamped_total, applied_id, status_or_None, trace_lines)
+    Returns: (clamped_total, applied_id, status_or_None, claim_trace_strings, exec_trace_entries)
     """
     applied_id = None
     status = None
     traces = []
+    exec_traces = []
 
-    # Collect methodologies used across lines for scope filtering
     line_methodologies = {(r.methodology or '').upper() for r in line_results}
 
     for cf in cap_floors:
-        # Effective date guard (already filtered at config build for CLAIM scope,
-        # but cap_floors with no version guard need the date check here too)
-        if getattr(cf, 'effective_start_date', None) and cf.effective_start_date > service_date:
+        if not _claim_cap_floor_eligible(
+            cf, service_date, final_total, total_billed,
+            line_methodologies, line_results, claim_type,
+        ):
             continue
-        end = getattr(cf, 'effective_end_date', None)
-        if end is not None and end < service_date:
-            continue
-
-        # Step 12c: evaluate optional structured conditions before applying cap/floor.
-        cf_conditions = getattr(cf, "conditions", None)
-        if cf_conditions:
-            claim_ctx = build_claim_context(total_billed, final_total, claim_type=claim_type)
-            try:
-                if not evaluate_conditions(cf_conditions, claim_ctx):
-                    continue  # conditions not met → skip this cap/floor
-            except Exception:
-                continue  # malformed condition → fail-safe: skip
 
         scope = (cf.scope or 'CLAIM').upper()
-        # Phase G: line-level caps/floors are applied in LINE_CAP_FLOOR stage, not here.
-        if scope == 'LINE':
-            continue
         cap_type = (cf.cap_type or '').upper()
-
-        # Scope guard: DRG/APC-specific caps only apply when that methodology appears in lines
-        if scope == 'DRG' and 'DRG' not in line_methodologies:
-            continue
-        if scope == 'APC' and 'APC' not in line_methodologies and 'OPPS' not in line_methodologies:
-            continue
-
-        # Optional code-specific restriction (e.g. DRG-470 only)
-        if cf.code_value and scope in ('DRG', 'APC'):
-            code_used = any(
-                r.status in (PricingStatus.SUCCESS, PricingStatus.CARVEOUT_REPRICED)
-                and r.methodology in (scope, 'OPPS')
-                for r in line_results
-            )
-            if not code_used:
-                continue
+        cf_id = cf.cap_floor_id
 
         if cap_type == 'CAP':
             cap_val = cf.value
             if cap_val is not None and final_total > cap_val:
-                traces.append(
-                    f"CAP_APPLIED cap_floor_id={cf.cap_floor_id} scope={scope} "
-                    f"cap={cap_val} pre_cap={final_total}"
+                msg = (
+                    f"CAP_APPLIED cap_floor_id={cf_id} scope={scope} "
+                    f"cap={cap_val} pre_cap={final_total} post_cap={cap_val}"
                 )
+                traces.append(msg)
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="CAP_FLOOR", rule_id=cf_id, message=msg,
+                ))
                 final_total = cap_val
-                applied_id = cf.cap_floor_id
+                applied_id = cf_id
                 status = PricingStatus.CAP_APPLIED
                 break
+            if cap_val is not None:
+                msg = (
+                    f"cap_floor_id={cf_id} type=CAP scope={scope} cap={cap_val} "
+                    f"current={final_total} → NOT APPLIED (current ≤ cap)"
+                )
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="CAP_FLOOR", rule_id=cf_id, message=msg,
+                ))
 
         elif cap_type == 'FLOOR':
             floor_val = cf.value
             if floor_val is not None and final_total < floor_val:
-                traces.append(
-                    f"FLOOR_APPLIED cap_floor_id={cf.cap_floor_id} scope={scope} "
-                    f"floor={floor_val} pre_floor={final_total}"
+                msg = (
+                    f"FLOOR_APPLIED cap_floor_id={cf_id} scope={scope} "
+                    f"floor={floor_val} pre_floor={final_total} post_floor={floor_val}"
                 )
+                traces.append(msg)
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="CAP_FLOOR", rule_id=cf_id, message=msg,
+                ))
                 final_total = floor_val
-                applied_id = cf.cap_floor_id
+                applied_id = cf_id
                 status = PricingStatus.FLOOR_APPLIED
                 break
+            if floor_val is not None:
+                msg = (
+                    f"cap_floor_id={cf_id} type=FLOOR scope={scope} floor={floor_val} "
+                    f"current={final_total} → NOT APPLIED (current ≥ floor)"
+                )
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="CAP_FLOOR", rule_id=cf_id, message=msg,
+                ))
 
         elif cap_type == 'PCT_BILLED_CAP':
             pct = cf.percentage
             if pct is not None:
                 cap_val = (total_billed * pct / Decimal('100')).quantize(Decimal('0.01'))
+                type_label = _pct_billed_cap_label(cf)
                 if final_total > cap_val:
-                    traces.append(
-                        f"CAP_APPLIED(PCT_BILLED) cap_floor_id={cf.cap_floor_id} scope={scope} "
-                        f"pct={pct} billed_cap={cap_val} pre_cap={final_total}"
+                    msg = (
+                        f"CAP_APPLIED(PCT_BILLED) cap_floor_id={cf_id} scope={scope} "
+                        f"{type_label} billed_cap={cap_val} pre_cap={final_total} post_cap={cap_val}"
                     )
+                    traces.append(msg)
+                    exec_traces.append(TraceEntry(
+                        stage="CLAIM", phase="CAP_FLOOR", rule_id=cf_id, message=msg,
+                    ))
                     final_total = cap_val
-                    applied_id = cf.cap_floor_id
+                    applied_id = cf_id
                     status = PricingStatus.CAP_APPLIED
                     break
+                msg = (
+                    f"cap_floor_id={cf_id} type={type_label} scope={scope} "
+                    f"ceiling={cap_val} current={final_total} "
+                    f"→ NOT APPLIED (current ≤ ceiling)"
+                )
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="CAP_FLOOR", rule_id=cf_id, message=msg,
+                ))
 
-    return final_total, applied_id, status, traces
+    return final_total, applied_id, status, traces, exec_traces
 
 
 def _apply_blending(
@@ -979,19 +1178,17 @@ def _apply_blending(
 
     Excluded lines (CARVEOUT_EXCLUDED) are never blended; they remain at $0.
 
-    Returns: (blended_total, applied_rule_ids, status_or_None, trace_lines)
+    Returns: (blended_total, applied_rule_ids, status_or_None, claim_trace_strings, exec_trace_entries)
     No DB queries — operates entirely on preloaded blending_rules.
     """
     applied_ids: list = []
     traces: list = []
+    exec_traces: list = []
     blended_total = post_outlier_total
 
-    # First matching CLAIM-scope rule wins.
-    # All matching LINE-scope rules with distinct primary_methodology values may apply.
     claim_rule_applied = False
 
     for rule in blending_rules:
-        # Effective date guard
         start = getattr(rule, 'effective_start_date', None)
         if start is not None and start > service_date:
             continue
@@ -999,15 +1196,14 @@ def _apply_blending(
         if end is not None and end < service_date:
             continue
 
-        # Step 12c: evaluate optional structured conditions before applying blending rule.
         blend_conditions = getattr(rule, "conditions", None)
         if blend_conditions:
             claim_ctx = build_claim_context(total_billed, blended_total, claim_type=claim_type)
             try:
                 if not evaluate_conditions(blend_conditions, claim_ctx):
-                    continue  # conditions not met → skip this blending rule
+                    continue
             except Exception:
-                continue  # malformed condition → fail-safe: skip
+                continue
 
         scope = (rule.scope or 'CLAIM').upper()
         blend_type = (rule.blend_type or '').upper()
@@ -1016,51 +1212,73 @@ def _apply_blending(
 
         if scope == 'CLAIM':
             if claim_rule_applied:
-                continue  # only first CLAIM rule applies
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="BLENDING", rule_id=rule_id,
+                    message=f"rule_id={rule_id} scope=CLAIM → NOT APPLIED (claim rule already applied)",
+                ))
+                continue
             if blend_type == 'ADD':
                 addend = (total_billed * pct / Decimal('100')).quantize(Decimal('0.01'))
                 blended_total = (post_outlier_total + addend).quantize(Decimal('0.01'))
-                traces.append(
+                msg = (
                     f"BLENDING_APPLIED(ADD) rule_id={rule_id} "
                     f"base={post_outlier_total} addend={addend} blended={blended_total}"
                 )
+                traces.append(msg)
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="BLENDING", rule_id=rule_id, message=msg,
+                ))
             elif blend_type == 'OVERRIDE':
                 blended_total = (total_billed * pct / Decimal('100')).quantize(Decimal('0.01'))
-                traces.append(
+                msg = (
                     f"BLENDING_APPLIED(OVERRIDE) rule_id={rule_id} "
                     f"base={post_outlier_total} blended={blended_total}"
                 )
+                traces.append(msg)
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="BLENDING", rule_id=rule_id, message=msg,
+                ))
             else:
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="BLENDING", rule_id=rule_id,
+                    message=(
+                        f"rule_id={rule_id} scope=CLAIM blend_type={blend_type or 'MISSING'} "
+                        f"→ NOT APPLIED (unsupported blend_type)"
+                    ),
+                ))
                 continue
             applied_ids.append(rule_id)
             claim_rule_applied = True
 
         elif scope == 'LINE':
             primary = (rule.primary_methodology or '').upper()
+            if blend_type not in ('ADD', 'OVERRIDE'):
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="BLENDING", rule_id=rule_id,
+                    message=(
+                        f"rule_id={rule_id} scope=LINE blend_type={blend_type or 'MISSING'} "
+                        f"→ NOT APPLIED (unsupported blend_type)"
+                    ),
+                ))
+                continue
             any_line_matched = False
             for lr, li in zip(line_results, line_inputs):
-                # Never blend excluded lines
                 if lr.status == PricingStatus.CARVEOUT_EXCLUDED:
                     continue
-                # Filter by primary_methodology if specified
                 if primary and (lr.methodology or '').upper() != primary:
                     continue
-                # Apply only once per line (first matching rule for this methodology wins)
                 if lr.blending_rule_id is not None:
                     continue
                 line_billed = getattr(li, 'billed_amount', Decimal('0')) or Decimal('0')
                 if blend_type == 'ADD':
                     addend = (line_billed * pct / Decimal('100')).quantize(Decimal('0.01'))
                     lr.blended_allowed_amount = (lr.allowed_amount + addend).quantize(Decimal('0.01'))
-                elif blend_type == 'OVERRIDE':
-                    lr.blended_allowed_amount = (line_billed * pct / Decimal('100')).quantize(Decimal('0.01'))
                 else:
-                    continue
+                    lr.blended_allowed_amount = (line_billed * pct / Decimal('100')).quantize(Decimal('0.01'))
                 lr.blending_rule_id = rule_id
                 any_line_matched = True
 
             if any_line_matched:
-                # Recompute claim total: blended amount for blended lines, original for others
                 new_total = Decimal('0.00')
                 for lr in line_results:
                     if lr.blended_allowed_amount is not None:
@@ -1069,13 +1287,25 @@ def _apply_blending(
                         new_total += lr.allowed_amount
                 blended_total = new_total.quantize(Decimal('0.01'))
                 applied_ids.append(rule_id)
-                traces.append(
+                msg = (
                     f"BLENDING_APPLIED(LINE/{blend_type}) rule_id={rule_id} "
                     f"primary={primary or 'ALL'} blended_total={blended_total}"
                 )
+                traces.append(msg)
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="BLENDING", rule_id=rule_id, message=msg,
+                ))
+            else:
+                exec_traces.append(TraceEntry(
+                    stage="CLAIM", phase="BLENDING", rule_id=rule_id,
+                    message=(
+                        f"rule_id={rule_id} scope=LINE primary={primary or 'ALL'} "
+                        f"→ NOT APPLIED (no matching lines)"
+                    ),
+                ))
 
     status = PricingStatus.BLENDING_APPLIED if applied_ids else None
-    return blended_total, applied_ids, status, traces
+    return blended_total, applied_ids, status, traces, exec_traces
 
 
 def _claim_header_to_pricing_input(claim_header: ClaimHeader) -> ClaimPricingInput:

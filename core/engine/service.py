@@ -226,4 +226,15 @@ class ClaimPricingService:
                 str(ctx.member.network_id) if ctx.member.network_id is not None else None
             ),
         )
+
+        contract = ProviderContract.objects.get(pk=ctx.contract_id)
+        claim_input.contract = contract
+
+        if ctx.version_id is not None:
+            version = resolve_contract_version(ctx.contract_id, ctx.version_id)
+            config = build_contract_pricing_config_from_db(
+                contract, version, ctx.service_date
+            )
+            return self.price_claim(claim_input, config=config)
+
         return self.price_claim(claim_input)

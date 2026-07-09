@@ -11,4 +11,8 @@ class DRGMethod(PricingMethodology):
         
         # NEW: Explicitly uses flat_rate as the Base Rate
         base_rate = context.flat_rate or Decimal("0.00")
-        return base_rate * context.drg_weight
+        raw = base_rate * context.drg_weight
+        context.methodology_events.append(
+            f"DRG base_rate={base_rate} drg_weight={context.drg_weight} raw={raw}"
+        )
+        return raw

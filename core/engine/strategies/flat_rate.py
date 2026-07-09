@@ -48,4 +48,7 @@ class FlatRateMethod(PricingMethodology):
         if not isinstance(units, Decimal):
             units = Decimal(str(units))
         price = rate * units
+        context.methodology_events.append(
+            f"FLAT_RATE base rate={rate} units={units} raw={price}"
+        )
         return self.apply_modifiers(context, price)

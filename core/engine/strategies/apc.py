@@ -29,4 +29,8 @@ class ApcPricingStrategy(PricingMethodology):
         relative_weight = apc.relative_weight or Decimal("0.00")
         conversion_factor = context.conversion_factor or Decimal("0.00")
         base_price = relative_weight * conversion_factor * context.input_data.units
+        context.methodology_events.append(
+            f"APC relative_weight={relative_weight} cf={conversion_factor} "
+            f"units={context.input_data.units} raw={base_price}"
+        )
         return self.apply_modifiers(context, base_price)

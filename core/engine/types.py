@@ -76,6 +76,9 @@ class PricingContext:
 
     # Modifiers
     modifier_adjustments: Dict[str, Decimal] = field(default_factory=dict)
+    # Observability-only: populated during strategy.calculate(); emitted by orchestrator trace.
+    modifier_events: List["ModifierTraceEvent"] = field(default_factory=list)
+    methodology_events: List[str] = field(default_factory=list)
 
     # Stop Loss
     is_stop_loss: bool = False
@@ -85,6 +88,14 @@ class PricingContext:
     # Phase 3: ASP pricing for drug methodology (when implemented)
     asp_price: Optional[Decimal] = None
     asp_payment_limit: Optional[Decimal] = None
+
+@dataclass
+class ModifierTraceEvent:
+    """Observability-only record for modifier application (no pricing effect)."""
+    code: str
+    status: str  # "APPLIED" | "IGNORED"
+    message: str
+
 
 # --- Staged execution state (Phase 1) ---
 @dataclass
@@ -268,6 +279,7 @@ class RawClaimInput:
     """
     billing_npi: str | None = None
     rendering_npi: str | None = None
+    facility_npi: str | None = None
     member_id: str | None = None
     service_date: date | None = None
     pricing_date: date | None = None

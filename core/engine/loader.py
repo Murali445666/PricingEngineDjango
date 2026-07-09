@@ -929,10 +929,11 @@ class PricingDataLoader:
             uncached_codes = []
             for mc in input_data.modifiers:
                 _mod_key = ('mod', mc)
-                if _mod_key in self._cache:
-                    if self._cache[_mod_key] is not None:
-                        context.modifier_adjustments[mc] = self._cache[_mod_key]
+                cached = self._cache.get(_mod_key)
+                if cached is not None:
+                    context.modifier_adjustments[mc] = cached
                 else:
+                    # Missing key or prior negative cache (None) — (re)query RefModifier.
                     uncached_codes.append(mc)
             if uncached_codes:
                 for m in RefModifier.objects.filter(modifier_code__in=uncached_codes):

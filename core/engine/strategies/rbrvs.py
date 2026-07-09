@@ -26,6 +26,10 @@ class RBRVSMethod(PricingMethodology):
                 + context.pe_rvu * context.gpci_pe
                 + context.mp_rvu * context.gpci_mp
             ) * multiplier * units
+            context.methodology_events.append(
+                f"RBRVS base via RVU×GPCI cf={multiplier} units={units} "
+                f"work={context.work_rvu} pe={context.pe_rvu} mp={context.mp_rvu} raw={base_price}"
+            )
             return self.apply_modifiers(context, base_price)
 
         # Fallback: use fee schedule base_rate when no RVU+GPCI
@@ -34,4 +38,14 @@ class RBRVSMethod(PricingMethodology):
                 f"Rate not found for {context.input_data.procedure_code}"
             )
         base_price = context.base_rate * multiplier * units
+        skip_parts = []
+        if not has_rvu:
+            skip_parts.append("RVU missing")
+        if not has_gpci:
+            skip_parts.append("GPCI null")
+        skip_reason = ", ".join(skip_parts) if skip_parts else "RVU×GPCI unavailable"
+        context.methodology_events.append(
+            f"RBRVS base via FEE_SCHEDULE base_rate={context.base_rate} cf={multiplier} "
+            f"units={units} raw={base_price} (RVU×GPCI skipped: {skip_reason})"
+        )
         return self.apply_modifiers(context, base_price)
