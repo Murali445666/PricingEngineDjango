@@ -92,7 +92,7 @@ export function ContractDetailPage() {
       )}
       {contract && rules && (
         <>
-          <div className="mb-4 mt-2 flex flex-wrap gap-2 border-b border-slate-200 pb-2">
+          <div className="mb-4 mt-2 flex flex-wrap items-center gap-2 border-b border-slate-200 pb-2">
             <button
               type="button"
               onClick={() => setTab('overview')}
@@ -115,6 +115,12 @@ export function ContractDetailPage() {
             >
               Explorer
             </button>
+            <Link
+              to={`/contracts/${contract.contract_id}/summary`}
+              className="ml-auto inline-flex items-center rounded border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Summary
+            </Link>
           </div>
 
           {tab === 'overview' && (

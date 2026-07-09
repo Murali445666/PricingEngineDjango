@@ -165,6 +165,34 @@ export interface ClaimSimulateRequest {
   contract_id: number
   version_id: number
   claim: ClaimSimulateClaimInput
+  /** Optional advisory validation — does not affect pricing */
+  member_id?: string
+  billing_npi?: string
+  rendering_npi?: string
+}
+
+export interface ClaimSimulateValidationProvider {
+  billing_org_id: string | null
+  network_status: string
+  network_tier: string | null
+  affiliation_verified: boolean
+}
+
+export interface ClaimSimulateValidationMember {
+  enrolled: boolean
+  lob: string | null
+  product_id: number | null
+}
+
+export interface ClaimSimulateValidation {
+  ran: boolean
+  resolution_mode?: 'RESOLVED' | 'OON' | 'NO_CONTRACT' | 'AMBIGUOUS' | null
+  resolved_contract_id?: number | null
+  selected_contract_id?: number
+  matches_selected_contract?: boolean | null
+  provider?: ClaimSimulateValidationProvider
+  member?: ClaimSimulateValidationMember
+  warnings?: string[]
 }
 
 export interface ClaimSimulateLineResult {
@@ -214,6 +242,8 @@ export interface ClaimSimulateResponse {
   result: ClaimPricingResult
   /** Present when API includes timing metadata */
   request_time_ms?: number
+  /** Advisory member/provider validation (optional inputs only) */
+  validation?: ClaimSimulateValidation | { ran: false }
 }
 
 // ── Step 12e: Contract Explorer (GET /api/contracts/<id>/explorer/) ───────────

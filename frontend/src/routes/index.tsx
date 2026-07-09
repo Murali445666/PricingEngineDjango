@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { MainLayout } from '@/app/MainLayout'
 import { PricingSandboxPage } from '@/features/pricing/PricingSandboxPage'
 import { ContractsPage } from '@/features/contracts/ContractsPage'
+import { ContractSummaryPage } from '@/features/contracts/ContractSummaryPage'
 import { ContractDetailPage } from '@/features/contracts/ContractDetailPage'
 import { ContractExplorerPage } from '@/features/contracts/ContractExplorerPage'
 import { RulesPage } from '@/features/rules/RulesPage'
@@ -25,6 +26,7 @@ export function AppRoutes() {
         <Route index element={<Navigate to="/pricing-sandbox" replace />} />
         <Route path="pricing-sandbox" element={<PricingSandboxPage />} />
         <Route path="contracts/:contractId/rules/new" element={<RuleCreatePage />} />
+        <Route path="contracts/:id/summary" element={<ContractSummaryPage />} />
         <Route path="contracts/:id" element={<ContractDetailPage />} />
         <Route path="contract-explorer" element={<ContractExplorerPage />} />
         <Route path="contracts" element={<ContractsPage />} />

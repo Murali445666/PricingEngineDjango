@@ -129,6 +129,18 @@ export function ContractsPage() {
           <span className="text-slate-300 text-xs">—</span>
         ),
     },
+    {
+      key: 'actions',
+      header: '',
+      render: (row) => (
+        <Link
+          to={`/contracts/${row.contract_id}/summary`}
+          className="text-primary-600 hover:underline text-sm"
+        >
+          Summary
+        </Link>
+      ),
+    },
   ]
 
   return (

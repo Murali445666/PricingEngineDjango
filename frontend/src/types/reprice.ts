@@ -17,6 +17,7 @@ export interface RepriceClaimLineInput {
 export interface RepriceClaimRequest {
   billing_npi: string
   rendering_npi?: string
+  facility_npi?: string
   member_id: string
   service_date: string
   claim_type?: 'professional' | 'institutional'
@@ -65,7 +66,7 @@ export interface RepriceClaimSuccessResponse {
 
 /** Resolution failure — HTTP 200, not an Axios error */
 export interface RepriceClaimResolutionFailureResponse {
-  status: 'OON' | 'NO_CONTRACT'
+  status: 'OON' | 'NO_CONTRACT' | 'AMBIGUOUS'
   message: string
   contract_id: null
   lines: []
@@ -78,7 +79,11 @@ export type RepriceClaimResponse =
 export function isRepriceResolutionFailure(
   response: RepriceClaimResponse,
 ): response is RepriceClaimResolutionFailureResponse {
-  return response.status === 'OON' || response.status === 'NO_CONTRACT'
+  return (
+    response.status === 'OON' ||
+    response.status === 'NO_CONTRACT' ||
+    response.status === 'AMBIGUOUS'
+  )
 }
 
 export function isRepriceSuccess(
@@ -115,7 +120,7 @@ export interface RepriceBatchSuccessItem {
 
 export interface RepriceBatchFailureItem {
   index: number
-  status: 'OON' | 'NO_CONTRACT' | 'ENGINE_ERROR'
+  status: 'OON' | 'NO_CONTRACT' | 'AMBIGUOUS' | 'ENGINE_ERROR'
   member_id: string
   message: string
   lines: []
@@ -134,6 +139,7 @@ export function isBatchResultFailure(
   return (
     row.status === 'OON' ||
     row.status === 'NO_CONTRACT' ||
+    row.status === 'AMBIGUOUS' ||
     row.status === 'ENGINE_ERROR'
   )
 }

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import { PageLayout, FormPanel, Button, Select, TextArea, Input, DataTable, StatusBadge } from '@/shared/ui'
+import { PageLayout, FormPanel, Button, Select, TextArea, Input, DataTable, StatusBadge, NetworkStatusBadge } from '@/shared/ui'
 import { fetchContracts, fetchContractExplorer } from '@/services/contractService'
 import { priceClaimSimulate } from '@/services/pricingService'
 import type { Contract } from '@/types'
@@ -90,6 +90,10 @@ export function ClaimSimulationPage() {
   const [versionId, setVersionId] = useState<string>('')
   const [claimJson, setClaimJson] = useState<string>(SAMPLE_CLAIM_JSON)
   const [jsonError, setJsonError] = useState<string | null>(null)
+  const [validateExpanded, setValidateExpanded] = useState(false)
+  const [memberId, setMemberId] = useState('')
+  const [billingNpi, setBillingNpi] = useState('')
+  const [renderingNpi, setRenderingNpi] = useState('')
   const [result, setResult] = useState<ClaimPricingResult | null>(null)
   const [lastSimulate, setLastSimulate] = useState<ClaimSimulateResponse | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
@@ -202,7 +206,14 @@ export function ClaimSimulationPage() {
       return
     }
     setApiError(null)
-    mutateSimulate.mutate({ contract_id: cId, version_id: vId, claim })
+    const payload: ClaimSimulateRequest = { contract_id: cId, version_id: vId, claim }
+    const trimmedMember = memberId.trim()
+    const trimmedBilling = billingNpi.trim()
+    const trimmedRendering = renderingNpi.trim()
+    if (trimmedMember) payload.member_id = trimmedMember
+    if (trimmedBilling) payload.billing_npi = trimmedBilling
+    if (trimmedRendering) payload.rendering_npi = trimmedRendering
+    mutateSimulate.mutate(payload)
   }
 
   const handleCopyCurl = async () => {
@@ -215,6 +226,12 @@ export function ClaimSimulationPage() {
       return
     }
     const payload: ClaimSimulateRequest = { contract_id: cId, version_id: vId, claim }
+    const trimmedMember = memberId.trim()
+    const trimmedBilling = billingNpi.trim()
+    const trimmedRendering = renderingNpi.trim()
+    if (trimmedMember) payload.member_id = trimmedMember
+    if (trimmedBilling) payload.billing_npi = trimmedBilling
+    if (trimmedRendering) payload.rendering_npi = trimmedRendering
     const curl = buildSimulateCurl(import.meta.env.VITE_API_BASE_URL ?? '', payload)
     try {
       await navigator.clipboard.writeText(curl)
@@ -292,6 +309,8 @@ export function ClaimSimulationPage() {
   ]
 
   const hasResult = result != null
+  const validationRan = lastSimulate?.validation?.ran === true
+  const validation = validationRan ? lastSimulate!.validation : null
   const lines = result?.lines ?? []
   const executionTrace = (result?.execution_trace ?? []).map((e, i) => ({ ...e, _idx: i }))
   const claimTrace = result?.claim_trace ?? []
@@ -353,6 +372,45 @@ export function ClaimSimulationPage() {
               </div>
             ) : (
               <div className="text-sm text-slate-500 pt-6">Select a contract to choose a version.</div>
+            )}
+          </div>
+          <div className="mt-4 rounded border border-slate-200 bg-slate-50/80">
+            <button
+              type="button"
+              className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-slate-800"
+              onClick={() => setValidateExpanded((v) => !v)}
+              aria-expanded={validateExpanded}
+            >
+              <span>Validate against member/provider (optional)</span>
+              <span className="text-slate-500">{validateExpanded ? '▾' : '▸'}</span>
+            </button>
+            {validateExpanded && (
+              <div className="border-t border-slate-200 px-4 pb-4 pt-3">
+                <p className="mb-3 text-xs text-slate-600">
+                  Advisory checks only — simulation still prices the selected contract and version.
+                  Leave blank to skip validation.
+                </p>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Input
+                    label="Member ID"
+                    value={memberId}
+                    onChange={(e) => setMemberId(e.target.value)}
+                    placeholder="e.g. MEM-S4-001"
+                  />
+                  <Input
+                    label="Billing NPI"
+                    value={billingNpi}
+                    onChange={(e) => setBillingNpi(e.target.value)}
+                    placeholder="e.g. BILLING-NPI-S4"
+                  />
+                  <Input
+                    label="Rendering NPI"
+                    value={renderingNpi}
+                    onChange={(e) => setRenderingNpi(e.target.value)}
+                    placeholder="Optional"
+                  />
+                </div>
+              </div>
             )}
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -466,6 +524,58 @@ export function ClaimSimulationPage() {
 
         {hasResult && (
           <>
+            {validationRan && validation && 'resolution_mode' in validation && (
+              <FormPanel
+                title="Validation"
+                description="Advisory member/provider checks — pricing used the selected contract regardless."
+              >
+                <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+                  <dt className="text-slate-500">Resolution mode</dt>
+                  <dd className="font-medium text-slate-900">{validation.resolution_mode ?? '—'}</dd>
+                  <dt className="text-slate-500">Selected contract</dt>
+                  <dd>{validation.selected_contract_id ?? '—'}</dd>
+                  <dt className="text-slate-500">Resolved contract</dt>
+                  <dd
+                    className={
+                      validation.matches_selected_contract === false
+                        ? 'font-medium text-amber-800'
+                        : 'text-slate-900'
+                    }
+                  >
+                    {validation.resolved_contract_id != null
+                      ? String(validation.resolved_contract_id)
+                      : '—'}
+                    {validation.matches_selected_contract === false && (
+                      <span className="ml-2 text-xs text-amber-700">(mismatch)</span>
+                    )}
+                  </dd>
+                  <dt className="text-slate-500">Network status</dt>
+                  <dd>
+                    <NetworkStatusBadge
+                      status={validation.provider?.network_status}
+                      tier={validation.provider?.network_tier}
+                    />
+                  </dd>
+                  <dt className="text-slate-500">Member enrolled</dt>
+                  <dd>{validation.member?.enrolled ? 'Yes' : 'No'}</dd>
+                  <dt className="text-slate-500">Member LOB</dt>
+                  <dd>{validation.member?.lob ?? '—'}</dd>
+                </dl>
+                {(validation.warnings?.length ?? 0) > 0 && (
+                  <ul className="mt-4 space-y-2" role="list">
+                    {validation.warnings!.map((warning, i) => (
+                      <li
+                        key={i}
+                        className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900"
+                      >
+                        {warning}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </FormPanel>
+            )}
+
             <FormPanel title="Summary">
               <dl className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
                 <dt className="text-slate-500">Status</dt>

@@ -89,6 +89,7 @@ function mergeLines(
 export function RepriceClaimPage() {
   const [billingNpi, setBillingNpi] = useState(DEMO_DEFAULTS.billing_npi)
   const [renderingNpi, setRenderingNpi] = useState(DEMO_DEFAULTS.rendering_npi)
+  const [facilityNpi, setFacilityNpi] = useState('')
   const [memberId, setMemberId] = useState(DEMO_DEFAULTS.member_id)
   const [serviceDate, setServiceDate] = useState(DEMO_DEFAULTS.service_date)
   const [claimType, setClaimType] = useState<'professional' | 'institutional'>(DEMO_DEFAULTS.claim_type)
@@ -96,7 +97,7 @@ export function RepriceClaimPage() {
     createEmptyClaimLine({ procedure_code: '99213', units: 1, billed_amount: '200.00' }),
   ])
   const [validationError, setValidationError] = useState<string | null>(null)
-  const [businessOutcome, setBusinessOutcome] = useState<'OON' | 'NO_CONTRACT' | null>(null)
+  const [businessOutcome, setBusinessOutcome] = useState<'OON' | 'NO_CONTRACT' | 'AMBIGUOUS' | null>(null)
 
   const mutation = useMutation({
     mutationFn: repriceClaim,
@@ -130,7 +131,7 @@ export function RepriceClaimPage() {
       return null
     }
     setValidationError(null)
-    return {
+    const payload: RepriceClaimRequest = {
       billing_npi: billingNpi.trim(),
       rendering_npi: renderingNpi.trim() || undefined,
       member_id: memberId.trim(),
@@ -143,6 +144,11 @@ export function RepriceClaimPage() {
         billed_amount: line.billed_amount === '' ? undefined : line.billed_amount,
       })),
     }
+    const trimmedFacility = facilityNpi.trim()
+    if (trimmedFacility) {
+      payload.facility_npi = trimmedFacility
+    }
+    return payload
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -210,6 +216,13 @@ export function RepriceClaimPage() {
                 value={renderingNpi}
                 onChange={(e) => setRenderingNpi(e.target.value)}
                 placeholder="RENDER-NPI-S4"
+                maxLength={15}
+              />
+              <Input
+                label="Facility NPI"
+                value={facilityNpi}
+                onChange={(e) => setFacilityNpi(e.target.value)}
+                placeholder="Optional — e.g. KEYSTONE-NPI03"
                 maxLength={15}
               />
               <Input

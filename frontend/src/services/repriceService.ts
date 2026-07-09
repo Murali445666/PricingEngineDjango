@@ -47,6 +47,7 @@ function normalizeClaimPayload(claim: RepriceClaimRequest): RepriceClaimRequest 
   return {
     ...claim,
     rendering_npi: claim.rendering_npi?.trim() || undefined,
+    facility_npi: claim.facility_npi?.trim() || undefined,
     lines: claim.lines.map((line) => ({
       ...line,
       billed_amount: line.billed_amount ?? undefined,
@@ -80,6 +81,7 @@ function mapBatchResultRow(raw: RawBatchResultRow): RepriceBatchResultRow {
   if (
     raw.status === 'OON' ||
     raw.status === 'NO_CONTRACT' ||
+    raw.status === 'AMBIGUOUS' ||
     raw.status === 'ENGINE_ERROR'
   ) {
     return {
