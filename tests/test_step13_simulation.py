@@ -310,3 +310,124 @@ class TestSimulateServiceLayer(TestCase):
         service = ClaimPricingService()
         result = service.price_claim_with_version(contract.pk, version.pk, claim_input)
         self.assertEqual(result.total_allowed, Decimal("200.00"))
+
+
+class TestSimulateOptionalValidation(APITestCase):
+    """Advisory validation on simulate — never blocks pricing."""
+
+    def setUp(self):
+        self.contract, self.version = _make_contract_and_version(
+            status=ContractVersion.VersionStatus.ACTIVE,
+            version_number=1,
+        )
+        _add_flat_rule(self.contract)
+
+    def test_validation_ran_false_without_member_or_billing(self):
+        url = reverse("price-claim-simulate")
+        payload = _simulate_payload(self.contract.pk, self.version.pk)
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(Decimal(str(data["result"]["total_allowed"])), Decimal("200.00"))
+        self.assertEqual(data["validation"], {"ran": False})
+
+    def test_validation_ran_true_does_not_change_pricing(self):
+        url = reverse("price-claim-simulate")
+        payload = _simulate_payload(self.contract.pk, self.version.pk)
+        payload["member_id"] = "UNKNOWN-MEMBER"
+        payload["billing_npi"] = "UNKNOWN-NPI"
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data["validation"]["ran"])
+        self.assertEqual(Decimal(str(data["result"]["total_allowed"])), Decimal("200.00"))
+
+    def test_validation_ambiguous_not_500(self):
+        from core.models import ContractProductScope
+        from members.models import Enrollment, Member
+        from products.models import (
+            LineOfBusiness,
+            Network,
+            PayerOrganization,
+            Product,
+            ProductNetworkConfig,
+        )
+        from providers.models import ProviderNetworkParticipation
+
+        payer = ProviderOrganization.objects.get(organization_id="SIM-PAYER")
+        prov = ProviderOrganization.objects.get(organization_id="SIM-PROV")
+        net = PayerNetwork.objects.get(network_id="SIM-NET")
+
+        products_payer = PayerOrganization.objects.create(
+            name="Sim Products Payer",
+            payer_id="SIM-PROD-PAYER",
+            payer_type="COMMERCIAL",
+        )
+        lob = LineOfBusiness.objects.create(code="COMMERCIAL", name="Commercial")
+        product = Product.objects.create(
+            payer=products_payer,
+            lob=lob,
+            name="Sim Product",
+            effective_date=date(2025, 1, 1),
+        )
+        network = Network.objects.create(
+            payer=products_payer,
+            name="Sim Products Network",
+            network_type="PPO",
+            network_code="SIM-PNET",
+            legacy_payer_network=net,
+        )
+        ProductNetworkConfig.objects.create(
+            product=product,
+            network=network,
+            claim_type="PROFESSIONAL",
+            effective_date=date(2025, 1, 1),
+        )
+        member = Member.objects.create(member_id="SIM-AMB-MEM", zip_code="60601")
+        Enrollment.objects.create(
+            member=member,
+            product=product,
+            effective_date=date(2025, 1, 1),
+        )
+        ProviderNetworkParticipation.objects.create(
+            organization=prov,
+            network=net,
+            network_new=network,
+            status="IN_NETWORK",
+            effective_date=date(2025, 1, 1),
+        )
+        prov.npi = "SIM-BILLING-NPI"
+        prov.save(update_fields=["npi"])
+
+        other = ProviderContract.objects.create(
+            contract_name="Sim Other Contract",
+            status="ACTIVE",
+            effective_start_date=date(2025, 1, 1),
+            provider_org=prov,
+            network=net,
+            line_of_business="COMMERCIAL",
+            contract_origin_type=ProviderContract.ContractOriginType.DIRECT,
+            resolution_priority=10,
+        )
+        ContractProductScope.objects.create(
+            contract=self.contract,
+            lob_code="COMMERCIAL",
+            product=product,
+            effective_date=date(2025, 1, 1),
+        )
+        ContractProductScope.objects.create(
+            contract=other,
+            lob_code="COMMERCIAL",
+            product=product,
+            effective_date=date(2025, 1, 1),
+        )
+
+        url = reverse("price-claim-simulate")
+        payload = _simulate_payload(self.contract.pk, self.version.pk)
+        payload["member_id"] = "SIM-AMB-MEM"
+        payload["billing_npi"] = "SIM-BILLING-NPI"
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["validation"]["resolution_mode"], "AMBIGUOUS")
+        self.assertEqual(Decimal(str(data["result"]["total_allowed"])), Decimal("200.00"))
