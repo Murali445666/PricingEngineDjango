@@ -37,3 +37,5 @@ frontend/build/
 .DS_Store
 .vscode/
 .cursor/frontend/tsconfig.tsbuildinfo
+
+frontend/tsconfig.tsbuildinfo
