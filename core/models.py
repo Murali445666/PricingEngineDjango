@@ -270,6 +270,14 @@ class ProviderContract(models.Model):
     # Relationships
     provider_org = models.ForeignKey(ProviderOrganization, on_delete=models.CASCADE, db_column='provider_org_id')
     network = models.ForeignKey(PayerNetwork, on_delete=models.CASCADE, db_column='network_id')
+    payer_org = models.ForeignKey(
+        'products.PayerOrganization',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='payer_org_id',
+        related_name='contracts',
+    )
 
     status = models.CharField(max_length=10, default='DRAFT')
     effective_start_date = models.DateField()
@@ -378,6 +386,79 @@ class ContractProductScope(models.Model):
         db_table = 'contract_product_scopes'
 
 
+class ContractScopeUnified(models.Model):
+    """
+    Gap E (§16): Unified contract scope — superset of ContractScope + ContractProductScope.
+    Resolver reads this table only; legacy tables remain for deprecation period.
+    """
+
+    class MigrationSource(models.TextChoices):
+        CONTRACT_SCOPE = 'CONTRACT_SCOPE', 'ContractScope'
+        PRODUCT_SCOPE = 'PRODUCT_SCOPE', 'ContractProductScope'
+
+    id = models.BigAutoField(primary_key=True)
+    contract = models.ForeignKey(
+        ProviderContract,
+        on_delete=models.CASCADE,
+        db_column='contract_id',
+        related_name='unified_scopes',
+    )
+    lob_code = models.CharField(max_length=50, null=True, blank=True)
+    product = models.ForeignKey(
+        'products.Product',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    specialty_code = models.ForeignKey(
+        RefSpecialty,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        to_field='specialty_code',
+        db_column='specialty_code',
+        related_name='unified_contract_scopes',
+    )
+    site_of_service = models.CharField(max_length=20, null=True, blank=True)
+    geo = models.ForeignKey(
+        RefGeoIndex,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        db_column='geo_id',
+        related_name='unified_contract_scopes',
+    )
+    effective_date = models.DateField(null=True, blank=True)
+    termination_date = models.DateField(null=True, blank=True)
+    priority = models.IntegerField(default=100)
+    migration_source = models.CharField(
+        max_length=20,
+        choices=MigrationSource.choices,
+        db_index=True,
+    )
+    migration_source_id = models.BigIntegerField(db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        managed = True
+        db_table = 'contract_scopes_unified'
+        ordering = ['contract', 'priority', 'id']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['migration_source', 'migration_source_id'],
+                name='contract_scope_unified_source_uniq',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=['contract', 'lob_code'], name='cs_unified_cntr_lob_idx'),
+            models.Index(fields=['contract', 'product'], name='cs_unified_cntr_prod_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f'UnifiedScope(contract={self.contract_id} lob={self.lob_code!r} product={self.product_id})'
+
+
 class ContractProviderParticipation(models.Model):
     """Phase 8: Which providers (org or NPI) participate in a contract and when."""
     id = models.BigAutoField(primary_key=True)
@@ -425,6 +506,112 @@ class ContractProviderParticipation(models.Model):
         from django.core.exceptions import ValidationError
         if not self.organization_id and not (self.npi and str(self.npi).strip()):
             raise ValidationError('At least one of organization or npi must be set.')
+
+
+class ContractDocument(models.Model):
+    """Provenance layer: links a contract to its source paper, exhibits, and amendments."""
+
+    class DocType(models.TextChoices):
+        AGREEMENT = 'AGREEMENT', 'Agreement'
+        RATE_EXHIBIT = 'RATE_EXHIBIT', 'Rate Exhibit'
+        AMENDMENT = 'AMENDMENT', 'Amendment'
+        OTHER = 'OTHER', 'Other'
+
+    id = models.BigAutoField(primary_key=True)
+    contract = models.ForeignKey(
+        ProviderContract,
+        on_delete=models.CASCADE,
+        db_column='contract_id',
+        related_name='documents',
+    )
+    doc_type = models.CharField(max_length=20, choices=DocType.choices)
+    reference = models.CharField(
+        max_length=500,
+        help_text='Path, URL, or external identifier for the source document.',
+    )
+    title = models.CharField(max_length=255)
+    notes = models.TextField(null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'contract_documents'
+        ordering = ['contract', '-uploaded_at']
+
+    def __str__(self) -> str:
+        return f"{self.title} ({self.doc_type})"
+
+
+class ContractCoveredEntity(models.Model):
+    """Layer 3: which orgs, facilities, and providers a contract covers."""
+
+    class EntityType(models.TextChoices):
+        ORG = 'ORG', 'Organization'
+        FACILITY = 'FACILITY', 'Facility'
+        PROVIDER = 'PROVIDER', 'Provider'
+
+    id = models.BigAutoField(primary_key=True)
+    contract = models.ForeignKey(
+        ProviderContract,
+        on_delete=models.CASCADE,
+        db_column='contract_id',
+        related_name='covered_entities',
+    )
+    entity_type = models.CharField(max_length=20, choices=EntityType.choices)
+    organization = models.ForeignKey(
+        ProviderOrganization,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        db_column='organization_id',
+        related_name='contract_covered_entities',
+    )
+    facility = models.ForeignKey(
+        'providers.Facility',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        db_column='facility_id',
+        related_name='contract_covered_entities',
+    )
+    provider = models.ForeignKey(
+        'providers.Provider',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        db_column='provider_id',
+        related_name='contract_covered_entities',
+    )
+    is_primary = models.BooleanField(default=False)
+    effective_start_date = models.DateField(null=True, blank=True)
+    effective_end_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'contract_covered_entities'
+        indexes = [
+            models.Index(fields=['contract', 'entity_type'], name='cce_contract_entity_idx'),
+            models.Index(fields=['organization'], name='cce_organization_idx'),
+            models.Index(fields=['facility'], name='cce_facility_idx'),
+            models.Index(fields=['provider'], name='cce_provider_idx'),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    Q(entity_type='ORG', organization__isnull=False, facility__isnull=True, provider__isnull=True)
+                    | Q(entity_type='FACILITY', facility__isnull=False, organization__isnull=True, provider__isnull=True)
+                    | Q(entity_type='PROVIDER', provider__isnull=False, organization__isnull=True, facility__isnull=True)
+                ),
+                name='cce_entity_type_matches_fk',
+            ),
+        ]
+
+    def __str__(self) -> str:
+        if self.entity_type == self.EntityType.ORG:
+            return f"ORG {self.organization_id} on contract {self.contract_id}"
+        if self.entity_type == self.EntityType.FACILITY:
+            return f"FACILITY {self.facility_id} on contract {self.contract_id}"
+        return f"PROVIDER {self.provider_id} on contract {self.contract_id}"
 
 
 class ContractVersion(models.Model):
@@ -482,6 +669,77 @@ class ContractVersion(models.Model):
                 name='contract_version_prod_tier_idx',
             ),
         ]
+
+
+class ContractArrangement(models.Model):
+    """Layer 5: named, typed pricing arrangement grouping rules under a contract."""
+
+    class ArrangementType(models.TextChoices):
+        FEE_SCHEDULE = 'FEE_SCHEDULE', 'Fee Schedule'
+        DRG_CASE_RATE = 'DRG_CASE_RATE', 'DRG Case Rate'
+        PER_DIEM = 'PER_DIEM', 'Per Diem'
+        APC = 'APC', 'APC'
+        ANESTHESIA = 'ANESTHESIA', 'Anesthesia'
+        DRUG_ASP = 'DRUG_ASP', 'Drug ASP'
+        CAPITATION = 'CAPITATION', 'Capitation'
+        BUNDLED = 'BUNDLED', 'Bundled'
+        VALUE_BASED = 'VALUE_BASED', 'Value Based'
+
+    id = models.BigAutoField(primary_key=True)
+    contract = models.ForeignKey(
+        ProviderContract,
+        on_delete=models.CASCADE,
+        db_column='contract_id',
+        related_name='arrangements',
+    )
+    name = models.CharField(max_length=150)
+    arrangement_type = models.CharField(max_length=30, choices=ArrangementType.choices)
+    claim_type = models.CharField(max_length=20, null=True, blank=True)
+    effective_start_date = models.DateField(null=True, blank=True)
+    effective_end_date = models.DateField(null=True, blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=ContractVersion.VersionStatus.choices,
+        default=ContractVersion.VersionStatus.DRAFT,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'contract_arrangements'
+        ordering = ['contract', 'name']
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.arrangement_type})"
+
+
+class ContractAmendment(models.Model):
+    """Layer 6/2: first-class, dated contract amendments."""
+
+    id = models.BigAutoField(primary_key=True)
+    contract = models.ForeignKey(
+        ProviderContract,
+        on_delete=models.CASCADE,
+        db_column='contract_id',
+        related_name='amendments',
+    )
+    amendment_number = models.CharField(max_length=50)
+    effective_date = models.DateField()
+    description = models.TextField()
+    what_changed = models.JSONField(null=True, blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=ContractVersion.VersionStatus.choices,
+        default=ContractVersion.VersionStatus.DRAFT,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'contract_amendments'
+        ordering = ['contract', '-effective_date']
+
+    def __str__(self) -> str:
+        return f"Amendment {self.amendment_number} ({self.effective_date})"
 
 
 class ContractTerm(models.Model):
@@ -1385,7 +1643,15 @@ class PricingRule(models.Model):
         related_name='pricing_rules',
     )
     rule_name = models.CharField(max_length=150, null=True, blank=True)
-    
+    arrangement = models.ForeignKey(
+        ContractArrangement,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='arrangement_id',
+        related_name='pricing_rules',
+    )
+
     # Logic Columns
     rule_type = models.CharField(max_length=10)  # 'BASE', 'ADJUSTMENT'
     # Phase 2B: null/blank = inherit from ContractMethodology; set = override contract methodology
@@ -1641,6 +1907,31 @@ class ClaimResolutionLog(models.Model):
         ]
 
 
+class ContractResolutionException(models.Model):
+    """Analyst review queue for failed or ambiguous contract resolution (Phase D3)."""
+
+    id = models.BigAutoField(primary_key=True)
+    trace_id = models.UUIDField(db_index=True, null=True, blank=True)
+    status = models.CharField(max_length=30)
+    reason = models.TextField()
+    candidates = models.JSONField(default=list)
+    gathered_inputs = models.JSONField(default=dict)
+    service_date = models.DateField(null=True, blank=True)
+    is_reviewed = models.BooleanField(default=False)
+    review_notes = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'contract_resolution_exceptions'
+        indexes = [
+            models.Index(fields=['status', 'is_reviewed'], name='cre_status_reviewed_idx'),
+            models.Index(fields=['trace_id'], name='cre_trace_id_idx'),
+        ]
+
+    def __str__(self) -> str:
+        return f'{self.status} @ {self.created_at:%Y-%m-%d}'
+
+
 # ==========================================
 # Step 10: Validation Result (audit table)
 # ==========================================
@@ -1678,4 +1969,165 @@ class ValidationResult(models.Model):
 
     def __str__(self):
         return f"[{self.severity}] {self.conflict_type} – contract {self.contract_id}"
+
+
+# ==========================================
+# Gap A (§16): Published schedule rate linkage
+# ==========================================
+
+class PublishedFeeSchedule(models.Model):
+    """Named external fee schedule (MPFS, MSDRG, APC, or CUSTOM). Source for ContractRateBasis."""
+
+    class BasisType(models.TextChoices):
+        MPFS = 'MPFS', 'MPFS'
+        MSDRG = 'MSDRG', 'MSDRG'
+        APC = 'APC', 'APC'
+        CUSTOM = 'CUSTOM', 'Custom'
+
+    id = models.BigAutoField(primary_key=True)
+    name = models.CharField(max_length=150)
+    basis_type = models.CharField(max_length=20, choices=BasisType.choices)
+    year = models.IntegerField()
+    source = models.CharField(max_length=100, blank=True, default='')
+    effective_start_date = models.DateField()
+    effective_end_date = models.DateField(null=True, blank=True)
+    # Optional national base / conversion factor for MPFS CF, DRG base, or APC CF when resolving.
+    base_rate = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'published_fee_schedules'
+        ordering = ['-year', 'name']
+        indexes = [
+            models.Index(fields=['basis_type', 'year'], name='pub_sched_type_year_idx'),
+        ]
+
+    def __str__(self):
+        return f'{self.name} ({self.basis_type} {self.year})'
+
+
+class PublishedFeeScheduleRate(models.Model):
+    """Code-level rate for CUSTOM published schedules only."""
+
+    id = models.BigAutoField(primary_key=True)
+    schedule = models.ForeignKey(
+        PublishedFeeSchedule,
+        on_delete=models.CASCADE,
+        db_column='schedule_id',
+        related_name='rates',
+    )
+    code = models.CharField(max_length=20)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    unit = models.CharField(max_length=20, null=True, blank=True)
+
+    class Meta:
+        managed = True
+        db_table = 'published_fee_schedule_rates'
+        indexes = [
+            models.Index(fields=['schedule', 'code'], name='pub_sched_rate_sched_code_idx'),
+        ]
+
+    def __str__(self):
+        return f'{self.schedule_id}:{self.code}={self.amount}'
+
+
+class ContractRateBasis(models.Model):
+    """Authoring source: rule rate = percentage × published schedule lookup (materialized to concrete fields)."""
+
+    id = models.BigAutoField(primary_key=True)
+    pricing_rule = models.OneToOneField(
+        PricingRule,
+        on_delete=models.CASCADE,
+        db_column='rule_id',
+        related_name='rate_basis',
+    )
+    schedule = models.ForeignKey(
+        PublishedFeeSchedule,
+        on_delete=models.PROTECT,
+        db_column='schedule_id',
+        related_name='contract_bases',
+    )
+    percentage = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        help_text='Percent of schedule amount, e.g. 120.00 = 120%',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        managed = True
+        db_table = 'contract_rate_bases'
+        verbose_name_plural = 'contract rate bases'
+
+    def __str__(self):
+        return f'Rule {self.pricing_rule_id}: {self.percentage}% of {self.schedule}'
+
+    def readable_basis(self) -> str:
+        """Plain-language basis for summary panel, e.g. '120% of MPFS 2025'."""
+        pct = self.percentage
+        if pct == pct.to_integral():
+            pct_str = str(int(pct))
+        else:
+            pct_str = format(pct, 'f').rstrip('0').rstrip('.')
+        return f'{pct_str}% of {self.schedule.name}'
+
+
+class ContractEscalator(models.Model):
+    """Contract-level annual escalator applied during rate materialization (Gap B §16)."""
+
+    id = models.BigAutoField(primary_key=True)
+    contract = models.ForeignKey(
+        ProviderContract,
+        on_delete=models.CASCADE,
+        db_column='contract_id',
+        related_name='escalators',
+    )
+    version = models.ForeignKey(
+        'ContractVersion',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        db_column='version_id',
+        related_name='escalators',
+        help_text='Null = applies to all rate-basis rules on the contract.',
+    )
+    annual_percentage = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        help_text='Annual compounding increase, e.g. 3.00 = 3%/yr',
+    )
+    cap_percentage = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text='Optional max cumulative increase from base_year, e.g. 10.00 = 10% total cap',
+    )
+    base_year = models.IntegerField(help_text='Anchor year for the base rate before escalation')
+    effective_start_date = models.DateField()
+    effective_end_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        managed = True
+        db_table = 'contract_escalators'
+        ordering = ['contract', '-effective_start_date']
+        indexes = [
+            models.Index(fields=['contract', 'effective_start_date'], name='contract_esc_cntr_start_idx'),
+        ]
+
+    def __str__(self):
+        scope = f'v{self.version_id}' if self.version_id else 'contract-wide'
+        return f'{self.contract_id} {scope}: +{self.annual_percentage}%/yr from {self.base_year}'
+
+    def readable_suffix(self) -> str:
+        """Summary suffix, e.g. '+3%/yr'."""
+        pct = self.annual_percentage
+        if pct == pct.to_integral():
+            pct_str = str(int(pct))
+        else:
+            pct_str = format(pct, 'f').rstrip('0').rstrip('.')
+        return f'+{pct_str}%/yr'
 
