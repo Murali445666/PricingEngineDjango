@@ -2,6 +2,7 @@ from django.urls import path
 from core.api.views import (
     ContractListView,
     ContractDetailView,
+    ContractSummaryView,
     ContractMethodologyListCreateView,
     ContractRuleListView,
     ContractSnapshotView,
@@ -44,6 +45,9 @@ from core.api.views import (
     ResolveContextView,
     RepriceClaimView,
     RepriceClaimBatchView,
+    ResolutionLogView,
+    ResolutionExceptionListView,
+    ResolutionExceptionDetailView,
     ProviderListView,
     ProviderNetworkStatusView,
     MemberEnrollmentView,
@@ -53,6 +57,7 @@ from core.api.views import (
 urlpatterns = [
     path('contracts/', ContractListView.as_view(), name='api-contract-list'),
     path('contracts/<int:pk>/', ContractDetailView.as_view(), name='api-contract-detail'),
+    path('contracts/<int:pk>/summary/', ContractSummaryView.as_view(), name='api-contract-summary'),
     path('contracts/<int:pk>/explorer/', ContractExplorerView.as_view(), name='api-contract-explorer'),
     path('contracts/<int:pk>/methodologies/', ContractMethodologyListCreateView.as_view(), name='api-contract-methodologies'),
     path('contracts/<int:pk>/rules/', ContractRuleListView.as_view(), name='api-contract-rules'),
@@ -99,6 +104,9 @@ urlpatterns = [
     path('resolve-context/', ResolveContextView.as_view(), name='api-resolve-context'),
     path('reprice-claim/', RepriceClaimView.as_view(), name='api-reprice-claim'),
     path('reprice-claim-batch/', RepriceClaimBatchView.as_view(), name='api-reprice-claim-batch'),
+    path('resolution-log/<uuid:trace_id>/', ResolutionLogView.as_view(), name='api-resolution-log'),
+    path('resolution-exceptions/', ResolutionExceptionListView.as_view(), name='api-resolution-exceptions'),
+    path('resolution-exceptions/<int:pk>/', ResolutionExceptionDetailView.as_view(), name='api-resolution-exception-detail'),
     path('providers/', ProviderListView.as_view(), name='api-provider-list'),
     path(
         'providers/<int:provider_id>/network-status/',

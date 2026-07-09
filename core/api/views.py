@@ -27,6 +27,7 @@ from core.models import (
     ContractOutlierRule,
     ContractStopLossRule,
     ClaimHeader,
+    ClaimResolutionLog,
     ValidationResult,
     ContractVersion,
     ContractVersionAudit,
@@ -125,6 +126,21 @@ class ContractDetailView(APIView):
         )
         serializer = ContractDetailSerializer(contract)
         return Response(serializer.data)
+
+
+class ContractSummaryView(APIView):
+    """GET /api/contracts/<pk>/summary/ — read-only layered contract summary (§15)."""
+
+    def get(self, request, pk):
+        from django.core.exceptions import ObjectDoesNotExist
+
+        from core.services.contract_summary import ContractSummaryService
+
+        try:
+            payload = ContractSummaryService.build(pk)
+        except ObjectDoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(payload)
 
 
 class ContractMethodologyListCreateView(APIView):
@@ -773,8 +789,21 @@ class PriceClaimSimulateView(APIView):
             "version_id": version_id,
             "simulation": True,
             "result": ClaimPricingResultSerializer(result).data,
+            "validation": self._build_validation_block(data, contract_id, claim_data),
         }
         return Response(response_data, status=status.HTTP_200_OK)
+
+    @staticmethod
+    def _build_validation_block(data, contract_id, claim_data):
+        from core.services.simulate_validation import build_simulate_validation
+
+        return build_simulate_validation(
+            selected_contract_id=contract_id,
+            member_id=data.get('member_id'),
+            billing_npi=data.get('billing_npi'),
+            rendering_npi=data.get('rendering_npi'),
+            claim_data=claim_data,
+        )
 
 
 class ClaimListCreateView(APIView):
@@ -823,7 +852,7 @@ class ClaimDetailView(APIView):
 
 
 class ClaimPriceView(APIView):
-    """GET or POST /api/claims/<id>/price/ — run pricing on stored claim (Phase 5B)."""
+    """GET or POST /api/claims/<id>/price/ — context-resolved pricing (Path C)."""
 
     def get(self, request, pk):
         return self._price_claim(pk)
@@ -832,16 +861,59 @@ class ClaimPriceView(APIView):
         return self._price_claim(pk)
 
     def _price_claim(self, pk):
-        # N+1 ELIMINATED (H9): prefetch_related('lines') loads all lines in one query;
-        # without this, _claim_header_to_pricing_input triggers a separate query per access.
+        import logging
+
+        from core.services.contract_resolution_service import (
+            ContractResolutionService,
+            RESOLUTION_PROCEEDS_TO_PRICING,
+        )
+        from core.services.pricing_context_resolver import PricingContextResolver
+        from core.services.resolution_exception import (
+            persist_resolution_exception,
+            resolution_failure_payload,
+        )
+
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            'ClaimPriceView uses PricingContextResolver (Path C); '
+            'legacy resolve_contract_for_claim() in loader.py is deprecated and unused.'
+        )
+
         claim = get_object_or_404(
-            ClaimHeader.objects.select_related('contract').prefetch_related('lines'),
+            ClaimHeader.objects.select_related(
+                'contract', 'provider_org', 'rendering_provider'
+            ).prefetch_related('lines'),
             pk=pk,
         )
-        service = ClaimPricingService()
-        result = service.price_stored_claim(claim)
-        serializer = ClaimPricingResultSerializer(result)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        raw = _build_raw_from_claim(claim)
+        member_context = bool(raw.member_id)
+        resolution = ContractResolutionService().resolve(raw, member_context=member_context)
+
+        if resolution.status not in RESOLUTION_PROCEEDS_TO_PRICING:
+            persist_resolution_exception(resolution)
+            payload = resolution_failure_payload(resolution)
+            return Response(payload, status=status.HTTP_200_OK)
+
+        ctx = PricingContextResolver().context_from_resolution(raw, resolution)
+
+        try:
+            result, resolution_log = _price_with_resolved_context(
+                ctx,
+                claim_header=claim,
+                resolution_path=ClaimResolutionLog.ResolutionPath.CONTEXT_RESOLVER,
+                is_repricing=False,
+            )
+        except Exception as e:
+            return Response(
+                {'status': 'ENGINE_ERROR', 'message': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        response_data = ClaimPricingResultSerializer(result).data
+        response_data['trace_id'] = ctx.trace_id
+        response_data['resolution_log_id'] = resolution_log.id if resolution_log else None
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class BulkPriceClaimsView(APIView):
@@ -1247,9 +1319,13 @@ class ResolveContextView(APIView):
         from datetime import date as date_cls
 
         from core.engine.types import RawClaimInput
-        from core.services.pricing_context_resolver import (
-            ContractResolutionError,
-            PricingContextResolver,
+        from core.services.contract_resolution_service import (
+            ContractResolutionService,
+            RESOLUTION_PROCEEDS_TO_PRICING,
+        )
+        from core.services.pricing_context_resolver import PricingContextResolver
+        from core.services.resolution_exception import (
+            persist_resolution_exception,
         )
 
         billing_npi = request.query_params.get('billing_npi')
@@ -1277,49 +1353,57 @@ class ResolveContextView(APIView):
             lines=[],
         )
 
-        resolver = PricingContextResolver()
-        try:
-            if member_id:
-                ctx = resolver.resolve(raw)
-            else:
-                ctx = resolver.resolve_provider_only(raw)
+        resolution_svc = ContractResolutionService()
+        member_context = bool(member_id)
+        resolution = resolution_svc.resolve(raw, member_context=member_context)
+
+        if resolution.status not in RESOLUTION_PROCEEDS_TO_PRICING:
+            persist_resolution_exception(resolution)
             return Response({
-                'resolution_mode': ctx.resolution_mode,
-                'contract_id': ctx.contract_id,
-                'version_id': ctx.version_id,
-                'claim_type': ctx.claim_type,
-                'service_date': str(ctx.service_date),
-                'provider': {
-                    'billing_org_id': ctx.provider.billing_org_id,
-                    'rendering_provider_id': ctx.provider.rendering_provider_id,
-                    'rendering_provider_specialty': ctx.provider.rendering_provider_specialty,
-                    'network_status': ctx.provider.network_status,
-                    'network_tier': ctx.provider.network_tier,
-                    'affiliation_verified': ctx.provider.affiliation_verified,
-                },
-                'member': {
-                    'member_id': ctx.member.member_id,
-                    'product_id': ctx.member.product_id,
-                    'lob': ctx.member.lob,
-                    'network_id': ctx.member.network_id,
-                    'locality_zip': ctx.member.locality_zip,
-                    'enrollment_id': ctx.member.enrollment_id,
-                },
+                'resolution_mode': resolution.status,
+                'message': resolution.reason,
+                'contract_id': resolution.contract_id,
+                'version_id': resolution.version_id,
+                'candidates': list(resolution.candidates or []),
             })
-        except ContractResolutionError as e:
-            return Response({
-                'resolution_mode': 'OON' if e.is_oon else 'NO_CONTRACT',
-                'error': str(e),
-                'contract_id': None,
-            }, status=200)
+
+        ctx = PricingContextResolver().context_from_resolution(raw, resolution)
+        return Response({
+            'resolution_mode': ctx.resolution_mode,
+            'contract_id': ctx.contract_id,
+            'version_id': ctx.version_id,
+            'claim_type': ctx.claim_type,
+            'service_date': str(ctx.service_date),
+            'provider': {
+                'billing_org_id': ctx.provider.billing_org_id,
+                'rendering_provider_id': ctx.provider.rendering_provider_id,
+                'rendering_provider_specialty': ctx.provider.rendering_provider_specialty,
+                'network_status': ctx.provider.network_status,
+                'network_tier': ctx.provider.network_tier,
+                'affiliation_verified': ctx.provider.affiliation_verified,
+            },
+            'member': {
+                'member_id': ctx.member.member_id,
+                'product_id': ctx.member.product_id,
+                'lob': ctx.member.lob,
+                'network_id': ctx.member.network_id,
+                'locality_zip': ctx.member.locality_zip,
+                'enrollment_id': ctx.member.enrollment_id,
+            },
+        })
 
 
 # --- Stage 5: Context-driven pricing APIs ---
 
 from core.engine.types import RawClaimInput
-from core.services.pricing_context_resolver import (
-    PricingContextResolver,
-    ContractResolutionError,
+from core.services.contract_resolution_service import (
+    ContractResolutionService,
+    RESOLUTION_PROCEEDS_TO_PRICING,
+)
+from core.services.pricing_context_resolver import PricingContextResolver
+from core.services.resolution_exception import (
+    persist_resolution_exception,
+    resolution_failure_payload,
 )
 from core.api.serializers import (
     RepriceClaimRequestSerializer,
@@ -1344,26 +1428,26 @@ class RepriceClaimView(APIView):
         raw = RawClaimInput(
             billing_npi=data['billing_npi'],
             rendering_npi=data.get('rendering_npi') or None,
+            facility_npi=data.get('facility_npi') or None,
             member_id=data['member_id'],
             service_date=data['service_date'],
             claim_type=data['claim_type'],
             lines=[dict(line) for line in data['lines']],
         )
 
-        resolver = PricingContextResolver()
-        try:
-            ctx = resolver.resolve(raw)
-        except ContractResolutionError as e:
-            return Response({
-                'status': 'OON' if e.is_oon else 'NO_CONTRACT',
-                'message': str(e),
-                'contract_id': None,
-                'lines': [],
-            }, status=200)
+        resolution = ContractResolutionService().resolve(raw, member_context=True)
+        if resolution.status not in RESOLUTION_PROCEEDS_TO_PRICING:
+            persist_resolution_exception(resolution)
+            return Response(resolution_failure_payload(resolution), status=200)
 
-        svc = ClaimPricingService()
+        ctx = PricingContextResolver().context_from_resolution(raw, resolution)
+
         try:
-            result = svc.price_claim_from_context(ctx)
+            result, resolution_log = _price_with_resolved_context(
+                ctx,
+                resolution_path=ClaimResolutionLog.ResolutionPath.CONTEXT_RESOLVER,
+                is_repricing=True,
+            )
         except Exception as e:
             return Response({'status': 'ENGINE_ERROR', 'message': str(e)}, status=500)
 
@@ -1389,6 +1473,7 @@ class RepriceClaimView(APIView):
             },
             'lines': _serialize_result_lines(result),
             'trace_id': ctx.trace_id,
+            'resolution_log_id': resolution_log.id if resolution_log else None,
         })
 
 
@@ -1406,22 +1491,36 @@ class RepriceClaimBatchView(APIView):
             return Response({'errors': serializer.errors}, status=400)
 
         claims_data = serializer.validated_data['claims']
-        resolver = PricingContextResolver()
-        svc = ClaimPricingService()
+        resolution_svc = ContractResolutionService()
+        context_resolver = PricingContextResolver()
         results = []
 
         for i, claim_data in enumerate(claims_data):
             raw = RawClaimInput(
                 billing_npi=claim_data['billing_npi'],
                 rendering_npi=claim_data.get('rendering_npi') or None,
+                facility_npi=claim_data.get('facility_npi') or None,
                 member_id=claim_data['member_id'],
                 service_date=claim_data['service_date'],
                 claim_type=claim_data['claim_type'],
                 lines=[dict(line) for line in claim_data['lines']],
             )
             try:
-                ctx = resolver.resolve(raw)
-                result = svc.price_claim_from_context(ctx)
+                resolution = resolution_svc.resolve(raw, member_context=True)
+                if resolution.status not in RESOLUTION_PROCEEDS_TO_PRICING:
+                    persist_resolution_exception(resolution)
+                    row = resolution_failure_payload(resolution)
+                    row['index'] = i
+                    row['member_id'] = claim_data['member_id']
+                    results.append(row)
+                    continue
+
+                ctx = context_resolver.context_from_resolution(raw, resolution)
+                result, resolution_log = _price_with_resolved_context(
+                    ctx,
+                    resolution_path=ClaimResolutionLog.ResolutionPath.CONTEXT_RESOLVER,
+                    is_repricing=True,
+                )
                 line_status = result.status
                 if hasattr(line_status, 'value'):
                     line_status = line_status.value
@@ -1433,14 +1532,7 @@ class RepriceClaimBatchView(APIView):
                     'member_id': claim_data['member_id'],
                     'lines': _serialize_result_lines(result),
                     'trace_id': ctx.trace_id,
-                })
-            except ContractResolutionError as e:
-                results.append({
-                    'index': i,
-                    'status': 'OON' if e.is_oon else 'NO_CONTRACT',
-                    'member_id': claim_data['member_id'],
-                    'message': str(e),
-                    'lines': [],
+                    'resolution_log_id': resolution_log.id if resolution_log else None,
                 })
             except Exception as e:
                 results.append({
@@ -1689,6 +1781,158 @@ class ProductListView(APIView):
                 }
                 for p in qs[offset: offset + page_size]
             ],
+        })
+
+
+def _build_raw_from_claim(claim: ClaimHeader) -> RawClaimInput:
+    """Build RawClaimInput from a stored ClaimHeader for context resolution."""
+    from decimal import Decimal
+
+    from core.engine.config import ClaimLineInput
+
+    billing_npi = claim.billing_npi or claim.npi
+    if not billing_npi and claim.provider_org_id:
+        billing_npi = getattr(claim.provider_org, 'npi', None)
+
+    rendering_npi = None
+    if claim.rendering_provider_id:
+        rendering_npi = claim.rendering_provider.npi
+
+    lines = []
+    for line in claim.lines.all().order_by('sequence', 'line_id'):
+        modifiers = line.modifiers if isinstance(line.modifiers, list) else []
+        cost = getattr(line, 'cost_amount', None)
+        lines.append(
+            {
+                'procedure_code': line.procedure_code,
+                'billed_amount': line.billed_amount,
+                'units': line.units,
+                'modifiers': modifiers,
+                'cost_amount': Decimal(str(cost)) if cost is not None else None,
+            }
+        )
+
+    return RawClaimInput(
+        billing_npi=billing_npi,
+        rendering_npi=rendering_npi,
+        member_id=claim.member_id,
+        service_date=claim.service_date,
+        pricing_date=claim.pricing_date or claim.service_date,
+        claim_type=(claim.claim_type or 'professional').lower(),
+        lines=lines,
+    )
+
+
+def _price_with_resolved_context(
+    ctx,
+    *,
+    resolution_path: str,
+    claim_header: ClaimHeader | None = None,
+    is_repricing: bool = False,
+):
+    from core.services.resolution_log import write_claim_resolution_log
+
+    svc = ClaimPricingService()
+    result = svc.price_claim_from_context(ctx)
+    resolution_log = None
+    if ctx.version_id is not None:
+        resolution_log = write_claim_resolution_log(
+            ctx,
+            resolution_path,
+            claim_header=claim_header,
+            is_repricing=is_repricing,
+        )
+    return result, resolution_log
+
+
+class ResolutionLogView(APIView):
+    """GET /api/resolution-log/<trace_id>/ — fetch persisted resolution audit row(s)."""
+
+    def get(self, request, trace_id):
+        logs = ClaimResolutionLog.objects.filter(
+            trace_id=trace_id
+        ).select_related(
+            'resolved_contract', 'resolved_version', 'claim_header'
+        ).order_by('resolved_at')
+
+        if not logs.exists():
+            return Response({'error': 'No resolution log found for trace_id.'}, status=404)
+
+        payload = []
+        for log in logs:
+            payload.append({
+                'id': log.id,
+                'trace_id': str(log.trace_id) if log.trace_id else None,
+                'claim_header_id': log.claim_header_id,
+                'resolved_contract_id': log.resolved_contract_id,
+                'resolved_version_id': log.resolved_version_id,
+                'resolution_path': log.resolution_path,
+                'service_date': str(log.service_date),
+                'resolver_inputs': log.resolver_inputs,
+                'is_repricing': log.is_repricing,
+                'resolved_at': log.resolved_at.isoformat(),
+            })
+        return Response({'count': len(payload), 'results': payload})
+
+
+class ResolutionExceptionListView(APIView):
+    """GET /api/resolution-exceptions/ — analyst review queue for failed resolutions."""
+
+    def get(self, request):
+        from core.models import ContractResolutionException
+
+        qs = ContractResolutionException.objects.all().order_by('-created_at')
+        status_filter = request.query_params.get('status')
+        reviewed = request.query_params.get('is_reviewed')
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+        if reviewed is not None:
+            qs = qs.filter(is_reviewed=reviewed.lower() in ('true', '1', 'yes'))
+
+        page_size = min(int(request.query_params.get('page_size', 25)), 100)
+        page = max(int(request.query_params.get('page', 1)), 1)
+        start = (page - 1) * page_size
+        end = start + page_size
+        total = qs.count()
+        rows = []
+        for exc in qs[start:end]:
+            rows.append({
+                'id': exc.id,
+                'trace_id': str(exc.trace_id) if exc.trace_id else None,
+                'status': exc.status,
+                'reason': exc.reason,
+                'candidates': exc.candidates,
+                'gathered_inputs': exc.gathered_inputs,
+                'service_date': exc.service_date.isoformat() if exc.service_date else None,
+                'is_reviewed': exc.is_reviewed,
+                'review_notes': exc.review_notes,
+                'created_at': exc.created_at.isoformat(),
+            })
+        return Response({
+            'count': total,
+            'page': page,
+            'page_size': page_size,
+            'results': rows,
+        })
+
+
+class ResolutionExceptionDetailView(APIView):
+    """PATCH /api/resolution-exceptions/<id>/ — mark exception reviewed."""
+
+    def patch(self, request, pk):
+        from core.models import ContractResolutionException
+
+        exc = get_object_or_404(ContractResolutionException, pk=pk)
+        if 'is_reviewed' in request.data:
+            exc.is_reviewed = bool(request.data['is_reviewed'])
+        if 'review_notes' in request.data:
+            exc.review_notes = request.data['review_notes']
+        exc.save(update_fields=['is_reviewed', 'review_notes'])
+        return Response({
+            'id': exc.id,
+            'status': exc.status,
+            'is_reviewed': exc.is_reviewed,
+            'review_notes': exc.review_notes,
         })
 
 

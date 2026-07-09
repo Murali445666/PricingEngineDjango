@@ -253,6 +253,9 @@ class PriceClaimSimulateRequest(serializers.Serializer):
     service_date = serializers.DateField(required=False, allow_null=True)
     external_claim_id = serializers.CharField(required=False, allow_blank=True)
     claim_input = serializers.DictField(required=False)
+    member_id = serializers.CharField(required=False, allow_blank=True)
+    billing_npi = serializers.CharField(required=False, allow_blank=True, max_length=15)
+    rendering_npi = serializers.CharField(required=False, allow_blank=True, max_length=15)
 
     def to_internal_value(self, data):
         data = dict(data)
@@ -1078,6 +1081,7 @@ class RepriceClaimRequestSerializer(serializers.Serializer):
     """POST /api/reprice-claim/ — full context resolution path."""
     billing_npi = serializers.CharField(max_length=15)
     rendering_npi = serializers.CharField(max_length=15, required=False, allow_blank=True)
+    facility_npi = serializers.CharField(max_length=15, required=False, allow_blank=True)
     member_id = serializers.CharField(max_length=64)
     service_date = serializers.DateField()
     claim_type = serializers.ChoiceField(
