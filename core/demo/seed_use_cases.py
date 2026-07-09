@@ -1046,6 +1046,14 @@ def wipe_demo_uc(stdout=None) -> dict[str, int]:
     out(f"--wipe will delete DEMO-UC- rows: {counts}")
 
     with transaction.atomic():
+        from core.models import ClaimResolutionLog
+
+        deleted_logs = ClaimResolutionLog.objects.filter(
+            resolved_contract__legacy_contract_number__startswith=PREFIX
+        ).delete()[0]
+        if deleted_logs:
+            out(f"Deleted {deleted_logs} ClaimResolutionLog row(s) for DEMO-UC contracts")
+
         for c in contracts:
             c.delete()
         for fs in fee_schedules:
