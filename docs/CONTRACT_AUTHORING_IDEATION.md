@@ -341,3 +341,257 @@ R1 (schema) → R3 (tie-breaking) → R6 (unify paths)
 R1 (schema) → R5 (hierarchy)
 R4 must complete before Pricing Investigator work begins
 ```
+
+---
+
+## 13. Target Contract Data Model (design of record)
+
+The contract becomes a **first-class layered object** — a container of effective-dated,
+scoped pricing arrangements applied to a set of covered entities. Six layers. All
+changes are **additive**: the existing `ProviderContract.provider_org` and `.network`
+FKs, all rules, scopes, and the frozen engine stay untouched; new tables are backfilled
+from existing data.
+
+### The six layers
+
+```
+Layer 1  Parties          Payer  ⇄  Provider org (contracting party)
+Layer 2  Agreement        Contract header + source Document (provenance)
+Layer 3  Covered Entities contract → many {ORG | FACILITY | PROVIDER}   ← crown jewel
+Layer 4  Scope            LOB / product / network / site / specialty
+Layer 5  Arrangements     named, typed pricing deals (group the rules)
+Layer 6  Rates/Terms/Rules fee schedules, caps, carve-outs, executable rules (exists)
+```
+
+### Entity-relationship model (target)
+
+```
+products.PayerOrganization ─┐
+                            │ (payer_org FK, new)
+core.ProviderOrganization ──┤        ┌── ContractDocument (new)      1:many  provenance
+   (parent_org self-FK)     │        │
+                            ▼        │
+                    ┌──────────────────────────┐
+                    │     ProviderContract      │
+                    │  (agreement / header)     │
+                    │  origin_type, dates,      │
+                    │  status, provider_org,    │
+                    │  network, payer_org(new)  │
+                    └──────────────────────────┘
+                       │            │           │
+        ┌──────────────┘            │           └───────────────┐
+        ▼                           ▼                           ▼
+ContractCoveredEntity (new)   ContractArrangement (new)   ContractAmendment (new)
+  entity_type ORG/FAC/PROV      name, arrangement_type       number, effective_date,
+  org|facility|provider FK      claim_type, eff dates        description, what_changed
+  is_primary, eff dates              │
+  (1 contract : many)                │ (1 arrangement : many)
+                                     ▼
+                               PricingRule.arrangement (new FK, null)
+                               → existing rules roll up under an arrangement
+```
+
+### New / changed tables
+
+| # | Table / column | Layer | Purpose | Key fields |
+|---|---|---|---|---|
+| 1 | `ProviderContract.payer_org` (col) | 1 | who the contract is *with* | FK→products.PayerOrganization, null |
+| 2 | `ContractDocument` | 2 | the source paper/exhibit (provenance) | contract FK · doc_type · reference · title · notes |
+| 3 | `ContractCoveredEntity` | 3 | **which entities the contract covers** | contract FK · entity_type (ORG/FACILITY/PROVIDER) · org/facility/provider FK · is_primary · eff dates |
+| 4 | `ContractArrangement` | 5 | named, typed pricing arrangement | contract FK · name · arrangement_type · claim_type · eff dates · status |
+| 5 | `PricingRule.arrangement` (col) | 5→6 | roll rules up under an arrangement | FK→ContractArrangement, null |
+| 6 | `ContractAmendment` | 6/2 | first-class, dated amendments | contract FK · number · effective_date · description · what_changed(JSON) |
+
+`arrangement_type` values: FEE_SCHEDULE / DRG_CASE_RATE / PER_DIEM / APC / ANESTHESIA /
+DRUG_ASP / CAPITATION / BUNDLED / VALUE_BASED. New contract types = new arrangement
+types, **not** a schema rewrite (extensibility principle).
+
+### Coverage table = the multi-entity answer
+
+One `ProviderContract` → many `ContractCoveredEntity` rows (an org, a facility, a
+provider, or provider-at-facility via two rows). This is the Penn model, and it
+consolidates the three tangled contract↔provider links (deficit #9 / G5) into one
+source of truth. `provider_org` is mirrored in as `is_primary=True` so the existing
+FK is never broken.
+
+### Backfill (populate, don't leave empty)
+
+- every ProviderContract → one CoveredEntity(ORG, provider_org, is_primary=True)
+- existing `ContractProviderParticipation` rows → CoveredEntity rows
+- one default ContractArrangement per distinct methodology on a contract's rules;
+  point those rules' `.arrangement` at it
+- `payer_org` left null unless derivable
+
+### Explicitly deferred (separate, test-heavy phase)
+
+**Resolver integration** — making resolution *use* `ContractCoveredEntity` (facility-
+and provider-level specificity) — is NOT part of the model build. The resolver is the
+only place a mistake causes ambiguity crashes; wire it after the model exists, with
+test gates. Value-based/capitation *pricing* is also deferred (arrangement type exists;
+engine math for it does not).
+
+---
+
+## 14. Contract Resolver — Current State & Gaps (for the two-stage redesign)
+
+### Target design (the principle)
+Two clean stages, single responsibility each:
+1. **Contract Resolution** (claim/header level, once per claim) — gather the claim's
+   context, walk the hierarchy, return **exactly one** contract **or refuse**. Never
+   tie-break by guessing; on a true conflict, fail gracefully with a typed reason and
+   **flag for analyst review**. Pricing on an ambiguous contract is not allowed.
+2. **Pricing** (line level, per line, inside the resolved contract) — gather rules,
+   derive price. Already exists (the engine's rule selection).
+Applies to both **single and batch** claims.
+
+### How it works today (verified 2026-06-30)
+- `ContractResolver` (core/services/contract_resolver.py): specificity waterfall
+  (product → LOB → network → org) + `resolution_priority` tie-break (R3). Returns one
+  `contract_id`; raises `ContractResolutionError` (OON/no-contract) or
+  `ContractResolutionAmbiguityError` (tie at same specificity+priority).
+- `PricingContextResolver` (core/services/pricing_context_resolver.py): the orchestrator.
+  Does the gather (org hierarchy via R5, member→enrollment→product→network, affiliation),
+  **calls** `ContractResolver`, resolves `version_id` (R2), and packs a
+  `ClaimPricingContext` DTO (contract_id + version_id + provider/member ctx + lines).
+- Handoff to pricing: `ClaimPricingService.price_claim_from_context(ctx)` → `price_claim()`.
+  So the effective handoff is `contract_id` + `version_id`, wrapped in the DTO.
+
+### Gaps vs. the target
+| # | Gap | Detail |
+|---|---|---|
+| G-A | **No clean two-stage boundary** | `ContractResolver` is buried inside `PricingContextResolver`, which entangles gather + contract-pick + version + context-assembly. No standalone "resolve contract → result-or-flag" API that single AND batch call first. |
+| G-B | **Ambiguity can still crash** | `PricingContextResolver.resolve()` catches `ContractResolutionError` but NOT `ContractResolutionAmbiguityError` (line ~115), so a tie propagates uncaught → HTML 500 (the A4 crash). No graceful "conflicting contracts" outcome. |
+| G-C | **No "flag for review" persistence** | `ClaimResolutionLog` (R4) records only *successful* resolutions. Failed/ambiguous attempts (candidates, which step was ambiguous, why) are not persisted → no analyst review queue. |
+| G-D | **Thin failure taxonomy** | Only OON / NO_CONTRACT (+ DIRECT/RESOLVED). Missing distinct, persisted outcomes: **AMBIGUOUS** (config conflict), **UNRESOLVED_ENTITY** (bad data), **NO_ACTIVE_VERSION** (dating). Each needs a different analyst action. |
+| G-E | **Gather-step ambiguity unhandled** | Entity lookups assume single results — `resolve_org_hierarchy` takes `[0]`, `resolve_enrollment`/rendering lookups pick first. Multi-match at the entity level (provider in 2 orgs, dual enrollment) is silently collapsed, not flagged. Ambiguity is treated as contract-only; it can occur upstream. |
+| G-F | **Coverage table unused** | `ContractResolver` resolves via `provider_org`/hierarchy, NOT the new `ContractCoveredEntity` (§13). Facility/provider-level coverage plays no role yet. |
+| G-G | **No batch-first / grouped resolution** | Batch reprice loops per-claim; no grouped contract-resolution stage (shared-key claims resolved once). Grouping key correctness is an open risk. |
+| G-H | **Handoff not a locked bundle** | `version_id` is resolved (R2) but the resolution result isn't a frozen snapshot (contract + version + matched coverage row + config hash) guaranteed identical to what pricing uses. Seam risk. |
+| G-I | **Facility absent from resolution** | `place_of_service` / `facility_id` are hardcoded `None` in the context; facility never participates in the resolve. |
+
+### Design decisions to lock before building
+- **Contract resolution is claim-level; rule selection is line-level** (already true).
+  Assume pre-split claims (837I vs 837P) so one claim = one contract.
+- Resolution **never guesses**; the residual same-specificity+priority tie → flag.
+- Deterministic narrowing (hierarchy, origin-type/priority, context) is *rules*, not
+  guesses — those resolve cleanly; only the residual conflict is escalated.
+
+### Status update (2026-07 — after D1–D5)
+Most §14 gaps are now CLOSED: G-A (two-stage `ContractResolutionService`), G-B/G-C/G-D
+(graceful typed failures + `ContractResolutionException` review queue), G-E (gather-step
+UNRESOLVED_ENTITY), G-F/G-I (coverage-table + facility resolution via
+`FEATURE_COVERAGE_RESOLUTION`). Remaining: G-G (batch-first grouped resolution) and G-H
+(locked resolution snapshot) — deferred, not blocking.
+
+---
+
+## 15. Contract Summary Panel (design & build steps)
+
+### Purpose
+The human-readable **contract abstraction** — deficit #5, §7 requirement. Today a
+contract is a bag of rows; an analyst cannot "see the forest." This panel renders the
+finished §13 layered model as a single legible view: *what this contract is, who it
+covers, how it prices, and how it changed over time.* Read-only. It is the visible
+payoff of the whole contract-authoring arc, and the reference view an analyst uses when
+validating config or investigating a dispute.
+
+### Data source
+`ContractSummaryService.build(contract_id)` already exists (built in the §13 iteration)
+and returns: parties, documents, covered_entities, arrangements (+nested rules),
+amendments, scopes, product_scopes. The panel is mostly a **render of this service** —
+plus one new read endpoint and a plain-language abstract.
+
+### What it shows (mapped to the §13 layers)
+1. **Abstract (plain language, top)** — one paragraph auto-composed from the data, e.g.
+   *"Commercial PPO agreement between Horizon Health Plan and Keystone Cardiology Group
+   (DIRECT). Professional services priced via RBRVS. Covers Dr. Sarah Chen. Effective
+   2025-01-01, active."* This is the "see the forest" line.
+2. **Parties & header** — contract name, `contract_origin_type` (DIRECT/LEASED/DELEGATED),
+   status, effective dates; payer (`payer_org`) ⇄ provider org.
+3. **Covered entities** (crown jewel) — the `ContractCoveredEntity` rows: which ORG /
+   FACILITY / PROVIDER this contract covers, primary flagged. This is the multi-entity
+   view made visible.
+4. **Arrangements** — each `ContractArrangement` (FEE_SCHEDULE / DRG / PER_DIEM / … ),
+   its `claim_type`, and the **rules** grouped under it (drillable — collapse/expand).
+5. **Terms & policy** — caps/floors, carve-outs, outlier, stop-loss, per-diem, MPPR
+   (from the existing contract tables) summarized as readable lines.
+6. **Amendments** — the `ContractAmendment` history (number, effective date, what changed).
+7. **Documents** — `ContractDocument` provenance (source paper / rate exhibits).
+
+### Where it lives
+A dedicated **Contract Summary** view, reachable from the contracts list (a "Summary"
+action per contract) and/or as a tab on the existing Contract Detail page. Route e.g.
+`/contracts/:id/summary`.
+
+### Build steps
+1. **Backend endpoint** — `GET /api/contracts/<id>/summary/` → returns
+   `ContractSummaryService.build(id)` as JSON. Add the plain-language **abstract** string
+   (compose it in the service or the view from parties + arrangements + primary coverage
+   + dates). Serializer/typed dicts only; no queryset leakage. No engine changes.
+2. **Frontend types** — a `ContractSummary` type mirroring the service payload
+   (parties, covered_entities, arrangements+rules, amendments, terms, documents, abstract).
+3. **Frontend service** — `getContractSummary(id)` → GET the endpoint (axios `apiClient`,
+   TanStack Query).
+4. **Frontend page** — `ContractSummaryPage` (feature folder `features/contracts/`),
+   using existing shared UI (PageLayout, cards, DataTable, StatusBadge). Sections in the
+   order above; arrangements drillable to their rules. Abstract rendered as a prominent
+   banner/card at the top.
+5. **Wire-up** — route `/contracts/:id/summary` (append-only) + a "Summary" link from the
+   contracts list / contract detail. Sidebar unchanged.
+6. **Verify** — `npm run build` clean; open the KEYSTONE contracts (C-IDN / C-CARD /
+   C-F1) and confirm the panel shows correct parties, covered entities (org vs facility
+   vs provider), arrangements, and rates. `python manage.py test` baseline unchanged.
+
+### Explicitly out of scope (this iteration)
+- **Editing** — this is read-only. Authoring/edit forms are a later iteration.
+- **Author-time conflict validation** (challenge #8) — separate, later; would flag
+  overlaps at author time (the review-queue idea applied before go-live).
+
+---
+
+## 16. Model-gap closure plan (intensifying the contract layer)
+
+Real large contracts differ from the demo mostly in **capability the model lacks**, not
+just sparse data. Closure order: **A → B → D → E**. **C (NCCI) is set aside** — it is a
+claims-adjudication concern (correct coding), not a contract-model gap; a separate lane.
+**Value-based (#6) is a separate track** (population-based, retrospective; needs engine
+paradigm the frozen engine lacks).
+
+Guiding principle: close each gap at the **model + materialization** layer so the frozen
+engine is never touched — the engine always receives a concrete resolved rate.
+
+### A — Rate-schedule linkage (#4) — FIRST
+Real rates are "120% of MPFS 2025," not literal dollars. Model:
+- `PublishedFeeSchedule` — a named external schedule: `name`, `basis_type`
+  (MPFS / MSDRG / APC / CUSTOM), `year`, `source`, effective dates.
+- `FeeScheduleRate` — for CUSTOM schedules: schedule → code → amount. (For MPFS/DRG/APC,
+  resolve from the existing Ref* tables rather than duplicate them.)
+- `ContractRateBasis` — links a `PricingRule` (or `ContractArrangement`) to a
+  `PublishedFeeSchedule` + `percentage` (e.g. 120.00). "This rule's rate = 120% of MPFS."
+
+**Materialization (keeps engine frozen):** a service/command computes the effective rate
+(schedule lookup × percentage) and **writes it to the concrete rate the engine already
+reads** (`PricingRule.flat_rate` / `ContractBaseRate.base_rate`). The `ContractRateBasis`
+is the authored source of truth; materialization derives the number. Annual update = bump
+the schedule year, re-materialize — never hand-edit thousands of rows. Engine unchanged;
+contracts without a rate basis price exactly as today.
+
+Summary panel then shows the basis ("Professional: 120% of MPFS 2025") not a bare $150.
+
+### B — Escalators / rich terms (#7)
+`ContractTerm` is a scalar today. Model typed, effective-dated terms: annual escalator %,
+cap on increase, most-favored-nation. Materialization applies the escalator to derive the
+effective rate for a given year (builds on A's materialization).
+
+### D — Templating + bulk rate authoring (#8)
+Clone a standard contract as a template (small/adhesion practices) and bulk-load rate lines
+(large exhibits). Authoring convenience; additive; no engine impact.
+
+### E — Scope schema consolidation (#9)
+Consolidate `ContractScope` and `ContractProductScope` into one scope model. Cleanup +
+migration; touches resolution → test-gated. Lowest value, done last.
+
+### Deferred (named, not now)
+- **C — NCCI / claim edits** — pre-pricing edit layer + CMS edit tables; separate lane.
+- **#6 Value-based** — separate track.
+- Anesthesia medical-direction %, MPPR PC/TC split — engine-fidelity, frozen engine.

@@ -32,6 +32,37 @@ However:
   modeled. This is a material real-world payment factor.
 - **Time-unit rounding conventions** (tenth vs. decimal) are not configurable.
 
+### 1.4 Modifiers ARE applied, but invisible in the trace — **Quirk** (corrects an earlier misdiagnosis)
+Runtime investigation (2026-06) confirmed **modifiers do apply correctly.** Code 29881
+with modifier 50 prices base **$400 × 150% = $600** — the modifier fired. An earlier
+entry here wrongly claimed modifiers were ignored; that was a misread of the base
+amount, not a real defect. Notes:
+- **The true RBRVS base for 29881 is $400, not $600.** RBRVS uses the fee-schedule
+  fallback ($400 × CF 1.0) because GPCI data is null, so the RVU×GPCI path is skipped.
+  $600 is already the post-modifier figure. (Runbook expected values that assumed a
+  $500/$600 base are wrong for this reason.)
+- **Observability gap (real):** `apply_modifiers()` emits NO trace entry, so the
+  execution trace shows no modifier step even when one fires. You can only confirm a
+  modifier applied by comparing modified vs. unmodified runs — not from the trace
+  itself. This is a genuine explainability gap (and a prime use case for the Pricing
+  Investigator: surface "input had modifier X → applied/ignored").
+- **Cache-poisoning bug (FIXED):** the per-claim loader cache treated a cached
+  `('mod', code) → None` as final, skipping re-query and leaving `modifier_adjustments`
+  empty on a primed cache. Fixed at `loader.py:930-936` to re-query on a negative
+  cache. Full suite at baseline after the fix.
+
+### 1.5 MPPR applies a flat reduction to the whole line, not just the technical component — **Gap**
+MPPR (Multiple Procedure Payment Reduction) works correctly at the high level:
+multiple same-category procedures on one claim pay on a 100% / 50% / 25% ladder —
+primary full, subsequent reduced (verified: two 70450 lines at base $200 → $200 +
+$100 = $300). However, the engine applies the reduction percentage to the **entire
+line allowed amount**. Real CMS MPPR typically reduces only the **technical component**
+(equipment/facility overhead, which does overlap on repeat procedures), NOT the
+**professional component** (the physician's separate interpretation of each image,
+which does not overlap). Consequence: for imaging/surgery where a PC/TC split applies,
+the engine over-reduces the repeat lines versus true CMS behavior. The simplification
+is reasonable for a demo but is not full-fidelity MPPR.
+
 ### 1.3 DRG / per-diem and the line-level lesser-of cap — **By design (watch-item)**
 The default lesser-of-billed cap (see §2.1) is **LINE scope**, while DRG/per-diem
 price at the **claim level**, so the two should not interact. This is architecturally
@@ -52,6 +83,20 @@ unrelated reasons (§3.2). Re-verify once DRG ref data is fixed.
 - Existing versions need the `backfill_lesser_of_billed` management command.
 - Turning it off is **global** (the feature flag); there is no per-contract opt-out
   beyond deleting the auto-cap row.
+
+### 2.4 Resolution audit log skips contracts with no ContractVersion — **Gap**
+The R4 `ClaimResolutionLog` requires a non-null `resolved_version`. Legacy contracts
+that have no `ContractVersion` row resolve and **price normally**, but the audit write
+is skipped and the API returns `resolution_log_id = null`. Consequence: such claims
+are **invisible to the Pricing Investigator** (no saved "why"). Fixing requires either
+backfilling `ContractVersion` rows for legacy contracts or relaxing the log to permit
+a null version. Tracked as part of the resolution-layer roadmap (§12 R1–R6, post-R4).
+
+### 2.5 Provider hierarchy traversal capped at depth 5 — **By design**
+`ProviderLookupService.resolve_org_hierarchy()` walks `parent_org` upward with a
+max depth of 5 (raises `OrgHierarchyDepthError` beyond that, as a cycle guard).
+Org structures deeper than 5 levels (rare, but possible in very large IDNs) would
+not fully traverse. Intentional safety cap, not a hard architectural limit.
 
 ### 2.2 `claim_type` matching is case-sensitive — **Quirk**
 The engine matches a rule's `claim_type` against the request value **case-sensitively**,
@@ -97,6 +142,13 @@ change.
 - `test_wrong_version_for_contract_returns_400` — setUp error
 
 Any change should be measured against this baseline: same 7 failing = no regression.
+
+**Plus one known, un-fixed failure introduced by lesser-of-billed (§2.1):**
+- `test_explorer_includes_cap_floors` — asserts an exact cap-floor count of 1, but the
+  default lesser-of signal now auto-attaches a baseline LINE cap, so the explorer
+  returns 2. Fix is to make the assertion count-independent (assert the explicitly
+  created cap is present). Not a pricing regression. Until fixed, the working baseline
+  is **8 failing** (7 original + this one).
 
 ---
 
