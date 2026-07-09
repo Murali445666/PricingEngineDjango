@@ -19,12 +19,19 @@ class MemberLookupService:
         If multiple active enrollments exist, return the most recently effective one.
         Returns None if member not found or no active enrollment.
         """
+        active = self.list_active_enrollments(member_id, service_date)
+        return active[0] if active else None
+
+    def list_active_enrollments(
+        self, member_id: str, service_date: date
+    ) -> list[Enrollment]:
+        """All enrollments active on service_date, most recently effective first."""
         if not member_id:
-            return None
+            return []
         member = Member.objects.filter(member_id=member_id).first()
         if member is None:
-            return None
-        return (
+            return []
+        return list(
             Enrollment.objects.filter(
                 member=member,
                 effective_date__lte=service_date,
@@ -35,8 +42,21 @@ class MemberLookupService:
             )
             .select_related('product', 'product__lob')
             .order_by('-effective_date')
-            .first()
         )
+
+    def enrollment_product_ambiguity(
+        self, member_id: str, service_date: date
+    ) -> tuple[bool, list[int]]:
+        """
+        True when member has >=2 active enrollments on service_date pointing to
+        different products. Same product (most-recent-wins) is not ambiguous.
+        Returns (is_ambiguous, candidate enrollment ids).
+        """
+        enrollments = self.list_active_enrollments(member_id, service_date)
+        product_ids = {e.product_id for e in enrollments if e.product_id is not None}
+        if len(product_ids) < 2:
+            return False, [e.id for e in enrollments]
+        return True, [e.id for e in enrollments]
 
     def get_product(
         self, member_id: str, service_date: date

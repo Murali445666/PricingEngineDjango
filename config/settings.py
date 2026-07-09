@@ -30,6 +30,9 @@ USE_REFERENCE_ONLY_PRICING = True
 # Step 14a: tiered rule resolution (product/version tier sort) and TierMultiplier defaults (default off)
 FEATURE_TIERED_RESOLUTION = False
 
+# Phase D5: resolve contracts by claim-type + ContractCoveredEntity (not provider_org alone)
+FEATURE_COVERAGE_RESOLUTION = True
+
 # Default line pricing: lesser of billed charge vs contract rate (via auto LINE PCT_BILLED_CAP at 100%)
 FEATURE_DEFAULT_LESSER_OF_BILLED = True
 

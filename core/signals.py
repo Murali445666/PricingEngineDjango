@@ -14,6 +14,7 @@ from core.models import (
     ContractStopLossRule,
     ContractVersion,
     ContractScope,
+    ContractProductScope,
     ContractProviderParticipation,
     ContractCapFloor,
 )
@@ -158,6 +159,30 @@ def _invalidate_contract_snapshot_on_version_change(sender, instance, **kwargs):
     if getattr(instance, "contract_id", None):
         from core.services.contract_snapshot import invalidate_snapshot
         invalidate_snapshot(instance.contract_id)
+
+
+@receiver(post_save, sender=ContractScope)
+def _sync_unified_from_contract_scope(sender, instance, **kwargs):
+    from core.services.scope_unified_sync import sync_from_contract_scope
+    sync_from_contract_scope(instance)
+
+
+@receiver(post_delete, sender=ContractScope)
+def _delete_unified_from_contract_scope(sender, instance, **kwargs):
+    from core.services.scope_unified_sync import delete_unified_for_contract_scope
+    delete_unified_for_contract_scope(instance.id)
+
+
+@receiver(post_save, sender=ContractProductScope)
+def _sync_unified_from_product_scope(sender, instance, **kwargs):
+    from core.services.scope_unified_sync import sync_from_product_scope
+    sync_from_product_scope(instance)
+
+
+@receiver(post_delete, sender=ContractProductScope)
+def _delete_unified_from_product_scope(sender, instance, **kwargs):
+    from core.services.scope_unified_sync import delete_unified_for_product_scope
+    delete_unified_for_product_scope(instance.id)
 
 
 @receiver(post_save, sender=ContractScope)
