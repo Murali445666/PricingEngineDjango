@@ -16,10 +16,60 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import date
-from typing import Any, Dict, List, Optional
+from decimal import Decimal
+from typing import Any, Dict, FrozenSet, List, Optional
 
 # Sentinel for open-ended effective dates
 _MAX_DATE = date(9999, 12, 31)
+
+# Canonical claim_type values on PricingRule (lowercase; NULL = wildcard).
+_CANONICAL_RULE_CLAIM_TYPES = frozenset({'professional', 'institutional'})
+
+
+def _evaluable_rule_condition_attributes() -> FrozenSet[str]:
+    """
+    Attribute names PricingRuleCondition may use and the engine can evaluate.
+
+    Source of truth:
+      - core/engine/resolver.py::_matches_with_reason (generic getattr / context.get,
+        plus special branches for code, code_group, revenue_code)
+      - core/engine/conditions.py::build_line_context (context dict keys)
+      - core/engine/types.py::PricingInput (request fields via getattr)
+    """
+    from dataclasses import fields as dc_fields
+
+    from core.engine.types import PricingInput
+
+    from_context = frozenset({
+        'procedure_code', 'billed_amount', 'units', 'claim_type', 'modifiers_count',
+        'revenue_code', 'base_allowed_amount', 'current_allowed_amount', 'provider_id',
+    })
+    from_request = frozenset(f.name for f in dc_fields(PricingInput))
+    resolver_aliases = frozenset({'code'})  # mapped to procedure_code in resolver
+    resolver_special = frozenset({'code_group'})  # group membership branch in resolver
+    return from_context | from_request | resolver_aliases | resolver_special
+
+
+def _normalize_condition_attribute(attribute_name: str) -> str:
+    """Map condition attribute_name to the resolver lookup key."""
+    attr = (attribute_name or '').strip()
+    if attr == 'code':
+        return 'procedure_code'
+    if attr.lower() == 'code_group':
+        return 'code_group'
+    return attr
+
+
+def _procedure_code_from_rule(rule) -> Optional[str]:
+    """Extract EQ-matched procedure code from rule conditions, if present."""
+    for cond in rule.conditions.all():
+        if cond.attribute_name in ('code', 'procedure_code'):
+            op = (getattr(cond, 'operator', None) or 'EQ').strip().upper() or 'EQ'
+            if op == 'EQ':
+                val = (cond.attribute_value or '').strip()
+                if val:
+                    return val
+    return None
 
 # Step 12d: max contracts per bulk validation request (API enforces the same cap).
 BULK_VALIDATE_MAX_CONTRACT_IDS = 100
@@ -108,6 +158,10 @@ class ValidationService:
         conflicts.extend(cls._check_methodology_collisions(contract, versions))
         conflicts.extend(cls._check_carveout_overlaps(versions))
         conflicts.extend(cls._check_blending_cycles(versions))
+        conflicts.extend(cls._check_unreachable_rule_conditions(contract))
+        conflicts.extend(cls._check_ambiguous_pricing_rules(contract, versions))
+        conflicts.extend(cls._check_non_canonical_rule_claim_types(contract))
+        conflicts.extend(cls._check_pointless_carveouts(contract, versions))
 
         # Errors before warnings, then by conflict_type for deterministic ordering
         conflicts.sort(key=lambda c: (0 if c.severity == "ERROR" else 1, c.conflict_type))
@@ -523,6 +577,207 @@ class ValidationService:
                 suggested_action="Remove or break the cycle in blending rule references.",
             ))
         return errors
+
+    @classmethod
+    def _check_unreachable_rule_conditions(cls, contract) -> List[ConflictError]:
+        """
+        ERROR when a PricingRuleCondition references an attribute the engine cannot evaluate.
+        """
+        from core.models import PricingRule
+
+        evaluable = _evaluable_rule_condition_attributes()
+        rules = (
+            PricingRule.objects.filter(contract=contract)
+            .prefetch_related('conditions')
+        )
+        errors: List[ConflictError] = []
+        seen: set = set()
+        for rule in rules:
+            for cond in rule.conditions.all():
+                raw_attr = (cond.attribute_name or '').strip()
+                normalized = _normalize_condition_attribute(raw_attr)
+                if raw_attr in evaluable or normalized in evaluable:
+                    continue
+                key = (rule.pk, cond.pk, raw_attr)
+                if key in seen:
+                    continue
+                seen.add(key)
+                errors.append(ConflictError(
+                    conflict_type='UNREACHABLE_RULE',
+                    severity='ERROR',
+                    message=(
+                        f"Rule {rule.pk} condition {cond.pk}: attribute_name "
+                        f"'{raw_attr}' cannot be evaluated by the pricing engine."
+                    ),
+                    affected_objects=[
+                        {
+                            'type': 'PricingRuleCondition',
+                            'id': cond.pk,
+                            'rule_id': rule.pk,
+                            'attribute_name': raw_attr,
+                        },
+                    ],
+                    suggested_action=(
+                        'Remove the condition or use an evaluable attribute '
+                        f'({", ".join(sorted(evaluable))}).'
+                    ),
+                ))
+        return errors
+
+    @classmethod
+    def _check_ambiguous_pricing_rules(cls, contract, versions) -> List[ConflictError]:
+        """
+        ERROR when two rules in the same version target the same procedure code with
+        identical specificity_score but different flat_rate (insertion-order tie).
+        """
+        from core.models import PricingRule
+
+        version_ids = [v.pk for v in versions]
+        rules = list(
+            PricingRule.objects.filter(contract=contract, version_id__in=version_ids)
+            .prefetch_related('conditions')
+        )
+        groups: Dict[tuple, list] = defaultdict(list)
+        for rule in rules:
+            code = _procedure_code_from_rule(rule)
+            if not code or rule.version_id is None:
+                continue
+            key = (rule.version_id, code, rule.specificity_score)
+            groups[key].append(rule)
+
+        errors: List[ConflictError] = []
+        for (version_id, code, score), group in groups.items():
+            if len(group) < 2:
+                continue
+            flat_rates = {
+                r.flat_rate for r in group
+                if r.flat_rate is not None
+            }
+            has_null = any(r.flat_rate is None for r in group)
+            distinct_count = len(flat_rates) + (1 if has_null else 0)
+            if distinct_count < 2:
+                continue
+            errors.append(ConflictError(
+                conflict_type='AMBIGUOUS_RULE',
+                severity='ERROR',
+                message=(
+                    f"Version {version_id}: {len(group)} rules match procedure code "
+                    f"'{code}' with specificity_score {score} but different flat_rate "
+                    f"values — resolution depends on insertion order."
+                ),
+                affected_objects=[
+                    {
+                        'type': 'PricingRule',
+                        'id': r.pk,
+                        'flat_rate': str(r.flat_rate) if r.flat_rate is not None else None,
+                        'specificity_score': r.specificity_score,
+                    }
+                    for r in group
+                ],
+                suggested_action=(
+                    'Give rules distinct specificity scores (carve-out) or merge '
+                    'duplicate flat rates for the same code.'
+                ),
+            ))
+        return errors
+
+    @classmethod
+    def _check_non_canonical_rule_claim_types(cls, contract) -> List[ConflictError]:
+        """
+        ERROR when PricingRule.claim_type is not NULL or lowercase professional/institutional.
+        """
+        from core.models import PricingRule
+
+        errors: List[ConflictError] = []
+        for rule in PricingRule.objects.filter(contract=contract):
+            ct = rule.claim_type
+            if ct is None or str(ct).strip() == '':
+                continue
+            ct_str = str(ct).strip()
+            if ct_str != ct_str.lower() or ct_str.lower() not in _CANONICAL_RULE_CLAIM_TYPES:
+                errors.append(ConflictError(
+                    conflict_type='NON_CANONICAL_CLAIM_TYPE',
+                    severity='ERROR',
+                    message=(
+                        f"Rule {rule.pk}: claim_type '{ct}' is not NULL or lowercase "
+                        "professional/institutional — the rule will not match API claims."
+                    ),
+                    affected_objects=[
+                        {
+                            'type': 'PricingRule',
+                            'id': rule.pk,
+                            'claim_type': ct_str,
+                        },
+                    ],
+                    suggested_action=(
+                        "Set claim_type to NULL (wildcard) or lowercase 'professional' "
+                        "or 'institutional'."
+                    ),
+                ))
+        return errors
+
+    @classmethod
+    def _check_pointless_carveouts(cls, contract, versions) -> List[ConflictError]:
+        """
+        WARNING when a higher-specificity rule pays the same flat_rate as a lower-specificity
+        rule for the same procedure code — indistinguishable at runtime.
+        """
+        from core.models import PricingRule
+
+        version_ids = [v.pk for v in versions]
+        rules = list(
+            PricingRule.objects.filter(contract=contract, version_id__in=version_ids)
+            .prefetch_related('conditions')
+        )
+        by_version_code: Dict[tuple, list] = defaultdict(list)
+        for rule in rules:
+            code = _procedure_code_from_rule(rule)
+            if not code or rule.version_id is None or rule.flat_rate is None:
+                continue
+            by_version_code[(rule.version_id, code)].append(rule)
+
+        warnings: List[ConflictError] = []
+        seen_pairs: set = set()
+        for (_version_id, code), group in by_version_code.items():
+            if len(group) < 2:
+                continue
+            sorted_group = sorted(group, key=lambda r: r.specificity_score)
+            for i, lower in enumerate(sorted_group):
+                for higher in sorted_group[i + 1:]:
+                    if higher.flat_rate != lower.flat_rate:
+                        continue
+                    pair_key = (lower.pk, higher.pk)
+                    if pair_key in seen_pairs:
+                        continue
+                    seen_pairs.add(pair_key)
+                    warnings.append(ConflictError(
+                        conflict_type='POINTLESS_CARVEOUT',
+                        severity='WARNING',
+                        message=(
+                            f"Rule {higher.pk} (score {higher.specificity_score}) "
+                            f"carves out procedure code '{code}' but flat_rate "
+                            f"{higher.flat_rate} equals lower rule {lower.pk} "
+                            f"(score {lower.specificity_score}) — no pricing difference."
+                        ),
+                        affected_objects=[
+                            {
+                                'type': 'PricingRule',
+                                'id': lower.pk,
+                                'specificity_score': lower.specificity_score,
+                                'flat_rate': str(lower.flat_rate),
+                            },
+                            {
+                                'type': 'PricingRule',
+                                'id': higher.pk,
+                                'specificity_score': higher.specificity_score,
+                                'flat_rate': str(higher.flat_rate),
+                            },
+                        ],
+                        suggested_action=(
+                            'Raise the carve-out flat_rate or remove the redundant rule.'
+                        ),
+                    ))
+        return warnings
 
     # ------------------------------------------------------------------
     # Cycle detection algorithm
