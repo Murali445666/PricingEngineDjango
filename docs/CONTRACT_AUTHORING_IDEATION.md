@@ -595,3 +595,106 @@ migration; touches resolution → test-gated. Lowest value, done last.
 - **C — NCCI / claim edits** — pre-pricing edit layer + CMS edit tables; separate lane.
 - **#6 Value-based** — separate track.
 - Anesthesia medical-direction %, MPPR PC/TC split — engine-fidelity, frozen engine.
+
+---
+
+## 17. Analyst Authoring Layer — build plan (2026-07)
+
+### Why now
+The seed + import path is proven end-to-end: one realistic agreement
+(`HM-KHS-2025-0417`, contract 217 / version 197) with a 7-entity roster, 296 affiliated
+providers, 252 members, and a **1,114-row rate exhibit** across five methodologies —
+resolving and pricing correctly (see `docs/TESTING.md`). The data model and the pipeline
+work. **But every step of it required a management command.** The model is ready; the
+analyst surface is missing. That is the whole of this phase.
+
+### What changed since §6 (deficits now closed)
+| §6 deficit | Status |
+|---|---|
+| 1 — multi-entity hierarchy | **Closed** — covered entities + specificity ladder |
+| 4 — rate/fee-schedule management | **Closed** — Gap A rate basis + materialization |
+| 5 — human-readable abstraction | **Closed** — §15 Contract Summary panel |
+| 7 — terms are scalar multipliers | **Closed** — Gap B escalators |
+| 8 — templating / bulk authoring | **Closed at CLI** — `clone_contract`, `bulk_add_rates`, `import_fee_schedule` |
+| 9 — scope schema sprawl | **Closed** — Gap E consolidation |
+| 2 — document / provenance layer | Open — this is the AI fork (§8.1b) |
+| 3 — first-class amendment | Partial — versions exist; an amendment is still a full clone |
+| 6 — value-based constructs | Deferred (§16) |
+
+The §6 verdict ("enterprise-grade engine, weak contract object") is now **half-resolved**:
+the contract object got strong. What's still thin is the *way a human builds one*.
+
+### Fork decision (resolves §8.1)
+**Anchor = (a) the abstraction / authoring layer.** Document ingestion (b) is not dropped —
+it is the *next* layer and it **depends** on this one: an AI that reads a paper exhibit must
+propose config *into* a target, and that target is the authoring API built here. Build the
+target first, then let AI write into it.
+
+### Current-state audit (verified 2026-07)
+- `ContractListView` is **GET-only** and filtered to `status='ACTIVE'` → **no way to create a
+  contract** via API/UI. Contracts exist only via seeds/CLI. Biggest single gap.
+- No roster (Exhibit A) or scope (Exhibit B) authoring endpoints.
+- Rate-exhibit load is CLI-only (`import_fee_schedule`); rate basis/escalator is
+  `materialize_rates` CLI.
+- Version **activate/archive** exist; version **create** does not.
+- Rule create/edit + `ConditionBuilder` exist, but at *rule* altitude — useless for standing
+  up a 1,114-line exhibit.
+- **Guardrails already strong** and reusable: contract validation, bulk validation, conflict
+  detection/resolution, version lifecycle, Contract Summary.
+
+### Design principles
+1. **Author in the shape of the contract** (Exhibit A → B → C → versions), not the shape of
+   the tables. The wizard mirrors the paper agreement (`docs/Sample_Managed_Care_Agreement.pdf`).
+2. **The UI is a façade over proven services.** No new pricing logic. Every action maps to an
+   existing, tested service: `fee_schedule_import`, `bulk_rates`, `materialize_rates`,
+   `clone_contract`.
+3. **Draft-safe.** Authoring writes `DRAFT`. The resolver only sees ACTIVE + in-window
+   contracts, so nothing an analyst does can affect live pricing until explicit activation.
+4. **Engine stays frozen.** `core/engine/` is untouched, as it has been throughout.
+5. **Validate before publish.** Reuse the existing validation + conflict services as the gate.
+
+### Phases
+| # | Phase | Delivers | Wraps / reuses | Done when |
+|---|---|---|---|---|
+| **A1** | Contract header + create | `POST /api/contracts/` → DRAFT (name, legacy #, payer, provider org, network, LOB, effective dates, origin, priority); "New Agreement" form | new endpoint; existing serializers | Analyst creates a DRAFT contract with no CLI |
+| **A2** | Roster (Exhibit A) | `GET/POST/DELETE /api/contracts/<id>/covered-entities/`; add org/facility/practitioner + effective dates; specificity-ladder preview | `contract_covered_entities`; provider lookup | The 7-entity Keystone roster is reproducible in the UI |
+| **A3** | Scope (Exhibit B) | `GET/POST /api/contracts/<id>/scope/` — product / LOB / network | consolidated scope model (Gap E) | PPO scope authored in the UI |
+| **A4** | **Rate exhibit (Exhibit C)** ← the value | CSV upload → **diff preview** (added/changed/removed) → commit; rate-basis authoring (% of schedule + base year + escalator) → materialize | `fee_schedule_import`, `bulk_rates`, `materialize_rates` | The 1,114-row exhibit loads from the browser with a preview |
+| **A5** | Versions & amendments | `POST /api/contracts/<id>/versions/`; clone prior version's rates + apply escalator | `clone_contract`, `materialize_rates --year` | 2026 amendment created in UI; rates escalate +3% |
+| **A6** | Validate & publish | DRAFT → validate → resolve conflicts → ACTIVE; Summary panel as read-back | existing validation/conflict/activate | DRAFT→ACTIVE round-trip in UI; summary reads like Exhibit C |
+
+**Sequencing.** A1–A3 produce a resolvable skeleton. **A4 is where the value is** — it turns
+the CLI into a product. A5/A6 are lifecycle. **MVP slice = A1 + A4** (create an agreement and
+load its rate exhibit from the browser); that alone removes the terminal from the analyst's path.
+
+### Authoring validation rules — earned from real defects
+These are requirements derived from bugs actually hit during the contract-217 load, not
+theory. They are the seed of an **"authoring lint,"** which is arguably the differentiating
+feature of this layer:
+
+1. **`claim_type` normalization (must-have).** The importer authored
+   `PricingRule.claim_type='INSTITUTIONAL'` (uppercase). The API accepts only lowercase and
+   the engine matches case-sensitively (KNOWN_LIMITATIONS §2.2) → **185 rules were silently
+   unreachable** and every institutional claim returned `DENIED_NO_RULE`. Any authoring
+   surface that lets a human (or an importer) supply a `claim_type` will reproduce this bug.
+   Authoring MUST normalize on write and reject non-canonical values.
+2. **Meaningless-carve-out warning.** A practitioner carve-out whose rate equals its parent
+   org's rate is indistinguishable at runtime and has no business purpose — the Dr. Chen
+   99213 case authored two competing rules both paying **$108.12**, so no test could prove
+   which one won. Warn when a more-specific rule's rate equals the rule it overrides.
+3. **Unreachable-rule detection (generalized).** After authoring, flag rules that can never
+   match: contradictory conditions, non-canonical enum values, or an effective window
+   outside the parent version's.
+
+### Explicitly out of scope (this phase)
+- **Document ingestion / AI clause→config** (§8.1b) — the next layer; needs A1–A6 as its target.
+- **Value-based constructs** (§6.6) — separate track.
+- **Modifier-adjustment authoring** — deferred by decision during the contract-217 load.
+- **Auth / roles / permissions** — there is no user model today; authoring is single-user.
+  Named as a real gap, deliberately not built (portfolio scope).
+
+### Cross-references
+- Paper reference the UI must reproduce: `docs/Sample_Managed_Care_Agreement.pdf`
+- Rate exhibit + load pipeline: `docs/Exhibit_C_Fee_Schedule.csv`, `docs/CURSOR_SEED_BRIEF.md`
+- Test evidence for the seeded contract: `docs/TESTING.md`
+- Read-back surface: §15 Contract Summary Panel

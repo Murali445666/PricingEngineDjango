@@ -98,6 +98,31 @@ max depth of 5 (raises `OrgHierarchyDepthError` beyond that, as a cycle guard).
 Org structures deeper than 5 levels (rare, but possible in very large IDNs) would
 not fully traverse. Intentional safety cap, not a hard architectural limit.
 
+### 2.6 Unenrolled member short-circuits to NO_CONTRACT — **Fixed**
+Previously, a member with no active enrollment on the service date (unenrolled or
+terminated) fell through to org-level contract matching. When the billing org had
+multiple contracts (e.g. `DEMO-UC-ORG-IN` with 28), this surfaced as **AMBIGUOUS** —
+mislabeling a *coverage gap* as a *config conflict*, which routes to the wrong team.
+`ContractResolutionService.resolve()` now guards on `member_context and raw.member_id
+and gathered.enrollment is None`, returning **NO_CONTRACT** ("no active enrollment")
+before contract matching. F2/F3 report the coverage gap correctly; F4 (member *is*
+enrolled) still returns AMBIGUOUS because its org-level tie is a genuine conflict.
+Provider-only resolution (`member_context=False`) is unaffected.
+
+### 2.7 Rule ambiguity vs contract ambiguity — **By design**
+**Rule-level ambiguity** (two rules in the same contract version that match the same
+procedure code with identical `specificity_score` but different `flat_rate`) is a static
+configuration defect: those rules tie on every claim that hits that code, forever.
+`StrictRuleResolver` resolves ties by insertion order today; failing at claim time would
+punish the claim for a config error that validation should catch first. Contract
+validation (`POST /api/validate-contract/<id>/`) flags `AMBIGUOUS_RULE` errors before
+activation. The engine does **not** add runtime tie-detection for rule ambiguity.
+
+**Contract-level ambiguity** (multiple contracts match the same claim's entities) is
+genuinely claim-dependent — which contracts apply depends on billing org, enrollment,
+network, and date. That stays a **runtime** outcome (`AMBIGUOUS` resolution status plus
+analyst review queue), not a pre-activation validation error.
+
 ### 2.2 `claim_type` matching is case-sensitive — **Quirk**
 The engine matches a rule's `claim_type` against the request value **case-sensitively**,
 and treats a null/empty request `claim_type` as a wildcard. A rule stored as
@@ -162,3 +187,56 @@ Any change should be measured against this baseline: same 7 failing = no regress
 - **No coordination of benefits (COB)** — single-payer pricing only.
 - **Provider/pricing engine is frozen** — all new capability is added around it
   (resolution, APIs, data model), never inside `core/engine/`.
+
+---
+
+## 6. Enterprise-scale pricing gaps (the wider adjudication picture)
+
+**Framing:** this system is a *contract-pricing engine* — it computes the **allowed
+amount** for a resolved contract. Full enterprise claims **adjudication** is a longer
+pipeline (edits → pricing → benefits → member split → payment). The items below are the
+stages/behaviors a production system has that this one does not. None are bugs; they are
+scope. Grouped by kind.
+
+### 6.1 Allowed-amount gaps (what the service is worth) — **Gap**
+- **OON default pricing** — when no contract resolves, real payers still price the claim
+  via a default out-of-network methodology (most commonly a **% of Medicare**, e.g. 150%;
+  also UCR/percentile via FAIR Health, or % of billed). This system returns
+  NO_CONTRACT/OON with **no price**. The natural fix reuses the Gap A rate-basis machinery
+  ("OON default = 150% of MPFS") as a fallback when resolution finds no contract.
+  Emergency/traveling care is additionally protected (ACA emergency coverage; the No
+  Surprises Act limits balance billing) — also not modeled.
+- **DRG grouping, outliers, transfers** — the engine takes a `drg_code` as given; real
+  systems **group** the claim into a DRG from diagnoses/procedures, and apply cost
+  outliers, transfer-DRG adjustments, and readmission logic.
+- **APC/OPPS nuances** — packaging, composite APCs, status-indicator logic, multiple-
+  procedure discounting.
+- **Global surgical periods / bundling** — post-op visits included in a surgery's global
+  fee; not modeled.
+- **Site-of-service and provider-type differentials** — facility vs non-facility RVUs;
+  reduced payment for NP/PA vs physician.
+- **Sequestration / regulatory adjustments** — e.g. the 2% Medicare sequestration cut.
+- **NCCI / claim edits** — PTP bundling, mutually-exclusive edits, MUE unit caps
+  (already noted; a pre-pricing edit layer).
+
+### 6.2 Benefit-adjudication gaps (allowed → who pays what) — **Gap**
+- **Member cost-share split** — the single biggest gap: turning the *allowed amount* into
+  plan-paid vs member-responsibility (deductible, copay, coinsurance, out-of-pocket max).
+  This is the other half of "pricing" and is entirely absent.
+- **Coordination of Benefits (COB)** — primary/secondary payer coordination when a member
+  has two plans.
+- **Benefit limits / medical necessity / prior auth** — visit maximums (e.g. 20 PT
+  visits/yr), age/gender edits, authorization and referral requirements affecting payment.
+- **Adjustment reason codes (CARC/RARC)** — the standardized codes on the EOB/835 that
+  explain each adjustment; not produced.
+
+### 6.3 Claim-lifecycle / operational gaps — **Gap**
+- **Duplicate detection, timely-filing limits** — not enforced.
+- **Adjustments / voids / replacements / mass reprocessing** — the claim lifecycle
+  (corrections, reversals, retroactive rate changes) is not modeled.
+- **Prompt-pay interest / penalties** — not computed.
+
+### 6.4 Population / value-based — **Separate track**
+- **Value-based, capitation, shared savings, quality withholds** — a different paradigm
+  (population-based, retrospective settlement), not per-claim line pricing. Deferred as
+  its own initiative.

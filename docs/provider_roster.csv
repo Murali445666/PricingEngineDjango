@@ -1,0 +1,297 @@
+npi,first_name,last_name,credential,specialty_code,specialty_label,org_key,org_name,role,effective_date,status
+KEYSTONE-NPI05,Robert,Chen,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2020-01-01,ACTIVE
+KHS-P00001,Jennifer,Mwangi,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00002,Robert,Garcia,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00003,Omar,Novak,NP,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00004,Jennifer,Novak,NP,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00005,Michael,Ali,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00006,Grace,Reyes,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00007,Ahmed,Smith,PA,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00008,William,Davis,PA,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00009,Thomas,Costa,PA,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00010,Ahmed,Williams,NP,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00011,Susan,Andersson,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00012,Grace,Rodriguez,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00013,Richard,Nguyen,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00014,Aisha,Silva,PA,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00015,Diego,Smith,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00016,Michael,Brown,PA,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00017,Omar,Tan,NP,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00018,Diego,Brown,DO,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00019,Linda,Novak,PA,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00020,Raj,Rodriguez,DO,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00021,Susan,Martinez,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00022,Jennifer,Rodriguez,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00023,Elizabeth,Reyes,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00024,Jennifer,Kowalski,NP,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00025,Jessica,Silva,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00026,William,Smith,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00027,Nina,Dubois,DO,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00028,Nina,Ivanov,NP,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00029,Grace,Ali,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00030,Raj,Brown,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00031,David,Johnson,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00032,Omar,Rodriguez,NP,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00033,John,Smith,DO,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00034,Ahmed,Reyes,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00035,Hassan,Rodriguez,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00036,William,Williams,PA,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00037,Susan,Novak,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00038,Ahmed,Okafor,DO,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00039,Priya,Okafor,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00040,Omar,Smith,NP,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00041,Mary,Rossi,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00042,Nina,Costa,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00043,Raj,Costa,PA,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00044,Jessica,Miller,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00045,Sofia,Jones,PA,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00046,Diego,Williams,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00047,Diego,Kowalski,DO,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00048,Jennifer,Miller,PA,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00049,Chen,Tan,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00050,William,Mwangi,NP,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00051,Wei,Ivanov,NP,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00052,Grace,Martinez,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00053,Patricia,Reyes,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00054,Mary,Kowalski,MD,IM,Internal Medicine,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00055,Linda,Martinez,PA,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00056,Diego,Davis,NP,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00057,David,Johnson,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00058,Jennifer,Kim,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00059,William,Martinez,PA,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00060,Omar,Davis,MD,CARD,Cardiology,KHS-CARD,Keystone Cardiology Associates,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00061,Susan,Williams,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00062,Chen,Andersson,PA,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00063,Hassan,Miller,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00064,Michael,Dubois,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00065,David,Chen,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00066,Robert,Jones,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00067,William,Johnson,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00068,Aisha,Rossi,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00069,Ahmed,Jones,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00070,Sofia,Davis,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00071,Elizabeth,Mwangi,NP,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00072,Patricia,Novak,PA,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00073,Linda,Kowalski,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00074,David,Davis,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00075,Richard,Martinez,NP,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00076,Sarah,Miller,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00077,Robert,Reyes,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00078,Wei,Ali,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00079,Thomas,Ali,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00080,Priya,Novak,DO,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00081,Grace,Silva,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00082,Chen,Martinez,DO,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00083,Chen,Kowalski,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00084,Richard,Patel,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00085,Aisha,Nguyen,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00086,Robert,Chen,DO,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00087,Sarah,Andersson,NP,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00088,Wei,Brown,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00089,Robert,Chen,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00090,Omar,Johnson,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00091,Thomas,Nguyen,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00092,Omar,Nguyen,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00093,Jennifer,Silva,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00094,Susan,Patel,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00095,Ahmed,Andersson,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00096,Patricia,Johnson,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00097,Thomas,Okafor,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00098,William,Patel,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00099,Mary,Dubois,DO,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00100,Robert,Garcia,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00101,John,Haddad,DO,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00102,James,Chen,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00103,Thomas,Dubois,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00104,Hassan,Jones,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00105,William,Garcia,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00106,Mary,Dubois,PA,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00107,Elizabeth,Nguyen,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00108,David,Brown,NP,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00109,Chen,Mwangi,NP,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00110,Aisha,Haddad,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00111,Priya,Tan,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00112,Nina,Silva,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00113,Patricia,Williams,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00114,Thomas,Chen,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00115,Diego,Costa,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00116,Wei,Novak,PA,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00117,Priya,Rossi,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00118,Sofia,Ivanov,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00119,Ahmed,Martinez,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00120,William,Smith,DO,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00121,Robert,Dubois,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00122,Sofia,Okafor,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00123,William,Mwangi,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00124,Jennifer,Kowalski,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00125,Raj,Silva,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00126,Jennifer,Rossi,DO,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00127,Wei,Haddad,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00128,Mary,Novak,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00129,Linda,Miller,PA,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00130,Hassan,Kim,DO,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00131,Richard,Miller,DO,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00132,Chen,Davis,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00133,Grace,Brown,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00134,Priya,Brown,DO,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00135,Grace,Silva,DO,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00136,Jennifer,Smith,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00137,Priya,Rodriguez,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00138,Sofia,Novak,PA,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00139,Linda,Miller,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00140,Priya,Chen,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00141,Thomas,Haddad,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00142,Raj,Dubois,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00143,Grace,Silva,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00144,Sofia,Kim,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00145,Aisha,Rossi,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00146,Jennifer,Garcia,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00147,Ahmed,Jones,NP,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00148,Jessica,Johnson,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00149,Ahmed,Rodriguez,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00150,Sarah,Patel,DO,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00151,William,Dubois,NP,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00152,Mary,Mwangi,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00153,Patricia,Reyes,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00154,Mary,Dubois,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00155,John,Johnson,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00156,Priya,Davis,DO,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00157,Ahmed,Kowalski,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00158,Hassan,Rodriguez,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00159,Michael,Okafor,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00160,John,Costa,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00161,Richard,Johnson,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00162,John,Kim,PA,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00163,Linda,Andersson,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00164,Michael,Miller,NP,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00165,Robert,Martinez,NP,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00166,Mary,Kowalski,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00167,Ahmed,Ali,DO,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00168,Susan,Ivanov,MD,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00169,Thomas,Reyes,MD,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00170,Sarah,Brown,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00171,David,Rossi,DO,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00172,Sarah,Novak,MD,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00173,Jessica,Davis,NP,IM,Internal Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00174,Grace,Silva,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00175,Susan,Kowalski,PA,ORTHO,Orthopedic Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00176,Raj,Novak,MD,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00177,John,Okafor,PA,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00178,Nina,Dubois,PA,FM,Family Medicine,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00179,Robert,Miller,NP,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00180,Omar,Costa,NP,GS,General Surgery,KHS-GEN,Keystone General Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00181,Raj,Miller,NP,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00182,David,Dubois,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00183,Raj,Davis,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00184,Elizabeth,Smith,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00185,Hassan,Mwangi,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00186,Robert,Novak,NP,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00187,Susan,Mwangi,NP,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00188,James,Rodriguez,PA,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00189,Robert,Dubois,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00190,Ahmed,Patel,NP,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00191,Raj,Silva,MD,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00192,Michael,Haddad,MD,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00193,Chen,Smith,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00194,Wei,Mwangi,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00195,Sofia,Kowalski,PA,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00196,Sofia,Williams,NP,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00197,Susan,Novak,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00198,Grace,Andersson,MD,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00199,Diego,Jones,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00200,Grace,Dubois,NP,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00201,Mary,Kim,PA,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00202,Nina,Dubois,PA,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00203,Robert,Costa,MD,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00204,Richard,Okafor,NP,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00205,Chen,Andersson,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00206,Robert,Davis,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00207,Richard,Williams,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00208,William,Haddad,MD,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00209,Elizabeth,Costa,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00210,Mary,Johnson,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00211,Michael,Patel,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00212,Wei,Ali,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00213,Sofia,Jones,NP,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00214,Hassan,Garcia,PA,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00215,William,Davis,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00216,Patricia,Davis,MD,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00217,Patricia,Tan,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00218,Nina,Williams,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00219,Jennifer,Silva,PA,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00220,Sofia,Smith,NP,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00221,Sofia,Ivanov,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00222,Jessica,Miller,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00223,Raj,Johnson,MD,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00224,Sofia,Smith,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00225,Patricia,Silva,NP,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00226,Susan,Dubois,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00227,Raj,Haddad,DO,NEO,Neonatology,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00228,Mary,Smith,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00229,Jessica,Okafor,DO,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00230,Priya,Haddad,PA,PED,Pediatrics,KHS-CHILD,Keystone Children's Hospital,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00231,Nina,Chen,PA,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00232,James,Mwangi,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00233,Omar,Haddad,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00234,Chen,Ali,NP,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00235,Diego,Miller,NP,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00236,Sofia,Costa,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00237,David,Smith,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00238,Hassan,Chen,PA,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00239,Omar,Costa,DO,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00240,Grace,Rossi,NP,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00241,Sarah,Mwangi,DO,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00242,Wei,Haddad,NP,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00243,Priya,Garcia,NP,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00244,Nina,Tan,DO,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00245,Mary,Okafor,NP,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00246,Chen,Costa,NP,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00247,Chen,Martinez,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00248,Robert,Patel,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00249,David,Tan,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00250,Jennifer,Kim,PA,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00251,Mary,Brown,PA,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00252,Patricia,Johnson,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00253,John,Ivanov,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00254,James,Reyes,DO,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00255,Aisha,Ivanov,MD,RAD,Radiology,KHS-IMG,Keystone Imaging Center,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00256,Diego,Garcia,NP,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00257,Patricia,Kim,NP,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00258,Mary,Chen,MD,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00259,Michael,Rossi,NP,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00260,David,Costa,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00261,Sofia,Andersson,MD,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00262,Sarah,Kowalski,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00263,Nina,Haddad,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00264,Richard,Jones,DO,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00265,Sofia,Nguyen,PA,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00266,Omar,Rossi,PA,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00267,Raj,Nguyen,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00268,James,Miller,MD,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00269,Hassan,Nguyen,DO,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00270,Ahmed,Ali,PA,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00271,Raj,Brown,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00272,Omar,Costa,NP,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00273,Michael,Rossi,DO,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00274,Linda,Silva,DO,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00275,Patricia,Johnson,NP,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00276,Ahmed,Nguyen,DO,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00277,Sofia,Mwangi,NP,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00278,Nina,Dubois,PA,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00279,Susan,Johnson,NP,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00280,Raj,Smith,NP,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00281,Chen,Haddad,MD,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00282,Chen,Dubois,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00283,Susan,Kim,NP,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00284,Priya,Okafor,DO,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00285,William,Kim,DO,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00286,Diego,Rodriguez,PA,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00287,Sofia,Andersson,MD,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00288,Elizabeth,Haddad,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00289,Susan,Smith,MD,PSYCH,Psychiatry,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00290,Linda,Martinez,MD,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00291,Priya,Silva,NP,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00292,William,Haddad,MD,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00293,Robert,Jones,DO,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00294,Sofia,Davis,NP,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE
+KHS-P00295,Jessica,Rodriguez,PA,PSY,Psychology,KHS-BH,Keystone Behavioral Health,EMPLOYEE,2023-01-01,ACTIVE

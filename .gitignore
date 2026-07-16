@@ -39,3 +39,6 @@ frontend/build/
 .cursor/frontend/tsconfig.tsbuildinfo
 
 frontend/tsconfig.tsbuildinfo
+
+backups/
+~$*
