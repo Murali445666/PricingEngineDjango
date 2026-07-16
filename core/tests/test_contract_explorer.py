@@ -42,6 +42,7 @@ class ContractExplorerAPITests(TestCase):
             contract_name="Explorer Contract",
             provider_org=self.org,
             network=self.network,
+            status='ACTIVE',
             effective_start_date=date(2021, 1, 1),
             effective_end_date=None,
         )
