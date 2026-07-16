@@ -501,10 +501,11 @@ USE_CASES: list[dict] = [
         "rendering_npi": CAST["render_pcp"],
         "service_date": SERVICE_DATE,
         "claim_type": "professional",
-        "lines": [_line("99213", "200.00", modifiers=["XX"])],
+        "lines": [_line("99213", "200.00", modifiers=["ZZ"])],
         "expected_status": "SUCCESS",
-        "expected_allowed": None,
-        "notes": "Modifier XX not in RefModifier — no adjustment applied",
+        "expected_allowed": "100.00",
+        "notes": "Modifier ZZ not in RefModifier — skipped, no adjustment (flat $100). "
+                 "NOTE: do not use 'XX' here — XX is a seeded 0% fixture that zeroes the line.",
     },
 ]
 
