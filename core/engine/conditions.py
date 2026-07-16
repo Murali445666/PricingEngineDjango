@@ -187,7 +187,8 @@ def build_line_context(inp, state=None) -> dict:
 
     All values originate from the already-available line input (and state if provided); no DB queries.
     Fields exposed:
-        procedure_code, billed_amount, units, claim_type, modifiers_count, revenue_code (Phase C)
+        procedure_code, billed_amount, units, claim_type, modifiers_count, revenue_code (Phase C),
+        provider_id (rendering provider for carve-out rules)
         When state is provided: base_allowed_amount, current_allowed_amount (default 0 if None)
     """
     modifiers = getattr(inp, "modifiers", None) or []
@@ -199,6 +200,7 @@ def build_line_context(inp, state=None) -> dict:
         "claim_type": str(getattr(inp, "claim_type", "") or "").upper(),
         "modifiers_count": len(modifiers),
         "revenue_code": str(revenue_code).strip() if revenue_code else "",
+        "provider_id": getattr(inp, "provider_id", None),
     }
     if state is not None:
         ctx["base_allowed_amount"] = _safe_decimal(

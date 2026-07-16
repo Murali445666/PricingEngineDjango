@@ -225,6 +225,7 @@ class ClaimPricingService:
             network_id=(
                 str(ctx.member.network_id) if ctx.member.network_id is not None else None
             ),
+            provider_id=ctx.provider.rendering_provider_id,
         )
 
         contract = ProviderContract.objects.get(pk=ctx.contract_id)

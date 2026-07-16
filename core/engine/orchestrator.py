@@ -600,6 +600,7 @@ class ClaimOrchestrator:
                 revenue_code=line_revenue_code,
                 product_id=getattr(claim_input, 'product_id', None) or None,
                 network_id=getattr(claim_input, 'network_id', None) or None,
+                provider_id=getattr(claim_input, 'provider_id', None),
             )
             # Step 4: base methodology pricing (pass context for unified trace)
             result = self.line_orchestrator.run(

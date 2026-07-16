@@ -46,6 +46,8 @@ class PricingInput:
     # Step 14a: optional product / network tier context (claim header); used when FEATURE_TIERED_RESOLUTION
     product_id: Optional[str] = None
     network_id: Optional[str] = None
+    # Provider carve-out conditions (PricingRuleCondition attribute_name=provider_id)
+    provider_id: Optional[int] = None
 
 # --- Context ---
 @dataclass
