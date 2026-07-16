@@ -36,6 +36,10 @@ RANK_FACILITY = 30
 RANK_ORG_LEAF = 20
 
 
+# Only ACTIVE contracts are resolvable (DRAFT/ARCHIVED must not price live claims).
+RESOLVABLE_CONTRACT_STATUS = 'ACTIVE'
+
+
 class ContractResolver:
     """
     Resolves the best-matching ProviderContract for a given claim context.
@@ -155,6 +159,7 @@ class ContractResolver:
 
         qs = ProviderContract.objects.filter(
             contract_id__in=entity_ranks.keys(),
+            status=RESOLVABLE_CONTRACT_STATUS,
             effective_start_date__lte=service_date,
         ).filter(
             models.Q(effective_end_date__isnull=True)
@@ -209,6 +214,7 @@ class ContractResolver:
     def _active_contracts_qs(org_id: str, service_date: date) -> models.QuerySet:
         return ProviderContract.objects.filter(
             provider_org_id=org_id,
+            status=RESOLVABLE_CONTRACT_STATUS,
             effective_start_date__lte=service_date,
         ).filter(
             models.Q(effective_end_date__isnull=True)
@@ -339,6 +345,7 @@ class ContractResolver:
         )
 
         ce_qs = ContractCoveredEntity.objects.filter(
+            contract__status=RESOLVABLE_CONTRACT_STATUS,
             contract__effective_start_date__lte=service_date,
         ).filter(
             models.Q(contract__effective_end_date__isnull=True)
@@ -392,6 +399,7 @@ class ContractResolver:
     ) -> models.QuerySet:
         return ProviderContract.objects.filter(
             provider_org_id__in=org_list,
+            status=RESOLVABLE_CONTRACT_STATUS,
             effective_start_date__lte=service_date,
         ).filter(
             models.Q(effective_end_date__isnull=True)

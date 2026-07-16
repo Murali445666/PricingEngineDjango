@@ -106,6 +106,21 @@ class ContractResolutionService:
                 gather=gathered,
             )
 
+        if member_context and raw.member_id and gathered.enrollment is None:
+            return ContractResolutionResult(
+                status=STATUS_NO_CONTRACT,
+                contract_id=None,
+                version_id=None,
+                resolution_basis=None,
+                candidates=[],
+                reason=(
+                    'Member has no active enrollment on the service date; '
+                    'no coverage to resolve a contract'
+                ),
+                gathered=serializable,
+                gather=gathered,
+            )
+
         try:
             contract_id = self._contract_resolver.resolve(
                 org_id=gathered.org.organization_id if gathered.org else None,

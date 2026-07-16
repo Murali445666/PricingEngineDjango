@@ -54,3 +54,35 @@ def delete_unified_for_product_scope(product_scope_id: int) -> None:
         migration_source=ContractScopeUnified.MigrationSource.PRODUCT_SCOPE,
         migration_source_id=product_scope_id,
     ).delete()
+
+
+def upsert_unified_product_scope(
+    *,
+    contract_id: int,
+    product_id: int,
+    lob_code: str,
+    effective_date,
+    termination_date=None,
+) -> ContractScopeUnified:
+    """
+    Write product scope directly to ContractScopeUnified (canonical resolver table).
+    Uses a stable synthetic migration_source_id so seed/import paths stay idempotent
+    without writing legacy ContractProductScope.
+    """
+    source_id = contract_id * 1_000_000 + product_id
+    row, created = ContractScopeUnified.objects.update_or_create(
+        migration_source=ContractScopeUnified.MigrationSource.PRODUCT_SCOPE,
+        migration_source_id=source_id,
+        defaults={
+            'contract_id': contract_id,
+            'lob_code': lob_code,
+            'product_id': product_id,
+            'specialty_code_id': None,
+            'site_of_service': None,
+            'geo_id': None,
+            'effective_date': effective_date,
+            'termination_date': termination_date,
+            'priority': 100,
+        },
+    )
+    return row, created
