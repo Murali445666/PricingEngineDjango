@@ -27,6 +27,10 @@ from core.models import (
     ContractCarveout,
     ContractCapFloor,
     ContractBlendingRule,
+    ContractCoveredEntity,
+    ProviderOrganization,
+    ContractScopeUnified,
+    ContractAmendment,
 )
 from core.engine.condition_schema import (
     ALLOWED_ATTRIBUTE_NAMES,
@@ -78,6 +82,38 @@ class ContractSerializer(serializers.ModelSerializer):
         return obj.validation_results.filter(
             resolved=False, severity=ValidationResult.SEVERITY_WARNING
         ).count()
+
+
+class ContractCreateSerializer(serializers.ModelSerializer):
+    """POST /api/contracts/ — always creates DRAFT contract + initial DRAFT version 1."""
+
+    class Meta:
+        model = ProviderContract
+        fields = [
+            'contract_name', 'legacy_contract_number', 'payer_org', 'provider_org',
+            'network', 'line_of_business', 'effective_start_date', 'effective_end_date',
+            'contract_origin_type', 'resolution_priority',
+        ]
+
+    def validate_legacy_contract_number(self, value):
+        text = (value or '').strip()
+        if not text:
+            raise serializers.ValidationError('This field is required.')
+        if ProviderContract.objects.filter(legacy_contract_number=text).exists():
+            raise serializers.ValidationError('A contract with this legacy number already exists.')
+        return text
+
+    def create(self, validated_data):
+        validated_data['status'] = 'DRAFT'
+        contract = ProviderContract.objects.create(**validated_data)
+        ContractVersion.objects.create(
+            contract=contract,
+            version_number=1,
+            effective_start_date=contract.effective_start_date,
+            effective_end_date=contract.effective_end_date,
+            status=ContractVersion.VersionStatus.DRAFT,
+        )
+        return contract
 
 
 class ProcedureCodeSerializer(serializers.ModelSerializer):
@@ -604,6 +640,215 @@ class ContractDetailSerializer(serializers.ModelSerializer):
         return None
 
 
+class ContractCoveredEntitySerializer(serializers.ModelSerializer):
+    """Read representation for GET /api/contracts/<id>/covered-entities/."""
+
+    name = serializers.SerializerMethodField()
+    identifier = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ContractCoveredEntity
+        fields = [
+            'id', 'entity_type', 'name', 'identifier',
+            'organization_id', 'provider_id', 'facility_id',
+            'is_primary', 'effective_start_date', 'effective_end_date',
+        ]
+        read_only_fields = fields
+
+    def get_name(self, obj) -> str:
+        if obj.entity_type == ContractCoveredEntity.EntityType.ORG and obj.organization_id:
+            return obj.organization.name
+        if obj.entity_type == ContractCoveredEntity.EntityType.FACILITY and obj.facility_id:
+            return obj.facility.name
+        if obj.entity_type == ContractCoveredEntity.EntityType.PROVIDER and obj.provider_id:
+            prov = obj.provider
+            return f'Dr. {prov.first_name} {prov.last_name}'.strip()
+        return obj.entity_type
+
+    def get_identifier(self, obj) -> str:
+        if obj.entity_type == ContractCoveredEntity.EntityType.ORG and obj.organization_id:
+            org = obj.organization
+            return org.npi or org.organization_id
+        if obj.entity_type == ContractCoveredEntity.EntityType.FACILITY and obj.facility_id:
+            return obj.facility.npi or str(obj.facility_id)
+        if obj.entity_type == ContractCoveredEntity.EntityType.PROVIDER and obj.provider_id:
+            return obj.provider.npi or str(obj.provider_id)
+        return ''
+
+
+class ContractCoveredEntityCreateSerializer(serializers.Serializer):
+    """POST body for adding one covered entity to a DRAFT contract roster."""
+
+    entity_type = serializers.ChoiceField(
+        choices=[c.value for c in ContractCoveredEntity.EntityType],
+    )
+    organization = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    provider = serializers.IntegerField(required=False, allow_null=True)
+    facility = serializers.IntegerField(required=False, allow_null=True)
+    is_primary = serializers.BooleanField(default=False)
+    effective_start_date = serializers.DateField(required=False, allow_null=True)
+    effective_end_date = serializers.DateField(required=False, allow_null=True)
+
+    def validate(self, attrs):
+        from providers.models import Facility, Provider
+
+        entity_type = attrs['entity_type']
+        org_key = (attrs.get('organization') or '').strip() or None
+        provider_id = attrs.get('provider')
+        facility_id = attrs.get('facility')
+
+        refs = sum([
+            org_key is not None,
+            provider_id is not None,
+            facility_id is not None,
+        ])
+        if refs != 1:
+            raise serializers.ValidationError(
+                'Exactly one of organization, provider, or facility must be provided.',
+            )
+
+        if entity_type == ContractCoveredEntity.EntityType.ORG:
+            if org_key is None:
+                raise serializers.ValidationError(
+                    {'organization': 'Required when entity_type is ORG.'},
+                )
+            if provider_id is not None or facility_id is not None:
+                raise serializers.ValidationError(
+                    'Only organization may be set when entity_type is ORG.',
+                )
+            org = ProviderOrganization.objects.filter(organization_id=org_key).first()
+            if org is None:
+                raise serializers.ValidationError(
+                    {'organization': f'ProviderOrganization {org_key!r} not found.'},
+                )
+            attrs['_organization'] = org
+
+        elif entity_type == ContractCoveredEntity.EntityType.PROVIDER:
+            if provider_id is None:
+                raise serializers.ValidationError(
+                    {'provider': 'Required when entity_type is PROVIDER.'},
+                )
+            if org_key is not None or facility_id is not None:
+                raise serializers.ValidationError(
+                    'Only provider may be set when entity_type is PROVIDER.',
+                )
+            try:
+                attrs['_provider'] = Provider.objects.get(pk=provider_id)
+            except Provider.DoesNotExist as exc:
+                raise serializers.ValidationError(
+                    {'provider': f'Provider {provider_id} not found.'},
+                ) from exc
+
+        elif entity_type == ContractCoveredEntity.EntityType.FACILITY:
+            if facility_id is None:
+                raise serializers.ValidationError(
+                    {'facility': 'Required when entity_type is FACILITY.'},
+                )
+            if org_key is not None or provider_id is not None:
+                raise serializers.ValidationError(
+                    'Only facility may be set when entity_type is FACILITY.',
+                )
+            try:
+                attrs['_facility'] = Facility.objects.get(pk=facility_id)
+            except Facility.DoesNotExist as exc:
+                raise serializers.ValidationError(
+                    {'facility': f'Facility {facility_id} not found.'},
+                ) from exc
+
+        return attrs
+
+    def create(self, validated_data):
+        contract = self.context['contract']
+        entity = ContractCoveredEntity.objects.create(
+            contract=contract,
+            entity_type=validated_data['entity_type'],
+            organization=validated_data.get('_organization'),
+            provider=validated_data.get('_provider'),
+            facility=validated_data.get('_facility'),
+            is_primary=validated_data.get('is_primary', False),
+            effective_start_date=validated_data.get('effective_start_date'),
+            effective_end_date=validated_data.get('effective_end_date'),
+        )
+        return entity
+
+
+class ContractScopeUnifiedSerializer(serializers.ModelSerializer):
+    """Read representation for GET /api/contracts/<id>/scope/ (Exhibit B)."""
+
+    product_name = serializers.SerializerMethodField()
+    product_code = serializers.SerializerMethodField()
+    network_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ContractScopeUnified
+        fields = [
+            'id', 'product_id', 'product_name', 'product_code',
+            'lob_code', 'network_id',
+            'effective_date', 'termination_date', 'priority',
+        ]
+        read_only_fields = fields
+
+    def get_product_name(self, obj) -> str | None:
+        if obj.product_id and obj.product:
+            return obj.product.name
+        return None
+
+    def get_product_code(self, obj) -> str | None:
+        if obj.product_id and obj.product:
+            return obj.product.product_code
+        return None
+
+    def get_network_id(self, obj) -> str | None:
+        contract = obj.contract
+        if contract and contract.network_id:
+            return contract.network_id
+        return None
+
+
+class ContractScopeUnifiedCreateSerializer(serializers.Serializer):
+    """POST body for adding product scope to a DRAFT contract."""
+
+    product_id = serializers.IntegerField(min_value=1)
+    lob_code = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    effective_date = serializers.DateField(required=False, allow_null=True)
+    termination_date = serializers.DateField(required=False, allow_null=True)
+
+    def validate_product_id(self, value: int) -> int:
+        from products.models import Product
+
+        if not Product.objects.filter(pk=value).exists():
+            raise serializers.ValidationError(f'Product {value} not found.')
+        return value
+
+    def create(self, validated_data):
+        from core.services.scope_unified_sync import upsert_unified_product_scope
+
+        contract = self.context['contract']
+        product_id = validated_data['product_id']
+        lob_raw = validated_data.get('lob_code')
+        lob_code = (lob_raw or '').strip() if lob_raw is not None else ''
+        if not lob_code:
+            lob_code = (contract.line_of_business or '').strip() or None
+        if not lob_code:
+            from products.models import Product
+            product = Product.objects.select_related('lob').get(pk=product_id)
+            lob_code = product.lob.code if product.lob else None
+        if not lob_code:
+            raise serializers.ValidationError(
+                {'lob_code': 'LOB is required when contract and product have no LOB.'},
+            )
+
+        effective_date = validated_data.get('effective_date') or contract.effective_start_date
+        row, _created = upsert_unified_product_scope(
+            contract_id=contract.contract_id,
+            product_id=product_id,
+            lob_code=lob_code,
+            effective_date=effective_date,
+            termination_date=validated_data.get('termination_date'),
+        )
+        return row
+
+
 class RuleHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RuleHistory
@@ -880,6 +1125,27 @@ class VersionLifecycleResponseSerializer(serializers.Serializer):
     version_id = serializers.IntegerField()
     previous_status = serializers.CharField()
     new_status = serializers.CharField()
+
+
+class ContractAmendmentSerializer(serializers.ModelSerializer):
+    version_id = serializers.IntegerField(source='version.version_id', read_only=True, allow_null=True)
+    version_number = serializers.IntegerField(source='version.version_number', read_only=True, allow_null=True)
+    version_status = serializers.CharField(source='version.status', read_only=True, allow_null=True)
+
+    class Meta:
+        model = ContractAmendment
+        fields = [
+            'id', 'contract', 'version_id', 'version_number', 'version_status',
+            'amendment_number', 'effective_date', 'description', 'what_changed',
+            'status', 'created_at',
+        ]
+        read_only_fields = fields
+
+
+class ContractAmendmentCreateSerializer(serializers.Serializer):
+    amendment_number = serializers.CharField(max_length=50)
+    effective_date = serializers.DateField()
+    description = serializers.CharField()
 
 
 # --- Step 12e: Contract Explorer (read-only nested tree) --------------------

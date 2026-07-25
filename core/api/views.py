@@ -31,6 +31,9 @@ from core.models import (
     ValidationResult,
     ContractVersion,
     ContractVersionAudit,
+    ContractCoveredEntity,
+    ContractScopeUnified,
+    ContractAmendment,
 )
 from core.engine.service import ClaimPricingService
 from core.engine.types import PricingInput, PricingStatus, ClaimPricingResult
@@ -39,6 +42,7 @@ from core.engine.simulation import run_line_simulation
 from core.services.rule_conflict import get_conflicts_for_rule, get_conflicts_for_rule_payload
 from core.api.serializers import (
     ContractSerializer,
+    ContractCreateSerializer,
     ContractDetailSerializer,
     PricingRequestSerializer,
     PricingResponseSerializer,
@@ -77,6 +81,12 @@ from core.api.serializers import (
     ContractVersionAuditSerializer,
     VersionLifecycleResponseSerializer,
     ContractExplorerSerializer,
+    ContractCoveredEntitySerializer,
+    ContractCoveredEntityCreateSerializer,
+    ContractScopeUnifiedSerializer,
+    ContractScopeUnifiedCreateSerializer,
+    ContractAmendmentSerializer,
+    ContractAmendmentCreateSerializer,
 )
 
 def _get_contract(contract_id_value):
@@ -98,11 +108,28 @@ def _optional_str_field(value):
 
 class ContractListView(APIView):
     def get(self, request):
-        contracts = ProviderContract.objects.filter(
-            status='ACTIVE'
-        ).prefetch_related('validation_results')
-        serializer = ContractSerializer(contracts, many=True)
+        qs = ProviderContract.objects.all().prefetch_related('validation_results')
+        status_param = (request.query_params.get('status') or '').strip().upper()
+        if status_param == 'ALL':
+            pass
+        elif status_param in ('ACTIVE', 'DRAFT', 'ARCHIVED'):
+            qs = qs.filter(status=status_param)
+        elif request.query_params.get('include_draft') == '1':
+            qs = qs.filter(status__in=['ACTIVE', 'DRAFT'])
+        else:
+            qs = qs.filter(status='ACTIVE')
+        serializer = ContractSerializer(qs, many=True)
         return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ContractCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        contract = serializer.save()
+        return Response(
+            ContractDetailSerializer(contract).data,
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class RuleListView(APIView):
@@ -126,6 +153,250 @@ class ContractDetailView(APIView):
         )
         serializer = ContractDetailSerializer(contract)
         return Response(serializer.data)
+
+
+def _parse_exhibit_csv_upload(request):
+    """Return (rows, year, version_id) or (None, error_response)."""
+    upload = request.FILES.get('file')
+    if upload is None:
+        return None, Response({'detail': 'file is required (multipart field name: file).'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        text = upload.read().decode('utf-8-sig')
+    except UnicodeDecodeError:
+        return None, Response({'detail': 'CSV must be UTF-8 encoded.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    rows = list(csv.DictReader(io.StringIO(text)))
+    if not rows:
+        return None, Response({'detail': 'CSV has no data rows.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    year_raw = (
+        request.data.get('year')
+        if hasattr(request, 'data') and request.data.get('year') not in (None, '')
+        else request.POST.get('year') or request.query_params.get('year') or 2025
+    )
+    try:
+        year = int(year_raw)
+    except (TypeError, ValueError):
+        return None, Response({'detail': 'year must be 2025 or 2026.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    version_id_raw = (
+        request.data.get('version_id')
+        if hasattr(request, 'data') and request.data.get('version_id') not in (None, '')
+        else request.POST.get('version_id') or request.query_params.get('version_id')
+    )
+    version_id = int(version_id_raw) if version_id_raw not in (None, '') else None
+    return (rows, year, version_id), None
+
+
+def _resolve_rate_exhibit_version(contract: ProviderContract, version_id: int | None):
+    if version_id is not None:
+        return get_object_or_404(ContractVersion, pk=version_id, contract=contract)
+    version = (
+        ContractVersion.objects.filter(
+            contract=contract,
+            status=ContractVersion.VersionStatus.DRAFT,
+        )
+        .order_by('-version_number')
+        .first()
+    )
+    if version is None:
+        return None
+    return version
+
+
+class ContractRateExhibitPreviewView(APIView):
+    """POST /api/contracts/<id>/rate-exhibit/preview/ — diff CSV vs version rules (no writes)."""
+
+    def post(self, request, pk: int):
+        from django.core.exceptions import ObjectDoesNotExist
+        from core.services.fee_schedule_import import preview_fee_schedule_import
+
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        parsed, err = _parse_exhibit_csv_upload(request)
+        if err is not None:
+            return err
+        rows, year, version_id = parsed
+        version = _resolve_rate_exhibit_version(contract, version_id)
+        if version is None:
+            return Response(
+                {'detail': 'No DRAFT ContractVersion found; create one or pass version_id.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            preview = preview_fee_schedule_import(
+                contract.contract_id, version.version_id, rows, year=year,
+            )
+        except ObjectDoesNotExist as exc:
+            return Response({'detail': str(exc)}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as exc:
+            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(preview.to_dict())
+
+
+class ContractRateExhibitCommitView(APIView):
+    """POST /api/contracts/<id>/rate-exhibit/commit/ — upsert rules via fee_schedule_import."""
+
+    def post(self, request, pk: int):
+        from django.core.exceptions import ObjectDoesNotExist
+        from core.services.fee_schedule_import import import_fee_schedule_from_rows
+
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        parsed, err = _parse_exhibit_csv_upload(request)
+        if err is not None:
+            return err
+        rows, year, version_id = parsed
+        version = _resolve_rate_exhibit_version(contract, version_id)
+        if version is None:
+            return Response(
+                {'detail': 'No DRAFT ContractVersion found; create one or pass version_id.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            result = import_fee_schedule_from_rows(
+                contract.contract_id, version.version_id, rows, year=year,
+            )
+        except ObjectDoesNotExist as exc:
+            return Response({'detail': str(exc)}, status=status.HTTP_404_NOT_FOUND)
+        except ValueError as exc:
+            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            'contract_id': result.contract_id,
+            'version_id': result.version_id,
+            'year': result.year,
+            'rules_created': result.rules_created,
+            'rules_updated': result.rules_updated,
+            'rules_deleted': result.rules_deleted,
+            'conditions_created': result.conditions_created,
+            'rate_bases_created': result.rate_bases_created,
+            'rate_bases_updated': result.rate_bases_updated,
+            'rows_processed': result.rows_processed,
+            'skipped': result.skipped,
+            'rate_basis_skipped': result.rate_basis_skipped,
+        })
+
+
+def _covered_entity_qs(contract):
+    return (
+        ContractCoveredEntity.objects.filter(contract=contract)
+        .select_related('organization', 'facility', 'provider')
+        .order_by('id')
+    )
+
+
+class ContractCoveredEntityListCreateView(APIView):
+    """
+    GET/POST /api/contracts/<id>/covered-entities/
+    Exhibit A roster — list covered entities; add one on DRAFT contracts only.
+    """
+
+    def get(self, request, pk: int):
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        serializer = ContractCoveredEntitySerializer(_covered_entity_qs(contract), many=True)
+        return Response(serializer.data)
+
+    def post(self, request, pk: int):
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        from core.services.contract_editing import contract_is_editable
+        if not contract_is_editable(contract):
+            return Response(
+                {'detail': 'Covered entity roster can only be edited on DRAFT contracts or during an amendment draft.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        serializer = ContractCoveredEntityCreateSerializer(
+            data=request.data,
+            context={'contract': contract},
+        )
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        entity = serializer.save()
+        entity = _covered_entity_qs(contract).get(pk=entity.pk)
+        return Response(
+            ContractCoveredEntitySerializer(entity).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class ContractCoveredEntityDeleteView(APIView):
+    """DELETE /api/contracts/<id>/covered-entities/<entity_id>/ — DRAFT contracts only."""
+
+    def delete(self, request, pk: int, entity_id: int):
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        from core.services.contract_editing import contract_is_editable
+        if not contract_is_editable(contract):
+            return Response(
+                {'detail': 'Covered entity roster can only be edited on DRAFT contracts or during an amendment draft.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        entity = get_object_or_404(ContractCoveredEntity, pk=entity_id, contract=contract)
+        entity.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def _contract_scope_qs(contract):
+    return (
+        ContractScopeUnified.objects.filter(
+            contract=contract,
+            product_id__isnull=False,
+        )
+        .select_related('product', 'product__lob', 'contract', 'contract__network')
+        .order_by('id')
+    )
+
+
+class ContractScopeListCreateView(APIView):
+    """
+    GET/POST /api/contracts/<id>/scope/
+    Exhibit B product scope — list rows; add one on DRAFT contracts only.
+    """
+
+    def get(self, request, pk: int):
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        serializer = ContractScopeUnifiedSerializer(_contract_scope_qs(contract), many=True)
+        return Response(serializer.data)
+
+    def post(self, request, pk: int):
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        from core.services.contract_editing import contract_is_editable
+        if not contract_is_editable(contract):
+            return Response(
+                {'detail': 'Product scope can only be edited on DRAFT contracts or during an amendment draft.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        serializer = ContractScopeUnifiedCreateSerializer(
+            data=request.data,
+            context={'contract': contract},
+        )
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        row = serializer.save()
+        row = _contract_scope_qs(contract).get(pk=row.pk)
+        return Response(
+            ContractScopeUnifiedSerializer(row).data,
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class ContractScopeDeleteView(APIView):
+    """DELETE /api/contracts/<id>/scope/<scope_id>/ — DRAFT contracts only."""
+
+    def delete(self, request, pk: int, scope_id: int):
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        from core.services.contract_editing import contract_is_editable
+        if not contract_is_editable(contract):
+            return Response(
+                {'detail': 'Product scope can only be edited on DRAFT contracts or during an amendment draft.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        scope = get_object_or_404(
+            ContractScopeUnified,
+            pk=scope_id,
+            contract=contract,
+            product_id__isnull=False,
+        )
+        scope.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ContractSummaryView(APIView):
@@ -1260,12 +1531,31 @@ class ContractVersionActivateView(APIView):
     """
 
     def post(self, request, pk: int):
-        from core.services.rule_lifecycle_service import RuleLifecycleService
+        from core.services.amendment_service import AmendmentService
+        from core.services.validation_service import ValidationService
         from django.core.exceptions import ValidationError as DjangoValidationError
 
-        get_object_or_404(ContractVersion, pk=pk)
+        version = get_object_or_404(ContractVersion, pk=pk)
+        if version.status != ContractVersion.VersionStatus.DRAFT:
+            return Response(
+                {'detail': f'Cannot activate version {pk}: current status is {version.status} (must be DRAFT).'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        conflicts = ValidationService.validate_contract(version.contract_id)
+        error_count = sum(1 for c in conflicts if c.severity == 'ERROR')
+        if error_count > 0:
+            return Response(
+                {
+                    'detail': f'Cannot publish: {error_count} validation error(s) must be resolved first.',
+                    'error_count': error_count,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        prev_status = version.status
         try:
-            version = RuleLifecycleService.activate_version(
+            version = AmendmentService.publish_version(
                 pk, user=request.user if request.user.is_authenticated else None
             )
         except DjangoValidationError as exc:
@@ -1274,10 +1564,181 @@ class ContractVersionActivateView(APIView):
         return Response(
             VersionLifecycleResponseSerializer({
                 'version_id': version.version_id,
-                'previous_status': 'DRAFT',
+                'previous_status': prev_status,
                 'new_status': version.status,
             }).data
         )
+
+
+class ContractVersionRevertToDraftView(APIView):
+    """
+    POST /api/contract-versions/<id>/revert-to-draft/
+    Moves an ACTIVE version back to DRAFT for editing (one DRAFT per contract).
+    """
+
+    def post(self, request, pk: int):
+        from core.services.amendment_service import AmendmentService
+        from django.core.exceptions import ValidationError as DjangoValidationError
+
+        version = get_object_or_404(ContractVersion, pk=pk)
+        prev = version.status
+        try:
+            version = AmendmentService.revert_to_draft(
+                pk, user=request.user if request.user.is_authenticated else None
+            )
+        except DjangoValidationError as exc:
+            return Response({'detail': exc.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            VersionLifecycleResponseSerializer({
+                'version_id': version.version_id,
+                'previous_status': prev,
+                'new_status': version.status,
+            }).data
+        )
+
+
+class ContractVersionDiscardView(APIView):
+    """
+    POST /api/contract-versions/<id>/discard/
+    Permanently deletes a DRAFT version and its linked amendment.
+    """
+
+    def post(self, request, pk: int):
+        from core.services.amendment_service import AmendmentService
+        from django.core.exceptions import ValidationError as DjangoValidationError
+
+        get_object_or_404(ContractVersion, pk=pk)
+        try:
+            result = AmendmentService.discard_draft(
+                pk, user=request.user if request.user.is_authenticated else None
+            )
+        except DjangoValidationError as exc:
+            return Response({'detail': exc.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
+class ContractAmendmentListCreateView(APIView):
+    """
+    GET/POST /api/contracts/<id>/amendments/
+    List amendments or start a new amendment on an ACTIVE contract.
+    """
+
+    def get(self, request, pk: int):
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        amendments = (
+            ContractAmendment.objects.filter(contract=contract)
+            .select_related('version')
+            .order_by('-effective_date', '-created_at')
+        )
+        return Response(ContractAmendmentSerializer(amendments, many=True).data)
+
+    def post(self, request, pk: int):
+        from core.services.amendment_service import AmendmentService
+        from django.core.exceptions import ValidationError as DjangoValidationError
+
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        serializer = ContractAmendmentCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            amendment, version = AmendmentService.start_amendment(
+                contract.contract_id,
+                amendment_number=serializer.validated_data['amendment_number'],
+                effective_date=serializer.validated_data['effective_date'],
+                description=serializer.validated_data['description'],
+                user=request.user if request.user.is_authenticated else None,
+            )
+        except DjangoValidationError as exc:
+            return Response({'detail': exc.message}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            {
+                'amendment': ContractAmendmentSerializer(amendment).data,
+                'version': ContractVersionSerializer(version).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class ContractVersionDiffView(APIView):
+    """
+    GET /api/contracts/<id>/versions/<version_id>/diff/?against=<other_version_id>
+    Semantic diff between two version snapshots (stored or live-built for DRAFT).
+    """
+
+    def get(self, request, pk: int, version_id: int):
+        from core.services.version_snapshot_service import load_snapshot_for_diff, semantic_diff_snapshots
+
+        contract = get_object_or_404(ProviderContract, pk=pk)
+        version = get_object_or_404(ContractVersion, pk=version_id, contract=contract)
+
+        against_raw = request.query_params.get('against')
+        require_stored = request.query_params.get('require_snapshot', '').lower() in ('1', 'true', 'yes')
+
+        if against_raw not in (None, ''):
+            try:
+                against_id = int(against_raw)
+            except (TypeError, ValueError):
+                return Response(
+                    {'detail': 'Query parameter against must be an integer version_id.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            against_version = get_object_or_404(
+                ContractVersion, pk=against_id, contract=contract,
+            )
+        elif version.status == ContractVersion.VersionStatus.DRAFT:
+            # Amendment pre-publish review: compare draft to the live ACTIVE baseline.
+            against_version = (
+                ContractVersion.objects.filter(
+                    contract=contract,
+                    status=ContractVersion.VersionStatus.ACTIVE,
+                )
+                .exclude(pk=version_id)
+                .order_by('-version_number')
+                .first()
+            )
+            if against_version is None:
+                against_version = (
+                    ContractVersion.objects.filter(
+                        contract=contract,
+                        version_number__lt=version.version_number,
+                    )
+                    .order_by('-version_number')
+                    .first()
+                )
+        else:
+            against_version = (
+                ContractVersion.objects.filter(
+                    contract=contract,
+                    version_number__lt=version.version_number,
+                )
+                .order_by('-version_number')
+                .first()
+            )
+        if against_version is None:
+                return Response(
+                    {'detail': f'No prior version found to compare against version {version_id}.'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        new_snap = load_snapshot_for_diff(version, require_stored=require_stored)
+        if new_snap is None:
+            return Response(
+                {'detail': f'No snapshot available for version {version_id}.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        old_snap = load_snapshot_for_diff(against_version, require_stored=require_stored)
+        if old_snap is None:
+            return Response(
+                {'detail': f'No snapshot available for version {against_version.version_id}.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response(semantic_diff_snapshots(old_snap, new_snap))
 
 
 class ContractVersionArchiveView(APIView):
