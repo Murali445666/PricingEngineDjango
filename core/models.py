@@ -658,6 +658,8 @@ class ContractVersion(models.Model):
     product_id = models.CharField(max_length=100, null=True, blank=True, db_column='product_id')
     # Step 14a: higher value wins when sorting rule candidates (with FEATURE_TIERED_RESOLUTION)
     tier_priority = models.IntegerField(default=0, db_column='tier_priority')
+    # Amendment workflow: when set, DRAFT version activates on this date (future-dated publish).
+    scheduled_activation_date = models.DateField(null=True, blank=True, db_column='scheduled_activation_date')
 
     class Meta:
         managed = True
@@ -723,6 +725,14 @@ class ContractAmendment(models.Model):
         db_column='contract_id',
         related_name='amendments',
     )
+    version = models.ForeignKey(
+        ContractVersion,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        db_column='version_id',
+        related_name='amendment',
+    )
     amendment_number = models.CharField(max_length=50)
     effective_date = models.DateField()
     description = models.TextField()
@@ -740,6 +750,29 @@ class ContractAmendment(models.Model):
 
     def __str__(self) -> str:
         return f"Amendment {self.amendment_number} ({self.effective_date})"
+
+
+class ContractVersionSnapshot(models.Model):
+    """Immutable published config snapshot for a ContractVersion (§18 T1.4)."""
+
+    id = models.BigAutoField(primary_key=True)
+    version = models.OneToOneField(
+        ContractVersion,
+        on_delete=models.CASCADE,
+        db_column='version_id',
+        related_name='config_snapshot',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    snapshot = models.JSONField()
+    checksum = models.CharField(max_length=64)
+
+    class Meta:
+        managed = True
+        db_table = 'contract_version_snapshots'
+        ordering = ['-created_at']
+
+    def __str__(self) -> str:
+        return f"Snapshot for version {self.version_id} @ {self.created_at}"
 
 
 class ContractTerm(models.Model):
