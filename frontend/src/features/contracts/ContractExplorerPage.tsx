@@ -10,7 +10,7 @@ export function ContractExplorerPage() {
 
   const { data: contracts = [], isLoading: contractsLoading } = useQuery({
     queryKey: ['contracts'],
-    queryFn: fetchContracts,
+    queryFn: () => fetchContracts(),
   })
 
   const contractIdNum = contractId ? Number(contractId) : NaN

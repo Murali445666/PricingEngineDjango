@@ -4,6 +4,7 @@ import { PricingSandboxPage } from '@/features/pricing/PricingSandboxPage'
 import { ContractsPage } from '@/features/contracts/ContractsPage'
 import { ContractSummaryPage } from '@/features/contracts/ContractSummaryPage'
 import { ContractDetailPage } from '@/features/contracts/ContractDetailPage'
+import { ContractCreatePage } from '@/features/contracts/ContractCreatePage'
 import { ContractExplorerPage } from '@/features/contracts/ContractExplorerPage'
 import { RulesPage } from '@/features/rules/RulesPage'
 import { RuleDetailPage } from '@/features/rules/RuleDetailPage'
@@ -25,6 +26,7 @@ export function AppRoutes() {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Navigate to="/pricing-sandbox" replace />} />
         <Route path="pricing-sandbox" element={<PricingSandboxPage />} />
+        <Route path="contracts/new" element={<ContractCreatePage />} />
         <Route path="contracts/:contractId/rules/new" element={<RuleCreatePage />} />
         <Route path="contracts/:id/summary" element={<ContractSummaryPage />} />
         <Route path="contracts/:id" element={<ContractDetailPage />} />

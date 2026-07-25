@@ -21,7 +21,7 @@ export function RuleSimulatorPage() {
 
   const { data: contracts = [], isLoading: contractsLoading, error: contractsError, refetch: refetchContracts } = useQuery({
     queryKey: ['contracts'],
-    queryFn: fetchContracts,
+    queryFn: () => fetchContracts(),
   })
 
   const cId = contractId === '' ? null : Number(contractId)

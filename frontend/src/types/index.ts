@@ -7,9 +7,113 @@ export interface Contract {
   legacy_contract_number: string
   effective_start_date?: string
   effective_end_date?: string | null
+  line_of_business?: string
   /** Step 12a: open conflict counts from ValidationResult */
   open_error_count?: number
   open_warning_count?: number
+}
+
+/** POST /api/contracts/ payload */
+export interface ContractCreatePayload {
+  contract_name: string
+  legacy_contract_number: string
+  payer_org: number
+  provider_org: string
+  network: string
+  line_of_business: string
+  effective_start_date: string
+  effective_end_date?: string | null
+  contract_origin_type: 'DIRECT' | 'LEASED' | 'DELEGATED'
+  resolution_priority: number
+}
+
+/** POST /api/validate-contract/<id>/ response */
+export interface ContractValidationResponse {
+  contract_id: number
+  error_count: number
+  warning_count: number
+  conflicts: BulkValidationConflict[]
+}
+
+/** Rate exhibit preview/commit (Exhibit C CSV) */
+export interface RateExhibitPreviewSampleRow {
+  change_type: 'added' | 'changed' | 'removed'
+  procedure_code: string
+  covered_entity: string
+  setting?: string
+  flat_rate?: string
+  methodology_code?: string
+  rule_id?: number
+  previous_flat_rate?: string | null
+  previous_methodology_code?: string
+}
+
+export interface RateExhibitPreview {
+  contract_id: number
+  version_id: number
+  year: number
+  counts: { added: number; changed: number; removed: number; skipped: number }
+  added: RateExhibitPreviewSampleRow[]
+  changed: RateExhibitPreviewSampleRow[]
+  removed: RateExhibitPreviewSampleRow[]
+  sample: RateExhibitPreviewSampleRow[]
+  skipped: { row?: number; reason: string; procedure_code?: string }[]
+}
+
+export interface RateExhibitCommitResult {
+  contract_id: number
+  version_id: number
+  year: number
+  rules_created: number
+  rules_updated: number
+  rules_deleted: number
+  rows_processed: number
+  rate_bases_created: number
+  rate_bases_updated: number
+}
+
+/** GET /api/contracts/<id>/covered-entities/ — Exhibit A roster row */
+export interface ContractCoveredEntity {
+  id: number
+  entity_type: 'ORG' | 'FACILITY' | 'PROVIDER'
+  name: string
+  identifier: string
+  organization_id?: string | null
+  provider_id?: number | null
+  facility_id?: number | null
+  is_primary: boolean
+  effective_start_date?: string | null
+  effective_end_date?: string | null
+}
+
+export interface CoveredEntityCreatePayload {
+  entity_type: 'ORG' | 'FACILITY' | 'PROVIDER'
+  organization?: string
+  provider?: number
+  facility?: number
+  is_primary?: boolean
+  effective_start_date?: string | null
+  effective_end_date?: string | null
+}
+
+/** GET /api/contracts/<id>/scope/ — Exhibit B product scope row */
+export interface ContractProductScope {
+  id: number
+  product_id: number
+  product_name: string | null
+  product_code: string | null
+  lob_code: string | null
+  network_id: string | null
+  effective_date: string | null
+  termination_date: string | null
+  priority: number
+}
+
+export interface ProductScopeCreatePayload {
+  product_id: number
+  lob_code?: string | null
+  effective_date?: string | null
+  termination_date?: string | null
 }
 
 /** Step 12d: one row from POST /api/validate-contracts/bulk/ */
@@ -381,4 +485,99 @@ export interface ContractExplorerResponse {
   contract: ExplorerContractSummary
   open_conflict_counts: ExplorerOpenConflictCounts
   versions: ExplorerVersion[]
+}
+
+export interface AmendmentWhatChanged {
+  rules: { added: number; changed: number; removed: number }
+  entities: { added: number; removed: number }
+  scope: { added: number; changed: number; removed: number }
+  prior_version_id?: number | null
+  new_version_id?: number | null
+}
+
+export interface ContractAmendment {
+  id: number
+  contract: number
+  version_id?: number | null
+  version_number?: number | null
+  version_status?: string | null
+  amendment_number: string
+  effective_date: string
+  description: string
+  what_changed?: AmendmentWhatChanged | null
+  status: string
+  created_at: string
+}
+
+export interface AmendmentCreatePayload {
+  amendment_number: string
+  effective_date: string
+  description: string
+}
+
+export interface AmendmentCreateResponse {
+  amendment: ContractAmendment
+  version: { version_id: number; version_number: number; status: string }
+}
+
+export interface VersionDiffRateChange {
+  code: string
+  covered_entity?: string
+  rule_name?: string | null
+  old_rate?: string | null
+  new_rate?: string | null
+  pct_change?: number | null
+}
+
+export interface VersionDiffEntityRow {
+  label: string
+  entity_type?: string
+  organization_id?: string | null
+  facility_id?: number | null
+  provider_id?: number | null
+}
+
+export interface VersionDiffScopeRow {
+  label: string
+  lob_code?: string | null
+  product_id?: number | null
+}
+
+export interface VersionDiffHeaderChange {
+  field: string
+  old: unknown
+  new: unknown
+}
+
+export interface ContractVersionDiff {
+  version_id: number
+  against_version_id: number
+  headline: string
+  summary: {
+    rules: { added: number; changed: number; removed: number }
+    entities: { added: number; removed: number }
+    scope: { added: number; changed: number; removed: number }
+    cap_floors: { changed: number }
+    outlier_rules: { changed: number }
+    stop_loss_rules: { changed: number }
+    contract_header: { changed: number }
+  }
+  rates: {
+    added: VersionDiffRateChange[]
+    changed: VersionDiffRateChange[]
+    removed: VersionDiffRateChange[]
+  }
+  covered_entities: {
+    added: VersionDiffEntityRow[]
+    removed: VersionDiffEntityRow[]
+  }
+  product_scope: {
+    added: VersionDiffScopeRow[]
+    removed: VersionDiffScopeRow[]
+    changed: Array<{ label: string; old: unknown; new: unknown }>
+  }
+  cap_floors: { added: unknown[]; removed: unknown[]; changed: unknown[] }
+  outlier_rules: { added: unknown[]; removed: unknown[]; changed: unknown[] }
+  stop_loss_rules: { added: unknown[]; removed: unknown[]; changed: unknown[] }
+  contract_header: VersionDiffHeaderChange[]
 }

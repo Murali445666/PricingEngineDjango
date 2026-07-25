@@ -26,7 +26,7 @@ export function ContractsPage() {
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['contracts'],
-    queryFn: fetchContracts,
+    queryFn: () => fetchContracts({ includeDraft: true }),
   })
 
   const nameById = (id: number) => data?.find((c) => c.contract_id === id)?.contract_name ?? '—'
@@ -150,6 +150,12 @@ export function ContractsPage() {
       metadata={<span>Active contracts are available for pricing requests.</span>}
     >
       <div className="mb-4 flex flex-wrap items-center gap-2">
+        <Link
+          to="/contracts/new"
+          className="inline-flex items-center rounded bg-primary-600 px-3 py-2 text-sm font-medium text-white hover:bg-primary-700"
+        >
+          New agreement
+        </Link>
         <Button type="button" variant="secondary" onClick={openBulkModal} disabled={!data?.length}>
           Run bulk validation
         </Button>
