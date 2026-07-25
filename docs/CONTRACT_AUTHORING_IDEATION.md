@@ -698,3 +698,116 @@ feature of this layer:
 - Rate exhibit + load pipeline: `docs/Exhibit_C_Fee_Schedule.csv`, `docs/CURSOR_SEED_BRIEF.md`
 - Test evidence for the seeded contract: `docs/TESTING.md`
 - Read-back surface: §15 Contract Summary Panel
+
+---
+
+## 18. Authoring depth — final plan (2026-07)
+
+### Where we are
+The authoring loop is complete and verified end-to-end: **create → roster (A2) → scope
+(A3) → rate exhibit (A4) → validate (6-check lint) → publish → resolves & prices.** Draft
+isolation holds (drafts never price); publish is gated on validation errors; the 217/223
+case proves cross-contract ambiguity is caught at resolution.
+
+The project can already tell one story: *"an analyst configures a complex healthcare
+agreement without code, validates it, and safely publishes it."* What's missing is **depth**
+— change management, traceability, and proof of correctness. That's this phase.
+
+### The one-line gap
+The lifecycle **ends at first publication**. It supports `create → configure → validate →
+publish` but not `active → amend → compare → test → approve → future-activate`. Real
+contracts change constantly (annual escalators, provider adds, terminations, renegotiations).
+Closing that is the highest-value work left.
+
+### Build sequence
+
+**Tier 1 — complete the story (build in this order):**
+
+| # | Item | Scope | Reuse / anchor |
+|---|---|---|---|
+| T1.1 | **Amendment workflow** | "Create amendment" on an ACTIVE contract → clone active version into a new DRAFT version; record amendment number, reason, effective date, source doc; future-date activation; auto-supersede prior version on effective date. Also fills the missing "return to draft" UI gap. | `ContractAmendment` model exists (`core/models.py:716`) but has no UI workflow; `clone_contract` command; version activate/archive |
+| T1.2 | **Golden-claim regression suite** | Per-contract set of claims with expected allowed amounts; run current-vs-draft repricing; material-change thresholds; **publish gate requires mandatory tests pass** (not just lint). | existing `price-claim-simulate`, reprice batch |
+| T1.3 | **Semantic contract diff** | Compare two versions as *meaning* — "47 rates changed, 3 entities added, 1 product removed, stop-loss changed" — not raw rows. Powers amendment review. | version snapshot (T1.4) |
+| T1.4 | **Version snapshot** | On publish, serialize the *complete* config (roster, scope, rules+conditions, rate bases, carve-outs, caps/floors/outliers/stop-loss, doc refs) into an immutable snapshot, so a version is reproducible and diffable. Solves "what exactly is version 2?" | new `ContractVersionSnapshot` (JSON blob); no table redesign needed |
+| T1.5 | **Import batch audit** | Persist every rate-exhibit import as an immutable batch: filename, checksum, uploader, timestamp, row count, per-row result, status (`uploaded→parsed→validation_failed→approved→committed→rolled_back`). Preview becomes a durable, reviewable change set, not a transient upload. | refactor `RateExhibitPanel` transient preview into a saved `ImportBatch` |
+| T1.6 | **Cross-contract pre-publish ambiguity check** | Before publish, detect entity+product+date collisions with other active/future contracts and **block with the exact collision** — catch the 217/223 case at authoring, not at resolution. | validation service; resolver's ambiguity logic |
+
+**Tier 2 — make it product-like:**
+- T2.1 Searchable selectors (payer / provider org / NPI-TIN / facility / product / network) — replaces raw-ID entry (`ContractCreatePage`, `CoveredEntitiesPanel` currently take DB ids).
+- T2.2 Single-rule authoring: add/edit/copy one rule, provider override, future-retire, carve-out — surgical maintenance without re-uploading a spreadsheet.
+- T2.3 Author / reviewer / publisher / auditor roles (Django auth + 4 groups): author can't approve own change; rejections need a reason; publish records actor+timestamp.
+- T2.4 Contract readiness dashboard.
+- T2.5 Clause/exhibit-to-rule traceability: `rule → CSV row → exhibit → clause/amendment`, surfaced in the pricing trace.
+
+**Tier 3 — differentiators:**
+- Annual CMS schedule-update assistant · historical-claims financial-impact analysis ·
+  contract templates / rule packs · unused-rule & coverage-gap analysis · plain-language
+  rule summaries.
+
+### Acceptance = the five demo stories
+The phase is "done" when these five run end-to-end:
+1. **New agreement** — create IDN contract, roster + products, load 1,100 rates, clear
+   validation, run test claims, publish.
+2. **Corrected exhibit** — upload corrected Exhibit C, show add/change/remove, preserve
+   rule ids, retain import audit.
+3. **Annual amendment** — clone active 2025 version, apply +3%, add one provider, show
+   financial impact, approve, schedule for 2026-01-01.
+4. **Ambiguity prevention** — attempt to publish a contract overlapping another for the same
+   provider/product/date; show the collision; block.
+5. **Provider dispute** — from a priced claim, trace `claim → version → rule → rate basis →
+   exhibit row → amendment`.
+
+Story 5 is the capstone — it connects pricing engine + resolver + authoring + provenance
+into one system.
+
+### Explicitly NOT now (broaden domain without helping the story)
+Value-based contracting · NCCI editing · COB · medical-policy authoring · full document-AI
+extraction · enterprise SSO · general BPM/workflow engine.
+
+### Recommended order
+T1.1 (amendment) → T1.4 (snapshot) → T1.3 (semantic diff) → T1.6 (pre-publish ambiguity) →
+T1.2 (golden-claim gate) → T1.5 (import audit). Then Tier 2 as UX polish. This front-loads
+the amendment lifecycle (the biggest gap) and the snapshot it depends on.
+
+### Progress tracker
+
+**Done (authoring loop — verified):**
+- [x] A1 Contract create (DRAFT + auto version 1)
+- [x] A2 Roster authoring (covered-entities CRUD, DRAFT-only) + `NO_COVERED_ENTITIES` lint
+- [x] A3 Product-scope authoring (CRUD, DRAFT-only) + `NO_PRODUCT_SCOPE` lint
+- [x] A4 Rate-exhibit upload (preview diff → commit, natural-key upsert, writes `ContractRateBasis`)
+- [x] Validation lint (6 checks): unreachable rule, ambiguous rule, non-canonical claim_type, pointless carve-out, no roster, no scope
+- [x] Publish gate (DRAFT→ACTIVE, blocked on ERROR); draft isolation verified
+
+**To build — Tier 1 (in order):**
+- [x] T1.1 Amendment workflow — clone active→draft version, metadata, auto-supersede, "return to draft". *Verified on 217 (v205 clone of 1113 rules, publish→supersede, revert).*
+- [x] T1.4 Version snapshot — immutable full-config serialization + checksum on publish; feeds `what_changed`. *Verified (models + migration 0049).*
+- [x] T1.1a **Scheduled-activation trigger** — `python manage.py apply_scheduled_activations` (schedule daily via cron / Windows Task Scheduler) so future-dated amendments activate on their effective date.
+- [x] T1.3 **Semantic contract diff** — `GET /api/contracts/<id>/versions/<version_id>/diff/` + Compare versions UI (headline counts + expandable detail; inline on draft amendments). *Fix: originally matched rules by `rule_name` (which shifts on re-import) → missed all rate changes, showed only header noise. Now matches by natural key `(procedure_code, covered_entity)` + rate fingerprint, and excludes version-identity fields. Verified: 217 AMD-2026-01 → 1,113 rate changes (+3%), 0 header/entity/scope noise.*
+- [ ] T1.6 Cross-contract pre-publish ambiguity check
+- [ ] T1.2 Golden-claim regression suite + publish gate
+- [ ] T1.5 Import batch audit (durable, reviewable change set)
+
+**To build — Tier 2 (product polish):**
+- [ ] T2.1 Searchable payer/provider/NPI-TIN/facility/product/network selectors (replace raw-ID entry)
+- [ ] T2.2 Single-rule authoring (add/edit/copy/override/future-retire/carve-out)
+- [ ] T2.3 Author/reviewer/publisher/auditor roles (Django auth + 4 groups)
+- [ ] T2.4 Contract readiness dashboard
+- [ ] T2.5 Clause/exhibit-to-rule traceability in the pricing trace
+
+**Demo stories (acceptance):**
+- [ ] 1. New agreement (create → roster → scope → 1,100 rates → validate → publish)
+- [ ] 2. Corrected exhibit (add/change/remove diff, stable ids, import audit)
+- [ ] 3. Annual amendment (clone 2025 → +3% → add provider → impact → schedule 2026-01-01)
+- [ ] 4. Ambiguity prevention (block overlapping publish with exact collision)
+- [ ] 5. Provider dispute — capstone (claim → version → rule → rate basis → exhibit row → amendment)
+
+### Current status / next action (2026-07)
+- **Blocker to clear first:** contract **223** (UI test) is ACTIVE and collides with 217 on
+  Keystone Cardiology + PPO → all that scope resolves AMBIGUOUS. **Archive 223** before
+  building amendments on top of it.
+- **Recommended first slice (not all six at once):** **T1.1 + T1.2/T1.4 + demo story 3
+  (annual amendment)** as one vertical slice — clone the active version, apply +3%, add a
+  provider, show impact, schedule future activation. Demo that before building the rest.
+- Tier 1 is ~6 items = weeks. Ship the vertical slice first; don't batch all of Tier 1
+  before showing anything.

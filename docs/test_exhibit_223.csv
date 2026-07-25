@@ -1,0 +1,4 @@
+contract_ref,contract_name,exhibit,setting,covered_entity,code_type,procedure_code,description,methodology_code,rate_basis,base_year,percentage,rvu,conversion_factor,units_note,allowed_2025,allowed_2026
+TEST-001,My Test Agreement,C.1 Professional,Professional,Keystone Cardiology (org),CPT,99213,Office visit est level 3,RBRVS,130% MPFS,2025,130,2.54,32.7442,,111.11,114.44
+TEST-001,My Test Agreement,C.1 Professional,Professional,Keystone Cardiology (org),CPT,99214,Office visit est level 4,RBRVS,130% MPFS,2025,130,3.58,32.7442,,222.22,228.89
+TEST-001,My Test Agreement,C.1 Professional,Professional,Keystone Cardiology (org),CPT,93000,Electrocardiogram complete,RBRVS,130% MPFS,2025,130,0.57,32.7442,,33.33,34.33
