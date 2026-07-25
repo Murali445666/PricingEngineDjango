@@ -13,13 +13,14 @@ from django.db import transaction
 
 from core.models import (
     ContractArrangement,
+    ContractBlendingRule,
     ContractCapFloor,
     ContractCarveout,
-    ContractCoveredEntity,
     ContractEscalator,
-    ContractProductScope,
+    ContractMethodology,
+    ContractOutlierRule,
     ContractRateBasis,
-    ContractScope,
+    ContractStopLossRule,
     ContractVersion,
     PricingRule,
     PricingRuleCondition,
@@ -307,3 +308,240 @@ def clone_contract(
         counts=counts,
     )
     return new_contract, summary
+
+
+def _clone_version_pricing_graph(
+    *,
+    source_version: ContractVersion,
+    target_version: ContractVersion,
+    target_contract: ProviderContract,
+    counts: dict[str, int],
+) -> None:
+    """Copy version-scoped pricing objects onto target_version (same or different contract)."""
+    source_rules = PricingRule.objects.filter(
+        contract=source_version.contract,
+        version=source_version,
+    ).select_related('rate_basis__schedule').prefetch_related('conditions').order_by('rule_id')
+
+    for rule in source_rules:
+        new_rule = PricingRule.objects.create(
+            contract=target_contract,
+            version=target_version,
+            rule_name=rule.rule_name,
+            arrangement=rule.arrangement if rule.arrangement_id and rule.arrangement.contract_id == target_contract.contract_id else None,
+            rule_type=rule.rule_type,
+            methodology_code=rule.methodology_code,
+            multiplier=rule.multiplier,
+            flat_rate=rule.flat_rate,
+            contract_term=rule.contract_term,
+            per_diem_rate=rule.per_diem_rate,
+            flat_rate_override=rule.flat_rate_override,
+            base_fee_schedule=rule.base_fee_schedule,
+            claim_type=rule.claim_type,
+            site_of_service=rule.site_of_service,
+            specificity_score=rule.specificity_score,
+            status=PricingRule.RuleStatus.DRAFT,
+            effective_start_date=rule.effective_start_date,
+            effective_end_date=rule.effective_end_date,
+        )
+        _bump(counts, 'PricingRule')
+
+        for cond in rule.conditions.all():
+            PricingRuleCondition.objects.create(
+                pricing_rule=new_rule,
+                attribute_name=cond.attribute_name,
+                operator=cond.operator,
+                attribute_value=cond.attribute_value,
+            )
+            _bump(counts, 'PricingRuleCondition')
+
+        basis = ContractRateBasis.objects.filter(pricing_rule=rule).first()
+        if basis is not None:
+            ContractRateBasis.objects.create(
+                pricing_rule=new_rule,
+                schedule=basis.schedule,
+                percentage=basis.percentage,
+            )
+            _bump(counts, 'ContractRateBasis')
+
+    for meth in ContractMethodology.objects.filter(
+        contract=source_version.contract,
+        version=source_version,
+    ).order_by('id'):
+        ContractMethodology.objects.create(
+            contract=target_contract,
+            version=target_version,
+            methodology_type=meth.methodology_type,
+            base_percentage=meth.base_percentage,
+            conversion_factor=meth.conversion_factor,
+            contract_term=meth.contract_term,
+            fee_schedule=meth.fee_schedule,
+            effective_date=meth.effective_date,
+            termination_date=meth.termination_date,
+            priority=meth.priority,
+            claim_type=meth.claim_type,
+            site_of_service=meth.site_of_service,
+            conditions=meth.conditions,
+        )
+        _bump(counts, 'ContractMethodology')
+
+    for esc in ContractEscalator.objects.filter(
+        contract=source_version.contract,
+        version=source_version,
+    ).order_by('id'):
+        ContractEscalator.objects.create(
+            contract=target_contract,
+            version=target_version,
+            annual_percentage=esc.annual_percentage,
+            cap_percentage=esc.cap_percentage,
+            base_year=esc.base_year,
+            effective_start_date=esc.effective_start_date,
+            effective_end_date=esc.effective_end_date,
+        )
+        _bump(counts, 'ContractEscalator')
+
+    for carve in ContractCarveout.objects.filter(version=source_version).order_by('carveout_id'):
+        ContractCarveout.objects.create(
+            version=target_version,
+            code_type=carve.code_type,
+            code_value=carve.code_value,
+            carveout_methodology=carve.carveout_methodology,
+            carveout_percentage=carve.carveout_percentage,
+            carveout_rate=carve.carveout_rate,
+            status=ContractVersion.VersionStatus.DRAFT,
+            conditions=carve.conditions,
+        )
+        _bump(counts, 'ContractCarveout')
+
+    for cap in ContractCapFloor.objects.filter(version=source_version).order_by('cap_floor_id'):
+        ContractCapFloor.objects.create(
+            version=target_version,
+            scope=cap.scope,
+            cap_type=cap.cap_type,
+            value=cap.value,
+            percentage=cap.percentage,
+            code_value=cap.code_value,
+            priority=cap.priority,
+            effective_start_date=cap.effective_start_date,
+            effective_end_date=cap.effective_end_date,
+            status=ContractVersion.VersionStatus.DRAFT,
+            conditions=cap.conditions,
+        )
+        _bump(counts, 'ContractCapFloor')
+
+    for blend in ContractBlendingRule.objects.filter(version=source_version).order_by('blending_rule_id'):
+        ContractBlendingRule.objects.create(
+            version=target_version,
+            blend_type=blend.blend_type,
+            scope=blend.scope,
+            primary_methodology=blend.primary_methodology,
+            secondary_methodology=blend.secondary_methodology,
+            blend_percentage=blend.blend_percentage,
+            priority=blend.priority,
+            effective_start_date=blend.effective_start_date,
+            effective_end_date=blend.effective_end_date,
+            status=ContractVersion.VersionStatus.DRAFT,
+            conditions=blend.conditions,
+        )
+        _bump(counts, 'ContractBlendingRule')
+
+    for outlier in ContractOutlierRule.objects.filter(
+        contract=source_version.contract,
+        version=source_version,
+    ).order_by('id'):
+        ContractOutlierRule.objects.create(
+            contract=target_contract,
+            version=target_version,
+            threshold_amount=outlier.threshold_amount,
+            threshold_scope=outlier.threshold_scope,
+            reimbursement_percentage=outlier.reimbursement_percentage,
+            cost_to_charge_ratio=outlier.cost_to_charge_ratio,
+            priority=outlier.priority,
+            effective_start_date=outlier.effective_start_date,
+            effective_end_date=outlier.effective_end_date,
+        )
+        _bump(counts, 'ContractOutlierRule')
+
+    for stop in ContractStopLossRule.objects.filter(
+        contract=source_version.contract,
+        version=source_version,
+    ).order_by('id'):
+        ContractStopLossRule.objects.create(
+            contract=target_contract,
+            version=target_version,
+            cost_threshold=stop.cost_threshold,
+            reimbursement_percentage=stop.reimbursement_percentage,
+            priority=stop.priority,
+            effective_start_date=stop.effective_start_date,
+            effective_end_date=stop.effective_end_date,
+        )
+        _bump(counts, 'ContractStopLossRule')
+
+
+@dataclass
+class VersionCloneSummary:
+    source_version_id: int
+    new_version_id: int
+    version_number: int
+    counts: dict[str, int] = field(default_factory=dict)
+
+    def as_dict(self) -> dict[str, Any]:
+        return {
+            'source_version_id': self.source_version_id,
+            'new_version_id': self.new_version_id,
+            'version_number': self.version_number,
+            'counts': dict(self.counts),
+        }
+
+
+def clone_version_within_contract(
+    source_version: ContractVersion,
+    *,
+    effective_start_date=None,
+    notes: str = '',
+) -> tuple[ContractVersion, VersionCloneSummary]:
+    """
+    Clone an ACTIVE (or any) version into a new DRAFT version on the same contract.
+    Copies rules, conditions, rate bases, caps/floors/outliers/stop-loss/blending/carveouts.
+    Roster (ContractCoveredEntity) and scope (ContractScopeUnified) are contract-level and
+    remain shared — no copy required for same-contract amendments.
+    """
+    contract = source_version.contract
+    max_num = (
+        ContractVersion.objects.filter(contract=contract)
+        .order_by('-version_number')
+        .values_list('version_number', flat=True)
+        .first()
+    ) or 0
+    eff_start = effective_start_date or source_version.effective_start_date
+    counts: dict[str, int] = {}
+
+    with transaction.atomic():
+        new_version = ContractVersion.objects.create(
+            contract=contract,
+            version_number=max_num + 1,
+            effective_start_date=eff_start,
+            effective_end_date=source_version.effective_end_date,
+            status=ContractVersion.VersionStatus.DRAFT,
+            notes=notes or source_version.notes,
+            pricing_engine_mode=source_version.pricing_engine_mode,
+            claim_level_drg_enabled=source_version.claim_level_drg_enabled,
+            product_id=source_version.product_id,
+            tier_priority=source_version.tier_priority,
+        )
+        _bump(counts, 'ContractVersion')
+
+        _clone_version_pricing_graph(
+            source_version=source_version,
+            target_version=new_version,
+            target_contract=contract,
+            counts=counts,
+        )
+
+    summary = VersionCloneSummary(
+        source_version_id=source_version.version_id,
+        new_version_id=new_version.version_id,
+        version_number=new_version.version_number,
+        counts=counts,
+    )
+    return new_version, summary

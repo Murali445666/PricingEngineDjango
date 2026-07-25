@@ -61,6 +61,32 @@ class FeeScheduleImportResult:
     rate_basis_skipped: list[dict[str, Any]] = field(default_factory=list)
 
 
+@dataclass
+class FeeSchedulePreviewResult:
+    contract_id: int
+    version_id: int
+    year: int
+    counts: dict[str, int] = field(default_factory=dict)
+    added: list[dict[str, Any]] = field(default_factory=list)
+    changed: list[dict[str, Any]] = field(default_factory=list)
+    removed: list[dict[str, Any]] = field(default_factory=list)
+    sample: list[dict[str, Any]] = field(default_factory=list)
+    skipped: list[dict[str, Any]] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            'contract_id': self.contract_id,
+            'version_id': self.version_id,
+            'year': self.year,
+            'counts': self.counts,
+            'added': self.added,
+            'changed': self.changed,
+            'removed': self.removed,
+            'sample': self.sample,
+            'skipped': self.skipped,
+        }
+
+
 def _d(value: str | None) -> Decimal | None:
     if value is None:
         return None
@@ -348,10 +374,193 @@ def _upsert_rate_basis(
             result.rate_bases_updated += 1
 
 
-def import_fee_schedule_from_csv(
+def _allowed_column(year: int) -> str:
+    if year not in (2025, 2026):
+        raise ValueError('--year must be 2025 or 2026')
+    return 'allowed_2026' if year == 2026 else 'allowed_2025'
+
+
+def _row_import_state(
+    row: dict[str, str],
+    *,
+    contract: ProviderContract,
+    year: int,
+) -> dict[str, Any] | None:
+    """Derive the rule fields that import would write for a CSV row (no DB writes)."""
+    allowed_column = _allowed_column(year)
+    code = (row.get('procedure_code') or '').strip()
+    if not code:
+        return None
+    flat_rate = _d(row.get(allowed_column))
+    if flat_rate is None:
+        return None
+
+    setting = (row.get('setting') or '').strip()
+    entity_label = (row.get('covered_entity') or '').strip()
+    institutional = setting in INSTITUTIONAL_SETTINGS
+    source_methodology = (row.get('methodology_code') or 'FLAT_RATE').strip().upper()
+    pricing_methodology = 'FLAT_RATE'
+    claim_type = 'institutional' if institutional else None
+    rule_name = f'{source_methodology} {_rule_name(row)}'[:150]
+    natural_key = _natural_key_from_row(row)
+
+    return {
+        'natural_key': natural_key,
+        'procedure_code': code,
+        'covered_entity': entity_label,
+        'setting': setting,
+        'rule_name': rule_name,
+        'methodology_code': pricing_methodology,
+        'source_methodology': source_methodology,
+        'claim_type': claim_type,
+        'flat_rate': flat_rate,
+        'rate_basis': (row.get('rate_basis') or '').strip(),
+        'percentage': (row.get('percentage') or '').strip(),
+        'base_year': (row.get('base_year') or '').strip(),
+    }
+
+
+def _rule_current_state(rule: PricingRule) -> dict[str, Any]:
+    key = _natural_key_from_rule(rule)
+    return {
+        'rule_id': rule.rule_id,
+        'natural_key': key,
+        'rule_name': rule.rule_name,
+        'methodology_code': rule.methodology_code,
+        'claim_type': rule.claim_type,
+        'flat_rate': rule.flat_rate,
+    }
+
+
+def _states_differ(existing: PricingRule, incoming: dict[str, Any]) -> bool:
+    if existing.rule_name != incoming['rule_name']:
+        return True
+    if existing.methodology_code != incoming['methodology_code']:
+        return True
+    if existing.claim_type != incoming['claim_type']:
+        return True
+    if existing.flat_rate != incoming['flat_rate']:
+        return True
+    return False
+
+
+def preview_fee_schedule_import(
     contract_id: int,
     version_id: int,
-    csv_path: Path,
+    raw_rows: list[dict[str, str]],
+    *,
+    year: int = 2025,
+    sample_limit: int = 25,
+) -> FeeSchedulePreviewResult:
+    """Diff CSV rows against version rules without writing."""
+    try:
+        contract = ProviderContract.objects.get(pk=contract_id)
+    except ProviderContract.DoesNotExist as exc:
+        raise ObjectDoesNotExist(f'Contract {contract_id} not found') from exc
+
+    try:
+        ContractVersion.objects.get(pk=version_id, contract=contract)
+    except ContractVersion.DoesNotExist as exc:
+        raise ObjectDoesNotExist(
+            f'Version {version_id} not found on contract {contract_id}'
+        ) from exc
+
+    if not raw_rows:
+        raise ValueError('No rows in upload')
+
+    rows, csv_duplicates = _dedupe_csv_rows(raw_rows)
+    result = FeeSchedulePreviewResult(
+        contract_id=contract_id,
+        version_id=version_id,
+        year=year,
+    )
+    result.skipped.extend(csv_duplicates)
+
+    existing_rules = list(
+        PricingRule.objects.filter(version_id=version_id).prefetch_related('conditions')
+    )
+    existing_by_key: dict[tuple[str, str], PricingRule] = {}
+    for rule in existing_rules:
+        key = _natural_key_from_rule(rule)
+        if key is not None:
+            existing_by_key[key] = rule
+
+    csv_keys: set[tuple[str, str]] = set()
+    added: list[dict[str, Any]] = []
+    changed: list[dict[str, Any]] = []
+
+    for idx, row in enumerate(rows):
+        row_number = idx + 2
+        state = _row_import_state(row, contract=contract, year=year)
+        if state is None:
+            code = (row.get('procedure_code') or '').strip()
+            allowed_column = _allowed_column(year)
+            result.skipped.append({
+                'row': row_number,
+                'reason': 'missing procedure_code' if not code else f'missing {allowed_column}',
+                'procedure_code': code or None,
+            })
+            continue
+
+        natural_key = state['natural_key']
+        csv_keys.add(natural_key)
+        row_summary = {
+            'procedure_code': state['procedure_code'],
+            'covered_entity': state['covered_entity'],
+            'setting': state['setting'],
+            'flat_rate': str(state['flat_rate']),
+            'methodology_code': state['source_methodology'],
+        }
+
+        existing = existing_by_key.get(natural_key)
+        if existing is None:
+            added.append(row_summary)
+        elif _states_differ(existing, state):
+            current = _rule_current_state(existing)
+            changed.append({
+                **row_summary,
+                'rule_id': existing.rule_id,
+                'previous_flat_rate': str(current['flat_rate']) if current['flat_rate'] is not None else None,
+                'previous_methodology_code': current['methodology_code'],
+            })
+
+    removed: list[dict[str, Any]] = []
+    for key, rule in existing_by_key.items():
+        if key not in csv_keys:
+            removed.append({
+                'rule_id': rule.rule_id,
+                'procedure_code': key[0],
+                'covered_entity': key[1],
+                'flat_rate': str(rule.flat_rate) if rule.flat_rate is not None else None,
+                'methodology_code': rule.methodology_code,
+            })
+
+    result.added = added
+    result.changed = changed
+    result.removed = removed
+    result.counts = {
+        'added': len(added),
+        'changed': len(changed),
+        'removed': len(removed),
+        'skipped': len(result.skipped),
+    }
+
+    sample: list[dict[str, Any]] = []
+    per_kind = max(1, sample_limit // 3)
+    for item in added[:per_kind]:
+        sample.append({'change_type': 'added', **item})
+    for item in changed[:per_kind]:
+        sample.append({'change_type': 'changed', **item})
+    for item in removed[:per_kind]:
+        sample.append({'change_type': 'removed', **item})
+    result.sample = sample[:sample_limit]
+    return result
+
+
+def import_fee_schedule_from_rows(
+    contract_id: int,
+    version_id: int,
+    raw_rows: list[dict[str, str]],
     *,
     year: int = 2025,
 ) -> FeeScheduleImportResult:
@@ -367,15 +576,10 @@ def import_fee_schedule_from_csv(
             f'Version {version_id} not found on contract {contract_id}'
         ) from exc
 
-    allowed_column = 'allowed_2026' if year == 2026 else 'allowed_2025'
-    if year not in (2025, 2026):
-        raise ValueError('--year must be 2025 or 2026')
-
-    with csv_path.open(encoding='utf-8', newline='') as handle:
-        raw_rows = list(csv.DictReader(handle))
+    allowed_column = _allowed_column(year)
 
     if not raw_rows:
-        raise ValueError(f'No rows in {csv_path}')
+        raise ValueError('No rows in upload')
 
     rows, csv_duplicates = _dedupe_csv_rows(raw_rows)
 
@@ -489,3 +693,21 @@ def import_fee_schedule_from_csv(
         result.rows_processed = len(csv_keys)
 
     return result
+
+
+def import_fee_schedule_from_csv(
+    contract_id: int,
+    version_id: int,
+    csv_path: Path,
+    *,
+    year: int = 2025,
+) -> FeeScheduleImportResult:
+    with csv_path.open(encoding='utf-8', newline='') as handle:
+        raw_rows = list(csv.DictReader(handle))
+
+    if not raw_rows:
+        raise ValueError(f'No rows in {csv_path}')
+
+    return import_fee_schedule_from_rows(
+        contract_id, version_id, raw_rows, year=year,
+    )

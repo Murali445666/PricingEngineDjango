@@ -10,6 +10,8 @@ Conflict types detected:
   METHODOLOGY_COLLISION  – Same methodology_type with overlapping effective dates in same version.
   CARVEOUT_OVERLAP       – Same code_type/code_value appears more than once in same version.
   BLENDING_CYCLE         – Blending rules form a directed cycle (A→B→A or longer).
+  NO_COVERED_ENTITIES    – DRAFT/ACTIVE contract has zero ContractCoveredEntity rows.
+  NO_PRODUCT_SCOPE       – DRAFT/ACTIVE contract with roster but no product scope rows.
 """
 from __future__ import annotations
 
@@ -162,6 +164,8 @@ class ValidationService:
         conflicts.extend(cls._check_ambiguous_pricing_rules(contract, versions))
         conflicts.extend(cls._check_non_canonical_rule_claim_types(contract))
         conflicts.extend(cls._check_pointless_carveouts(contract, versions))
+        conflicts.extend(cls._check_covered_entities(contract))
+        conflicts.extend(cls._check_product_scope(contract))
 
         # Errors before warnings, then by conflict_type for deterministic ordering
         conflicts.sort(key=lambda c: (0 if c.severity == "ERROR" else 1, c.conflict_type))
@@ -336,6 +340,67 @@ class ValidationService:
     # ------------------------------------------------------------------
     # Full-scope sub-checks
     # ------------------------------------------------------------------
+
+    @classmethod
+    def _check_covered_entities(cls, contract) -> List[ConflictError]:
+        """
+        ERROR when a DRAFT contract has no Exhibit A roster rows.
+        Without ContractCoveredEntity rows the coverage resolver cannot match claims
+        (FEATURE_COVERAGE_RESOLUTION); publishing such a contract is a silent no-op.
+        """
+        from core.models import ContractCoveredEntity
+
+        if contract.status != 'DRAFT':
+            return []
+
+        if ContractCoveredEntity.objects.filter(contract=contract).exists():
+            return []
+
+        return [ConflictError(
+            conflict_type='NO_COVERED_ENTITIES',
+            severity='ERROR',
+            message=(
+                f'Contract {contract.contract_id} has no covered entities (Exhibit A roster); '
+                'it cannot resolve claims under coverage-based resolution.'
+            ),
+            affected_objects=[{'type': 'ProviderContract', 'id': contract.contract_id}],
+            suggested_action=(
+                'Add at least one ORG, FACILITY, or PROVIDER covered entity before publishing.'
+            ),
+        )]
+
+    @classmethod
+    def _check_product_scope(cls, contract) -> List[ConflictError]:
+        """
+        ERROR when a DRAFT/ACTIVE contract has Exhibit A roster rows but no product
+        scope in ContractScopeUnified — resolver product-scope filtering excludes it.
+        """
+        from core.models import ContractCoveredEntity, ContractScopeUnified
+
+        if contract.status not in ('DRAFT', 'ACTIVE'):
+            return []
+
+        if not ContractCoveredEntity.objects.filter(contract=contract).exists():
+            return []
+
+        if ContractScopeUnified.objects.filter(
+            contract=contract,
+            product_id__isnull=False,
+        ).exists():
+            return []
+
+        return [ConflictError(
+            conflict_type='NO_PRODUCT_SCOPE',
+            severity='ERROR',
+            message=(
+                f'Contract {contract.contract_id} has covered entities but no product scope '
+                '(Exhibit B); it cannot resolve claims at the product scope level.'
+            ),
+            affected_objects=[{'type': 'ProviderContract', 'id': contract.contract_id}],
+            suggested_action=(
+                'Add at least one product scope row (product + LOB + effective dates) before publishing.'
+            ),
+        )]
 
     @classmethod
     def _check_scope_overlaps(cls, contract) -> List[ConflictError]:
